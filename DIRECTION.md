@@ -24,7 +24,8 @@
 dependable stone — layered, quiet, solid — with one hi-vis signal that tells you where the
 action is *right now* (the truck, the next pickup, the thing that needs you).
 
-Explorations considered (written, not all rendered — this is a web platform, not one screen):
+Explorations rendered as real core screens in `design/explore.html`; the latest comparison sheet is
+`shots/explore-r3/sheet.png`.
 
 | Concept | Source family | Ground | Type | Accent | Richness | Verdict |
 |---|---|---|---|---|---|---|
@@ -200,3 +201,14 @@ References in mono: `PU-26-08813`, `TXN-7Q4K2M`, `CT-UYO-014`, `CMP-1182`.
     (`npx vite --port <PORT> --strictPort &`) and `node scripts/shot.mjs --base http://localhost:<PORT> --out shots/<area> /route …`
     (390 and 1440 widths; add `--dark` once). Open the PNGs and fix what you see. The script fails on console errors,
     horizontal overflow and tiny text.
+
+---
+
+## 11. App-designer evidence
+
+- **Three directions:** `design/explore.html` → `shots/explore-r3/sheet.png`.
+- **Chosen direction set:** `design/mockup.html` → `shots/mockup-final2/sheet.png`.
+- **Compact-height set:** `shots/mockup-final2-se/sheet.png` at 375 × 667.
+- **Mechanical scan:** 0 failures for all three directions, all seven standard frames, and all seven compact frames.
+- **Critique:** two scored rounds in `CRITIQUE.md`; round two meets the stop rule with every line at 4 or 5.
+- **Environment note:** the iOS chrome renderer cannot load `/System/Library/Fonts/SFNS.ttf` on this Linux host. It falls back to the bundled web faces; safe areas, status chrome, typography, contrast and layout were still rendered at 3× and inspected.

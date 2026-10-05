@@ -1,10 +1,3 @@
-import { Page, PageHeader, StateView } from "@/components/ui";
+import RoutePage from "@/pages/_shared/RoutePage";
 
-export default function Bookings() {
-  return (
-    <Page>
-      <PageHeader title="Bookings" />
-      <StateView state="loading" title="Being built" description="This page is part of the Slate build in progress." />
-    </Page>
-  );
-}
+export default RoutePage;

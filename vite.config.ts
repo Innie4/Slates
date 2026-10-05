@@ -8,4 +8,24 @@ export default defineConfig({
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: "react-runtime",
+              test: /node_modules[\\/](react|react-dom|react-router)[\\/]/,
+              priority: 20,
+            },
+            {
+              name: "icons",
+              test: /node_modules[\\/]lucide-react[\\/]/,
+              priority: 10,
+            },
+          ],
+        },
+      },
+    },
+  },
 });

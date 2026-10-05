@@ -11,7 +11,7 @@ import { initials } from "@/lib/format";
 const AVATAR_TONES = ["bg-slate text-slate-ink", "bg-stone text-stone-ink", "bg-slate-600 text-white", "bg-slate-300 text-slate-900", "bg-slate-800 text-slate-100"];
 
 export function Avatar({ name, src, size = "md", className, square }: { name: string; src?: string; size?: "xs" | "sm" | "md" | "lg" | "xl"; className?: string; square?: boolean }) {
-  const sizes = { xs: "size-6 text-[10px]", sm: "size-8 text-[12px]", md: "size-10 text-[13px]", lg: "size-14 text-[17px]", xl: "size-20 text-[24px]" };
+  const sizes = { xs: "size-6 text-[11px]", sm: "size-8 text-[12px]", md: "size-10 text-[13px]", lg: "size-14 text-[17px]", xl: "size-20 text-[24px]" };
   const tone = AVATAR_TONES[[...name].reduce((a, c) => a + c.charCodeAt(0), 0) % AVATAR_TONES.length];
   return (
     <span className={cn("inline-flex shrink-0 select-none items-center justify-center overflow-hidden font-semibold", square ? "rounded-md" : "rounded-full", sizes[size], !src && tone, className)}>

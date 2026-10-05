@@ -19,12 +19,13 @@ const ROADS: Array<{ d: string; name?: string; nx?: number; ny?: number; rot?: n
 ];
 
 const ROUTE = "M36 22 C 52 40, 68 66, 88 78 S 150 96, 196 128 S 250 150, 284 162 S 320 176, 338 196";
+const DEFAULT_STOPS = [0.18, 0.4, 0.78];
 
 export function RouteMap({
   progress = 0.62,
   tone = "on-slate",
   className,
-  stops = [0.18, 0.4, 0.78],
+  stops = DEFAULT_STOPS,
   showLabels = true,
   animate = true,
 }: {
