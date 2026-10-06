@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Slate redesign — three directions</title>
+  <link rel="stylesheet" href="file:///home/inimfon-udoh/.agents/skills/app-designer/assets/device.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=DM+Serif+Display&family=Geist:wght@400..800&family=Geist+Mono:wght@400..600&family=Space+Grotesk:wght@500..700&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box} body{margin:0;background:#d9dde1}.screen{overflow:hidden}.content{position:absolute;inset:54px 0 0;display:flex;flex-direction:column}.micro{font-size:12px;line-height:1.35;letter-spacing:.08em}.body{font-size:15px;line-height:1.5}.concept{display:none}.bottom{height:72px;margin:0 16px 24px;display:flex;align-items:center;justify-content:space-around;font-size:12px}.route-lines{position:absolute;inset:0;opacity:.2;background:linear-gradient(18deg,transparent 47%,currentColor 47.4%,currentColor 48%,transparent 48.4%),linear-gradient(102deg,transparent 59%,currentColor 59.4%,currentColor 60%,transparent 60.4%)}
+
+    .motion{background:#f2f4f6;color:#111820;font-family:Geist,sans-serif}.motion .hero{position:relative;height:420px;overflow:hidden;background:#2b3643;color:#f2f4f6;padding:26px 22px}.motion h1{position:relative;margin:58px 0 0;max-width:330px;font:800 58px/.88 "Bricolage Grotesque",sans-serif;letter-spacing:-.055em;font-variation-settings:"opsz" 96,"wdth" 82}.motion .path{position:absolute;left:42px;right:-28px;top:250px;height:5px;background:#ff5b1f;transform:rotate(-12deg)}.motion .path:after{content:"";position:absolute;right:70px;top:-8px;width:20px;height:20px;background:#ff5b1f;border:5px solid #2b3643;outline:2px solid #ff5b1f;border-radius:50%}.motion .info{padding:22px}.motion .signal{display:flex;align-items:end;justify-content:space-between;border-top:1px solid #d4dce3;border-bottom:1px solid #d4dce3;padding:18px 0}.motion .big{font:800 38px/1 "Bricolage Grotesque",sans-serif}.motion .bottom{background:rgba(255,255,255,.9);border:1px solid #d4dce3;border-radius:24px;box-shadow:0 12px 28px rgba(17,24,32,.14)}.motion .concept{color:#617185}
+
+    .radio{background:#071412;color:#eaf7f3;font-family:Geist,sans-serif}.radio .content{padding:24px 20px 0}.radio .mast{display:flex;align-items:center;justify-content:space-between}.radio .live{color:#31d5ae;border:1px solid #31d5ae;padding:6px 9px}.radio h1{margin:48px 0 12px;font:400 58px/.92 "DM Serif Display",serif;letter-spacing:-.035em}.radio .frequency{margin:28px 0;height:112px;display:flex;align-items:center;gap:5px;border-top:1px solid #23443d;border-bottom:1px solid #23443d}.radio .frequency i{display:block;width:6px;background:#31d5ae}.radio .frequency i:nth-child(1){height:18px}.radio .frequency i:nth-child(2){height:42px}.radio .frequency i:nth-child(3){height:76px}.radio .frequency i:nth-child(4){height:34px}.radio .frequency i:nth-child(5){height:92px}.radio .frequency i:nth-child(6){height:58px}.radio .frequency i:nth-child(7){height:22px}.radio .frequency i:nth-child(8){height:66px}.radio .call{border-bottom:1px solid #23443d;padding:16px 0}.radio .call strong{display:block;font-size:16px}.radio .call small{display:block;margin-top:4px;color:#8fb4aa;font-size:12px}.radio .bottom{margin-top:auto;background:#0c201c;border:1px solid #23443d;border-radius:12px}.radio .concept{color:#7fa89d}
+
+    .civic{background:#ffe049;color:#101826;font-family:"Space Grotesk",sans-serif}.civic .content{padding:20px 18px 0}.civic .index{display:flex;justify-content:space-between;align-items:center}.civic .ticket{background:#101826;color:#fff;padding:7px 10px;transform:rotate(-2deg)}.civic h1{margin:40px 0 0;font-size:58px;line-height:.87;letter-spacing:-.06em;text-transform:uppercase}.civic .counter{margin-top:28px;background:#fff;padding:20px;border:3px solid #101826;box-shadow:7px 7px 0 #ff5b1f}.civic .counter b{display:block;margin:5px 0 7px;font-size:38px;line-height:1.1}.civic .stops{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}.civic .stop{min-height:96px;border:2px solid #101826;padding:12px;background:#ffd52a}.civic .stop:last-child{background:#ff5b1f}.civic .stop b{display:block;font-size:18px}.civic .stop small{display:block;margin-top:6px;font-size:12px}.civic .bottom{margin-top:auto;background:#101826;color:#fff;border-radius:0}.civic .concept{color:#5a4b00}
+  </style>
+</head>
+<body>
+  <section class="screen motion" data-name="01-uyo-in-motion" data-time="08:12">
+    <div class="content">
+      <div class="hero"><div class="route-lines"></div><div class="micro" style="position:relative;color:#aeb9c3">EWET ROUTE A · LIVE</div><h1>Your truck is two stops away.</h1><div class="path"></div></div>
+      <div class="info"><div class="micro" style="color:#617185">TODAY · 05 OCT</div><div class="signal"><div><div class="big">07:42</div><div class="body" style="color:#46566a;margin-top:4px">Estimated arrival</div></div><div style="text-align:right"><b style="color:#92340f">In motion</b><div class="micro" style="color:#617185;margin-top:6px">AKS 214 XA</div></div></div></div>
+      <div class="bottom" data-system><b>Today</b><span>Pickups</span><span>Payments</span><span>More</span></div><div class="concept">A · PLACE / LIGHT / EXPANDED / ORANGE / ILLUSTRATION</div>
+    </div>
+  </section>
+
+  <section class="screen radio" data-name="02-dispatch-radio" data-time="06:18" data-chrome="light">
+    <div class="content">
+      <div class="mast"><div class="micro">SLATE DISPATCH · 102.6</div><div class="micro live">ON AIR</div></div><h1>The city speaks in service signals.</h1><p class="body" style="color:#9bbdb4;margin:0">A quiet operations frequency for crews, gates and recovery calls.</p>
+      <div class="frequency"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="call"><strong>Route 04 checked in</strong><small>18 of 26 stops · Ewet corridor</small></div><div class="call"><strong>Gate 14 is ready</strong><small>Customer signal · received 06:17</small></div><div class="call"><strong>Recovery crew available</strong><small>Shelter Afrique · 24 minute response</small></div>
+      <div class="bottom" data-system><b>Signal</b><span>Calls</span><span>Crews</span><span>Archive</span></div><div class="concept">B · MEDIA / DARK / SERIF / TEAL / COLOUR-MATERIAL</div>
+    </div>
+  </section>
+
+  <section class="screen civic" data-name="03-civic-signal" data-time="08:12">
+    <div class="content">
+      <div class="index"><div class="micro">UYO PUBLIC SERVICE</div><div class="micro ticket">ROUTE 04</div></div><h1>Clear street.<br />Clear signal.</h1>
+      <div class="counter"><div class="micro">STOPS CLEARED TODAY</div><b>1,184</b><div class="body">27 crews across Uyo</div></div>
+      <div class="stops"><div class="stop"><b>EWET</b><small>92% clear<br />next 08:22</small></div><div class="stop"><b>ORON RD</b><small>66% clear<br />3 crews</small></div><div class="stop"><b>ITAM</b><small>42% clear<br />reviewing</small></div><div class="stop"><b>LIVE</b><small>12 need<br />attention</small></div></div>
+      <div class="bottom" data-system><b>City</b><span>Routes</span><span>Report</span><span>Account</span></div><div class="concept">C · PLAY / COLOUR-FIELD / CUSTOM DISPLAY / YELLOW / 3D-OBJECT</div>
+    </div>
+  </section>
+  <script src="file:///home/inimfon-udoh/.agents/skills/app-designer/assets/device.js"></script>
+</body>
+</html>

@@ -40,8 +40,8 @@ function SideLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => void
       onClick={onNavigate}
       className={({ isActive: a }) =>
         cn(
-          "group flex h-9 items-center gap-3 rounded-md px-2.5 text-[14px] font-medium transition-colors",
-          a ? "bg-slate text-slate-ink dark:bg-stone dark:text-ink" : "text-ink-2 hover:bg-sunken hover:text-ink",
+          "group relative flex h-9 items-center gap-3 rounded-md px-2.5 text-[14px] font-medium transition-colors before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:rounded-full before:bg-transparent",
+          a ? "bg-white/10 text-white before:bg-signal" : "text-white/62 hover:bg-white/[.06] hover:text-white",
         )
       }
     >
@@ -228,18 +228,21 @@ export function PortalLayout({ config, banner }: { config: PortalConfig; banner?
   const sidebar = (onNavigate?: () => void) => (
     <div className="flex h-full flex-col">
       <div className="flex h-16 shrink-0 items-center px-5">
-        <Logo to={config.groups[0]!.items[0]!.to} label={config.label} />
+        <Logo to={config.groups[0]!.items[0]!.to} label={config.label} tone="light" />
       </div>
       {user.org && config.key !== "app" && (
-        <div className="mx-3 mb-2 rounded-md border border-line px-3 py-2.5">
-          <p className="t-micro text-ink-3">{config.key === "admin" ? "Workspace" : "Account"}</p>
-          <p className="truncate t-small font-semibold text-ink">{user.org}</p>
+        <div className="mx-3 mb-3 overflow-hidden rounded-md border border-white/10 bg-white/[.045]">
+          <div className="h-0.5 w-12 bg-signal" />
+          <div className="px-3 py-2.5">
+            <p className="t-micro text-white/42">{config.key === "admin" ? "Uyo control room" : "Service account"}</p>
+            <p className="truncate t-small font-semibold text-white">{user.org}</p>
+          </div>
         </div>
       )}
       <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-6" aria-label="Primary">
         {config.groups.map((g, gi) => (
           <div key={gi} className={cn(gi > 0 && "mt-5")}>
-            {g.label && <p className="mb-1.5 px-2.5 t-micro text-ink-3">{g.label}</p>}
+            {g.label && <p className="mb-1.5 px-2.5 t-micro uppercase tracking-[.09em] text-white/35">{g.label}</p>}
             <div className="flex flex-col gap-0.5">
               {g.items.map((it) => (
                 <SideLink key={it.to} item={it} onNavigate={onNavigate} />
@@ -248,11 +251,11 @@ export function PortalLayout({ config, banner }: { config: PortalConfig; banner?
           </div>
         ))}
       </nav>
-      <div className="shrink-0 border-t border-line p-3">
+      <div className="shrink-0 border-t border-white/10 p-3">
         <button
           type="button"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="flex h-9 w-full items-center gap-3 rounded-md px-2.5 text-[14px] font-medium text-ink-2 hover:bg-sunken hover:text-ink"
+          className="flex h-9 w-full items-center gap-3 rounded-md px-2.5 text-[14px] font-medium text-white/60 hover:bg-white/[.06] hover:text-white"
         >
           {theme === "dark" ? <Sun className="size-[18px]" strokeWidth={1.75} /> : <Moon className="size-[18px]" strokeWidth={1.75} />}
           {theme === "dark" ? "Light appearance" : "Dark appearance"}
@@ -262,9 +265,12 @@ export function PortalLayout({ config, banner }: { config: PortalConfig; banner?
   );
 
   return (
-    <div className="min-h-dvh bg-canvas">
+    <div className="portal-shell min-h-dvh bg-canvas" data-portal={config.key}>
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-line bg-surface lg:block">{sidebar()}</aside>
+      <aside className="chalk-grain fixed inset-y-0 left-0 z-30 hidden w-64 overflow-hidden border-r border-white/10 bg-slate lg:block">
+        <span className="pointer-events-none absolute inset-x-0 bottom-0 h-40 opacity-20" aria-hidden />
+        {sidebar()}
+      </aside>
 
       <div className="lg:pl-64">
         {/* Top bar */}
@@ -308,7 +314,7 @@ export function PortalLayout({ config, banner }: { config: PortalConfig; banner?
           {banner}
         </header>
 
-        <main className="px-5 pb-32 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pb-16">
+        <main className="portal-main relative px-5 pb-32 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pb-16">
           <Outlet />
         </main>
       </div>

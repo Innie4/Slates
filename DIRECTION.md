@@ -7,6 +7,37 @@
 
 ---
 
+## Current app — redesign audit
+
+The frontend was already complete before this pass: all 159 routes existed, the strongest
+customer and control-centre screens had believable Uyo content, and the slate/orange system
+was coherent. The ceiling was consistency. Ninety-four routes inherited one generic page
+template, portal sidebars looked like ordinary SaaS navigation, and forms returned to a
+rounded-card pattern that weakened the concept.
+
+**Before evidence:** `shots/all-mobile-r2/about@390.png`,
+`shots/final-desktop/institution_procurement@1440.png`, and
+`shots/final-desktop/admin_settings@1440.png`.
+
+**Keep list**
+
+- [x] Every public, auth, customer, estate, business, institution, operator and admin route.
+- [x] Real Uyo neighbourhoods, people, references, dates and naira amounts.
+- [x] Slate grey as primary, stone grey as secondary, and orange only as the live signal.
+- [x] The customer live-pickup map and the `CleanSlate` completion interaction.
+- [x] Dark mode, responsive portal navigation, actions, filters, forms and service states.
+- [x] The placeholder wordmark so the final logo can be introduced later without re-layout.
+
+**Lose:** the white generic desktop rail, repeated `title + description + cards` composition,
+fallback labels that looked generated, stat-tile reflexes, and the panel-around-everything form.
+
+**Unknown:** the final logo, production photography, backend latency and real-device haptics.
+The frontend therefore uses code-native route illustration and deterministic demo data.
+
+**Decisions:** keep the information architecture, routes, actions and core service facts;
+change the visual source from a slate object used mainly in hero screens to **Uyo in motion**,
+a place-led route system visible in navigation, page headers, lists, records and forms.
+
 ## 1. The brief
 
 | | |
@@ -24,8 +55,8 @@
 dependable stone — layered, quiet, solid — with one hi-vis signal that tells you where the
 action is *right now* (the truck, the next pickup, the thing that needs you).
 
-Explorations rendered as real core screens in `design/explore.html`; the latest comparison sheet is
-`shots/explore-r3/sheet.png`.
+The original explorations are in `design/explore.html`. The redesign exploration is in
+`design/explore-r4.html`; its clean final sheet is `shots/explore-r4-final/sheet.png`.
 
 | Concept | Source family | Ground | Type | Accent | Richness | Verdict |
 |---|---|---|---|---|---|---|
@@ -35,6 +66,23 @@ Explorations rendered as real core screens in `design/explore.html`; the latest 
 
 **Merge:** A is the system. B contributes the `RouteMap` illustration (live pickups). C contributes
 Geist Mono for references (`PU-24-08813`, `TXN-…`), nothing else.
+
+### Redesign exploration — 2026-10-05
+
+| Concept | Source family | Ground | Type | Accent | Richness | Verdict |
+|---|---|---|---|---|---|---|
+| **A. Uyo in motion (chosen)** | place | light | expanded | orange | route illustration | The service promise is visible as movement through a real city; it scales from a resident's ETA to an admin register. |
+| B. Dispatch radio | media | dark | serif | teal | frequency colour-material | Memorable and calm, but too specialised for invoices, procurement and household self-service. |
+| C. Civic signal | play | colour-field | custom display | yellow | dimensional tickets | High energy and distinctive, but too loud for long operational sessions and formal institutional work. |
+
+The chosen history row is `place / light / expanded / orange / illustration`. It differs from
+the prior Slate row on source family, type and richness (3 of 5 required columns).
+
+The redesign also reviewed current logistics and waste-interface work on
+[Dribbble](https://dribbble.com/shots/27133399-Logistics-Fleet-Management-Smart-Operations-Dashboard-UI)
+and [Behance](https://www.behance.net/gallery/123633729/Ecobin-Waste-Management-App-UIUX).
+The useful patterns were route prominence and fast status reading. Slate deliberately rejects
+their common modular-card dashboard treatment and recycling-green category cues.
 
 ## 3. The category default we refuse
 
@@ -206,9 +254,13 @@ References in mono: `PU-26-08813`, `TXN-7Q4K2M`, `CT-UYO-014`, `CMP-1182`.
 
 ## 11. App-designer evidence
 
-- **Three directions:** `design/explore.html` → `shots/explore-r3/sheet.png`.
+- **Current redesign audit:** this file's `Current app` section and the checked keep list.
+- **Three redesign directions:** `design/explore-r4.html` → `shots/explore-r4-final/sheet.png` (0 failures, 0 warnings).
+- **Before / after:** `design/before-after.html` → `shots/before-after-final3/sheet.png` (0 failures, 0 warnings).
 - **Chosen direction set:** `design/mockup.html` → `shots/mockup-final2/sheet.png`.
 - **Compact-height set:** `shots/mockup-final2-se/sheet.png` at 375 × 667.
-- **Mechanical scan:** 0 failures for all three directions, all seven standard frames, and all seven compact frames.
-- **Critique:** two scored rounds in `CRITIQUE.md`; round two meets the stop rule with every line at 4 or 5.
+- **Implemented product:** `shots/redesign-r2/` at 390 and 1440 plus `shots/redesign-dark/` in both themes.
+- **All-route audit:** `shots/redesign-all-mobile/` and `shots/redesign-all-desktop/` each contain 159 of 159 routes at 390px and 1440px; 0 console errors, overflow defects, tiny text, broken images or unfinished stubs.
+- **Production build:** TypeScript and Vite build pass with 2,188 transformed modules and no bundle-size warning.
+- **Critique:** four scored rounds in `CRITIQUE.md`; the redesign round has no line below 4.5/5 (9/10).
 - **Environment note:** the iOS chrome renderer cannot load `/System/Library/Fonts/SFNS.ttf` on this Linux host. It falls back to the bundled web faces; safe areas, status chrome, typography, contrast and layout were still rendered at 3× and inspected.

@@ -119,6 +119,7 @@ export const router = createBrowserRouter([
   {{
     element: <RootLayout />,
     errorElement: <ErrorPage />,
+    hydrateFallbackElement: <div className="min-h-dvh bg-canvas" aria-label="Loading Slate" />,
     children: [
   {{
     element: <PublicLayout />,

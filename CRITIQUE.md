@@ -68,3 +68,83 @@ No further visual changes are required by the rubric. The mechanical scan report
 for 17 final frames: three direction screens, seven standard screens and seven compact screens.
 
 **Status:** done by the stop rule — no line below 3, and all 12 lines are 4 or above.
+
+## Round 3 — implemented webapp audit before redesign
+
+The current environment did not expose a resumable critic agent, so the redesign uses the
+documented fallback: self-score harder than feels fair and point to rendered pixels. The
+user's requested 9/10 floor maps to 4.5/5 on this rubric.
+
+Reviewed at full size:
+
+- `/home/inimfon-udoh/Slates/shots/final-desktop/home@1440.png`
+- `/home/inimfon-udoh/Slates/shots/final-desktop/institution_procurement@1440.png`
+- `/home/inimfon-udoh/Slates/shots/final-desktop/admin_settings@1440.png`
+- `/home/inimfon-udoh/Slates/shots/all-mobile-r2/about@390.png`
+- `/home/inimfon-udoh/Slates/shots/all-mobile-r2/app_pickups@390.png`
+
+| # | Rubric line | Score | Pixel evidence |
+|---|---|---:|---|
+| 1 | Concept on the pixel | 4.5 | Live pickup and marketing heroes clearly use slate, strata and routes, but generic pages lose that sentence below the header. |
+| 2 | Not the category average | 5 | Slate/orange, local operations data and route geometry avoid recycling green, mascot art and pastel eco cards. |
+| 3 | Not this skill's average | 4 | Flagship screens have a voice; settings, procurement and many inherited routes fall back to ordinary white SaaS cards. |
+| 4 | Hierarchy | 4.5 | Core customer and admin screens land correctly, while generic pages give title, tabs and one large panel nearly equal weight. |
+| 5 | Typography | 4.5 | Bricolage and Geist are tuned and readable, but the repeated generic compositions underuse the expanded display voice. |
+| 6 | Colour | 5 | Slate owns the interface and orange retains one live role in both themes. |
+| 7 | Richness | 4 | Route maps and strata are strong where present; 94 shared-template routes have little visual substance beyond UI components. |
+| 8 | Rhythm and space | 4 | Flagship layouts breathe, while generic forms strand a single card in large empty desktop fields. |
+| 9 | Craft details | 4 | Content and controls are believable, but fallback row labels and generic page furniture reveal the template. |
+| 10 | Native fluency | 4.5 | Mobile navigation, safe spacing and sheets are convincing; desktop portal chrome still reads as a standard admin shell. |
+| 11 | Signature | 5 | The clean-slate pickup completion remains specific, memorable and concept-born. |
+| 12 | The feature test | 4 | Home and live pickup are feature-ready; the long tail does not yet sustain that quality. |
+| 13 | Fidelity | 5 | All required routes, roles, controls and service facts are present and functional. |
+
+Five changes requested:
+
+1. Carry the route/place concept into shared page headers and the portal ground.
+2. Replace the generic white desktop rail with a distinctly Slate operations rail.
+3. Give public shared routes page-specific statements, live facts and Uyo service signals.
+4. Replace card-stacked listing, settings, record and form templates with ledgers, passports, hairline sections and an approval route.
+5. Mechanically audit all 159 routes at 390px, then inspect every portal family at 1440px and in dark mode.
+
+**Status:** not done. Four rubric lines remain below the user's 4.5/5 floor.
+
+## Round 4 — Uyo in motion
+
+All five requested changes landed. The visual source is now the city route itself: a fixed,
+quiet Uyo road field behind portal work; orange movement marks in headers; a dark operational
+rail; page-specific public statements; ledger registers; service passports; and a procurement
+approval route. The exhaustive mobile and desktop runs each report 0 failing of 159.
+
+Reviewed at full size:
+
+- `/home/inimfon-udoh/Slates/shots/redesign-r2/about@1440.png`
+- `/home/inimfon-udoh/Slates/shots/redesign-r2/app_pickups@390.png`
+- `/home/inimfon-udoh/Slates/shots/redesign-r2/operator_vehicles@1440.png`
+- `/home/inimfon-udoh/Slates/shots/redesign-r2/institution_procurement@1440.png`
+- `/home/inimfon-udoh/Slates/shots/redesign-r2/admin_settings@390.png`
+- `/home/inimfon-udoh/Slates/shots/redesign-dark/admin_customers_CUS-2477@1440-dark.png`
+- `/home/inimfon-udoh/Slates/shots/explore-r4-final/sheet.png`
+- `/home/inimfon-udoh/Slates/shots/before-after-final3/sheet.png`
+
+| # | Rubric line | Score | 10-point | Pixel evidence |
+|---|---|---:|---:|---|
+| 1 | Concept on the pixel | 5 | 10 | Route geometry, live orange movement and the dark operations rail identify the Uyo-in-motion idea on public, list, form, settings and record screens. |
+| 2 | Not the category average | 5 | 10 | No recycling green, leaves, illustrated people or stat-tile confetti; the product looks like a local service network. |
+| 3 | Not this skill's average | 5 | 10 | Settings use a workspace index, lists use operational ledgers, and forms use an approval route rather than grey-paper mono tables. |
+| 4 | Hierarchy | 5 | 10 | Every sampled screen has one lead: service promise, arrival state, record count, approval trail or service standard. |
+| 5 | Typography | 4.5 | 9 | Expanded Bricolage creates a recognisable voice while Geist carries dense operations; a few mobile portal titles need deliberate multiline wrapping. |
+| 6 | Colour | 5 | 10 | Slate, chalk and signal orange remain memorable and role-bound; dark mode is composed as its own ground rather than inverted. |
+| 7 | Richness | 5 | 10 | Uyo roads, route trajectories, service passports, strata and indexed ledgers sustain one art direction without external imagery. |
+| 8 | Rhythm and space | 4.5 | 9 | Desktop fields have strong rests and alignments; long mobile registers intentionally reveal fewer rows above the floating navigation. |
+| 9 | Craft details | 5 | 10 | All 159 routes pass overflow, tiny-text, broken-media, console and stub checks; local references, dates and naira values remain specific. |
+| 10 | Native fluency | 4.5 | 9 | Mobile glass navigation, safe-area spacing, touch-sized controls and stateful progress are convincing; physical-device haptics remain unverified. |
+| 11 | Signature | 5 | 10 | The route arrives and the pickup wipes to a clean slate; the interaction remains visible and unique to the service promise. |
+| 12 | The feature test | 4.5 | 9 | About, live pickup, procurement and service-passport frames are editorially strong; production photography and real-device motion are the remaining proof. |
+| 13 | Fidelity | 5 | 10 | Every item in the redesign keep list remains present, and generic routes now expose the same actions with clearer local context. |
+
+The minimum is **4.5/5, equivalent to 9/10**. No concrete visual defect remains from round 3.
+The only unverified items are physical-device haptics, motion timing under real load and Apple's
+SF system font on a Mac/iPhone; those are environment limits rather than known defects.
+
+**Status:** done by both the skill stop rule and the requested 9/10 floor.
