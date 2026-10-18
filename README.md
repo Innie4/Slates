@@ -63,7 +63,7 @@ npm start
 
 `npm start` loads `.env` if present, enforces production mode and serves `dist/` plus the API from one origin. Set the variables described in [.env.example](.env.example). Put the listener behind a TLS gateway and prevent direct public access. If a proxy is trusted to identify clients, configure its exact addresses in `TRUSTED_PROXY_IPS` and have it overwrite `X-Real-IP`. Arbitrary forwarded headers are never trusted.
 
-Use the Neon pooled `DATABASE_URL` for free staging on Render; a free Render web service cannot persist SQLite files. PostgreSQL startup applies the versioned schema and verifies TLS before accepting traffic. A Neon Free project and a Render project have been provisioned; the hosted web application and its release checks remain pending. See [the API documentation](server/README.md) for database configuration and [the production setup and release requirements](docs/production-readiness.md) for free-tier limits and remaining email, recovery, fulfillment and payment connections. No paid service or live payment is enabled.
+Use the Neon pooled `DATABASE_URL` for free staging on Render; a free Render web service cannot persist SQLite files. PostgreSQL startup applies the versioned schema and verifies TLS before accepting traffic. The [hosted staging app](https://slate-staging-w0ax.onrender.com) has passed the build, database and live flow checks recorded in [the release record](docs/production-readiness.md). See [the API documentation](server/README.md) for database configuration and the release record for free-tier limits and remaining email, recovery, fulfillment and payment connections. No paid service or live payment is enabled.
 
 ## Project map
 
