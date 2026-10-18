@@ -1,5 +1,5 @@
 /**
- * Customer care & community — page-local data and helpers shared by
+ * Customer care & community, page-local data and helpers shared by
  * Community, CommunityProject, Recycling, Complaints, ComplaintDetail,
  * Profile, Settings, Notifications and Support.
  *
@@ -124,7 +124,7 @@ export const careComplaints: CareComplaint[] = [
       { id: "t1", author: "you", name: me.household.name, role: "You", time: cday(-11, 10, 14), body: "Our bin was at the gate from 6:30 but the truck never came this morning. No. 12 and No. 16 were collected.", attachments: ["IMG_20260924_1012.jpg"] },
       { id: "t2", author: "slate", name: "Utibe Ekanem", role: "Slate Care", time: cday(-11, 11, 2), body: "Sorry about this. The Ufok truck on your route broke down at 07:50. I've booked a recovery crew from Nwaniba Clean Crew for tomorrow between 10:00 and 12:00." },
       { id: "t3", author: "operator", name: "Nwaniba Clean Crew", role: "Operator, via Slate", time: cday(-10, 11, 20), body: "Collected at 14 Ewet Housing Estate, 11:20. One bin, gate closed after." },
-      { id: "t4", author: "slate", name: "Utibe Ekanem", role: "Slate Care", time: cday(-10, 12, 5), body: "Your recovery pickup is done. Because it came more than 24 hours after your window, we've credited ₦875 — one collection — to your November charge." },
+      { id: "t4", author: "slate", name: "Utibe Ekanem", role: "Slate Care", time: cday(-10, 12, 5), body: "Your recovery pickup is done. Because it came more than 24 hours after your window, we've credited ₦875, one collection, to your November charge." },
     ],
     stepTimes: [cday(-11, 10, 14), cday(-11, 10, 14), cday(-11, 10, 18), cday(-11, 10, 50), cday(-11, 10, 58), cday(-11, 11, 2), cday(-10, 11, 20), cday(-10, 12, 5), null],
     respondedAt: cday(-11, 11, 2),
@@ -150,7 +150,7 @@ export const careComplaints: CareComplaint[] = [
     evidenceItems: [{ id: "ev-4", kind: "statement", name: "Screenshot_20261004_2138.png", taken: cday(-1, 21, 38), caption: "Bank alert for ₦9,000 at 21:10" }],
     thread: [
       { id: "t1", author: "you", name: me.household.name, role: "You", time: cday(-1, 21, 40), body: "₦9,000 left my account at 21:10 for the bulk pickup deposit, but the app still says pending and I haven't had a confirmation for Saturday.", attachments: ["Screenshot_20261004_2138.png"] },
-      { id: "t2", author: "system", name: "Slate", role: "Automatic", time: cday(-1, 21, 40), body: "Received. Slate Care replies within 24 hours — by 21:40 today at the latest. Your Saturday slot is held while we check." },
+      { id: "t2", author: "system", name: "Slate", role: "Automatic", time: cday(-1, 21, 40), body: "Received. Slate Care replies within 24 hours, by 21:40 today at the latest. Your Saturday slot is held while we check." },
     ],
     stepTimes: [cday(-1, 21, 40), cday(-1, 21, 40), null, null, null, null, null, null, null],
   },
@@ -173,7 +173,7 @@ export const careComplaints: CareComplaint[] = [
     evidenceItems: [{ id: "ev-5", kind: "late-street", name: "IMG_20260906_1108.jpg", taken: cday(-29, 11, 8), caption: "Truck arriving at 11:08" }],
     thread: [
       { id: "t1", author: "you", name: me.household.name, role: "You", time: cday(-29, 11, 25), body: "Second week running the truck came after 11:00. My window is 07:00–09:00 and I leave for work at 8.", attachments: ["IMG_20260906_1108.jpg"] },
-      { id: "t2", author: "slate", name: "Utibe Ekanem", role: "Slate Care", time: cday(-29, 13, 40), body: "You're right — Ewet Phase 1 was being collected last on the Monday route. I've asked Ufok to re-order it." },
+      { id: "t2", author: "slate", name: "Utibe Ekanem", role: "Slate Care", time: cday(-29, 13, 40), body: "You're right, Ewet Phase 1 was being collected last on the Monday route. I've asked Ufok to re-order it." },
       { id: "t3", author: "operator", name: "Ufok Environmental", role: "Operator, via Slate", time: cday(-28, 9, 0), body: "Route UYO-R3 re-ordered. Ewet Phase 1 now collected between 07:10 and 08:20." },
       { id: "t4", author: "slate", name: "Utibe Ekanem", role: "Slate Care", time: cday(-21, 9, 12), body: "Your last two collections were at 07:38 and 07:42, so I'm closing this. Reopen it any time if it slips again." },
     ],
@@ -201,7 +201,7 @@ export const careComplaints: CareComplaint[] = [
     thread: [
       { id: "t1", author: "you", name: me.household.name, role: "You", time: cday(-62, 8, 50), body: "I was debited ₦7,000 twice on 1 August, two minutes apart.", attachments: ["Screenshot_20260804_0847.png"] },
       { id: "t2", author: "slate", name: "Inemesit Ita", role: "Slate Payments", time: cday(-62, 10, 31), body: "Confirmed: Paystack retried a charge that had already succeeded. The duplicate ₦7,000 has been refunded to Visa •• 4021 and should appear within 3 working days." },
-      { id: "t3", author: "slate", name: "Inemesit Ita", role: "Slate Payments", time: cday(-57, 9, 0), body: "The refund settled on 7 Aug. Closing this — thank you for flagging it." },
+      { id: "t3", author: "slate", name: "Inemesit Ita", role: "Slate Payments", time: cday(-57, 9, 0), body: "The refund settled on 7 Aug. Closing this, thank you for flagging it." },
     ],
     stepTimes: [cday(-62, 8, 50), cday(-62, 8, 50), null, cday(-62, 9, 40), null, cday(-62, 10, 31), cday(-62, 10, 31), cday(-62, 10, 31), cday(-57, 9, 0)],
     respondedAt: cday(-62, 10, 31),
@@ -236,7 +236,7 @@ export function slaLine(c: CareComplaint, now = DEMO_NOW.getTime()): { text: str
 }
 
 /* ------------------------------------------------------------------ */
-/* Evidence — designed thumbnails (photo stand-ins, SVG)               */
+/* Evidence, designed thumbnails (photo stand-ins, SVG)               */
 /* ------------------------------------------------------------------ */
 
 const stamp = (iso: string) =>
@@ -480,7 +480,7 @@ export const MATERIALS: Array<{
     code: "WEEE",
     partner: "Ewet E-Cycle",
     goesIn: ["Phones, chargers and cables", "Small appliances: kettles, irons, fans", "Remote controls and routers"],
-    keepOut: ["Loose batteries — bag and tape them separately", "Broken fluorescent tubes", "Fridges and ACs (book bulk waste)"],
+    keepOut: ["Loose batteries, bag and tape them separately", "Broken fluorescent tubes", "Fridges and ACs (book bulk waste)"],
     prep: "Bag small items together. Remove batteries where you can.",
   },
   {
@@ -489,7 +489,7 @@ export const MATERIALS: Array<{
     partner: "Held at Slate's Itam yard",
     goesIn: ["Drink bottles", "Jam and sauce jars, rinsed"],
     keepOut: ["Window glass and mirrors", "Drinking glasses and ceramics", "Light bulbs"],
-    prep: "Rinse. Don't break — whole bottles are safer for the crew.",
+    prep: "Rinse. Don't break, whole bottles are safer for the crew.",
   },
 ];
 
@@ -647,7 +647,7 @@ export function SettingRow({
   );
 }
 
-/** Theme-aware slate ramp for categorical data (no signal — that's reserved). */
+/** Theme-aware slate ramp for categorical data (no signal, that's reserved). */
 export const RAMP = {
   light: ["#2B3643", "#66768A", "#9AA7B4", "#C3CCD5", "#E1E6EB"],
   dark: ["#E8ECF0", "#AFBBC7", "#7D8C9B", "#56677A", "#3A4859"],

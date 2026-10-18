@@ -34,7 +34,7 @@ export interface BadgeProps {
   size?: "sm" | "md";
 }
 
-/** Squared stone chip — status is always a word, never colour alone. */
+/** Squared stone chip, status is always a word, never colour alone. */
 export function Badge({ tone = "neutral", dot, icon, children, className, size = "sm" }: BadgeProps) {
   return (
     <span

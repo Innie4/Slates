@@ -1,5 +1,5 @@
 /**
- * Admin operations — page-local data model and helpers for the control centre,
+ * Admin operations, page-local data model and helpers for the control centre,
  * people and pickup pages (Admin part 1).
  *
  * The shared demo data holds a 64-customer sample. The admin portal needs the
@@ -14,7 +14,7 @@ import { useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { useSearchParams } from "react-router";
 import { ArrowLeft, Check, MessageSquare, Phone, Mail, Send, AlertTriangle, Truck } from "lucide-react";
 import {
-  Alert, Avatar, Badge, Button, ButtonLink, Checkbox, Input, Meter, Modal, Page, Segmented, Select, StateView, StatusBadge, Textarea,
+  Alert, Avatar, Badge, Button, ButtonLink, Checkbox, DatePicker, Meter, Modal, Page, Segmented, Select, StateView, StatusBadge, Textarea,
   useToast, type Tone,
 } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -261,9 +261,9 @@ export const windowEnded = (w: string) => winEnd(w) * 60 <= DEMO_NOW.getHours() 
 export const pickupReasons: Record<string, string> = {};
 const FAILED_AT: Array<[string, number, string]> = [
   ["RT-UFK-03", 6, "Gate locked, no answer on two calls"],
-  ["RT-ATL-02", 3, "Bins not put out — shop closed until 10:00"],
+  ["RT-ATL-02", 3, "Bins not put out, shop closed until 10:00"],
   ["RT-UFK-01", 12, "Access blocked by road works on Road 7"],
-  ["RT-IBM-01", 2, "Security refused entry — no work order on file"],
+  ["RT-IBM-01", 2, "Security refused entry, no work order on file"],
 ];
 
 const routes: OpsRoute[] = [];
@@ -336,8 +336,8 @@ const live: Pickup[] = [];
         completedAt,
         bins: s.shared?.bins ?? (s.c.type === "Household" ? btw(1, 2) : btw(2, 8)),
       };
-      if (status === "Missed") pickupReasons[id] = `Truck ${spec.vehicle} broke down on ${spec.area} at 06:52 — stop not reached`;
-      if (status === "Late") pickupReasons[id] = `Window ended ${spec.window.slice(6)} — crew ${i - spec.done} ${i - spec.done === 1 ? "stop" : "stops"} away`;
+      if (status === "Missed") pickupReasons[id] = `Truck ${spec.vehicle} broke down on ${spec.area} at 06:52, stop not reached`;
+      if (status === "Late") pickupReasons[id] = `Window ended ${spec.window.slice(6)}, crew ${i - spec.done} ${i - spec.done === 1 ? "stop" : "stops"} away`;
       live.push(p);
       ids.push(id);
     });
@@ -371,7 +371,7 @@ export const routeById = (id: string) => routes.find((r) => r.id === id);
 export const routeForPickup = (id: string) => routes.find((r) => r.pickupIds.includes(id));
 export const livePickups = live;
 
-/* Historical pickups — 4 per customer, decodable from the id (PU-26-1xxxx). */
+/* Historical pickups, 4 per customer, decodable from the id (PU-26-1xxxx). */
 const HISTORY_OFFSETS = [-7, -11, -14, -18];
 export function historyPickup(n: number): Pickup | undefined {
   const rel = n - 10000;
@@ -441,7 +441,7 @@ export const opsStore = {
       window,
       date: dayAt(dayOffset, winStart(window)),
       driver: route?.driver ?? "To be assigned",
-      vehicle: route?.vehicle ?? "—",
+      vehicle: route?.vehicle ?? "Not set",
       completedAt: undefined,
       note: `Recovery for ${orig.id}`,
     };
@@ -482,7 +482,7 @@ export function findPickup(id: string, s: OpsState = state): Pickup | undefined 
   return found ? applyPickup(found, s) : undefined;
 }
 
-/** A customer's pickups: today, shared records, generated history — newest first. */
+/** A customer's pickups: today, shared records, generated history, newest first. */
 export function customerPickups(c: Customer, s: OpsState = state): Pickup[] {
   const ci = customerIdx.get(c.id) ?? 0;
   const today = [...live, ...s.extra].filter((p) => p.customerId === c.id);
@@ -493,7 +493,7 @@ export function customerPickups(c: Customer, s: OpsState = state): Pickup[] {
 }
 
 /* ================================================================== */
-/* Today — counters                                                    */
+/* Today, counters                                                    */
 /* ================================================================== */
 
 export interface TodayCounts {
@@ -528,7 +528,7 @@ export function countToday(list: Pickup[]): TodayCounts {
 }
 
 /* ================================================================== */
-/* Customer records — payments, complaints, community, support, log    */
+/* Customer records, payments, complaints, community, support, log    */
 /* ================================================================== */
 
 export interface CustomerPayment {
@@ -560,7 +560,7 @@ export function customerPayments(c: Customer): CustomerPayment[] {
       if (i === 0 && c.paymentStatus === "Pending") status = "Pending";
       if (i === 0 && c.paymentStatus === "Overdue") (status = "Failed"), (attempts = 2);
       return {
-        id: `gp-${c.id}-${i}`, reference: `TXN-${refCode(6, r)}`, label: `${c.plan} — ${m}`, amount: c.monthly,
+        id: `gp-${c.id}-${i}`, reference: `TXN-${refCode(6, r)}`, label: `${c.plan}, ${m}`, amount: c.monthly,
         date: dayAt(off, 6, btw(0, 40, r)), method: card, status, attempts, linkable: false,
       };
     });
@@ -609,13 +609,13 @@ export function customerActivity(c: Customer) {
     { title: "Account created", detail: `Signed up as ${c.type.toLowerCase()} via ${c.type === "Household" ? "the Slate app" : "a Slate account manager"}`, by: c.type === "Household" ? c.name : "Itoro Effiong, Partnership Manager", time: c.joined },
     { title: "Address verified", detail: c.address, by: "Slate verification", time: new Date(new Date(c.joined).getTime() + 3 * 3600_000).toISOString() },
     { title: `Subscribed to ${c.plan}`, detail: formatNaira(c.monthly) + " a month", by: c.name, time: new Date(new Date(c.joined).getTime() + 5 * 3600_000).toISOString() },
-    { title: "Assigned to operator", detail: op ? `${op.short} · contract ${op.id === "op-ufok" ? "CT-UYO-011" : op.id === "op-atlantic" ? "CT-UYO-012" : op.id === "op-ibom" ? "CT-UYO-014" : "CT-UYO-017"}` : "—", by: "Slate dispatch (automatic)", time: new Date(new Date(c.joined).getTime() + 26 * 3600_000).toISOString() },
+    { title: "Assigned to operator", detail: op ? `${op.short} · contract ${op.id === "op-ufok" ? "CT-UYO-011" : op.id === "op-atlantic" ? "CT-UYO-012" : op.id === "op-ibom" ? "CT-UYO-014" : "CT-UYO-017"}` : "Not set", by: "Slate dispatch (automatic)", time: new Date(new Date(c.joined).getTime() + 26 * 3600_000).toISOString() },
   ];
   return items.sort((a, b) => b.time.localeCompare(a.time));
 }
 
 /* ================================================================== */
-/* Operators — fleet, workers, documents, contracts                    */
+/* Operators, fleet, workers, documents, contracts                    */
 /* ================================================================== */
 
 const EXTRA_FLEET: Record<string, Vehicle[]> = {
@@ -624,19 +624,19 @@ const EXTRA_FLEET: Record<string, Vehicle[]> = {
     { id: "v9", registration: "AKS 447 MN", type: "Tipper truck", capacity: "10 m³", status: "Active", driver: "Blessing Akpan", docStatus: "Verified", inspection: "2026-08-30" },
   ],
   "op-atlantic": [
-    { id: "va5", registration: "UYO 990 FE", type: "Rear-loader", capacity: "12 m³", status: "In maintenance", driver: "—", docStatus: "Verified", inspection: "2026-07-18" },
-    { id: "va6", registration: "ABK 431 GS", type: "Box truck (food waste)", capacity: "6 m³", status: "Inactive", driver: "—", docStatus: "Verified", inspection: "2026-08-02" },
+    { id: "va5", registration: "UYO 990 FE", type: "Rear-loader", capacity: "12 m³", status: "In maintenance", driver: "Not set", docStatus: "Verified", inspection: "2026-07-18" },
+    { id: "va6", registration: "ABK 431 GS", type: "Box truck (food waste)", capacity: "6 m³", status: "Inactive", driver: "Not set", docStatus: "Verified", inspection: "2026-08-02" },
   ],
   "op-ibom": [
-    { id: "vi4", registration: "ITU 118 SK", type: "Skip loader", capacity: "8 m³", status: "In maintenance", driver: "—", docStatus: "Verified", inspection: "2026-06-09" },
-    { id: "vi5", registration: "ITU 552 RM", type: "Tipper truck", capacity: "10 m³", status: "Inactive", driver: "—", docStatus: "Expired", inspection: "2025-11-20" },
+    { id: "vi4", registration: "ITU 118 SK", type: "Skip loader", capacity: "8 m³", status: "In maintenance", driver: "Not set", docStatus: "Verified", inspection: "2026-06-09" },
+    { id: "vi5", registration: "ITU 552 RM", type: "Tipper truck", capacity: "10 m³", status: "Inactive", driver: "Not set", docStatus: "Expired", inspection: "2025-11-20" },
   ],
   "op-nwaniba": [
-    { id: "vn3", registration: "ETN 209 XB", type: "Tipper truck", capacity: "10 m³", status: "Active", driver: "Standby — Kingsley Etim", docStatus: "Verified", inspection: "2026-09-26" },
+    { id: "vn3", registration: "ETN 209 XB", type: "Tipper truck", capacity: "10 m³", status: "Active", driver: "Standby, Kingsley Etim", docStatus: "Verified", inspection: "2026-09-26" },
   ],
   "op-obio": [
-    { id: "vo1", registration: "UYO 155 OB", type: "Tipper truck", capacity: "10 m³", status: "Inactive", driver: "—", docStatus: "Expired", inspection: "2026-02-03" },
-    { id: "vo2", registration: "UYO 381 OB", type: "Pickup (bulk)", capacity: "3 m³", status: "Inactive", driver: "—", docStatus: "Expired", inspection: "2026-01-14" },
+    { id: "vo1", registration: "UYO 155 OB", type: "Tipper truck", capacity: "10 m³", status: "Inactive", driver: "Not set", docStatus: "Expired", inspection: "2026-02-03" },
+    { id: "vo2", registration: "UYO 381 OB", type: "Pickup (bulk)", capacity: "3 m³", status: "Inactive", driver: "Not set", docStatus: "Expired", inspection: "2026-01-14" },
   ],
 };
 
@@ -680,8 +680,8 @@ export function operatorWorkers(opId: string): Worker[] {
       : fromRoutes;
   const office: Worker[] = op.staff
     ? [
-        { id: `${opId}-sup`, name: `${pk(FIRST, wr)} ${pk(LAST, wr)}`, role: "Supervisor", phone: `+234 ${pk(PHONES, wr)} ${btw(100, 999, wr)} ${btw(1000, 9999, wr)}`, vehicle: "—", verification: "Verified", status: base.length ? "On shift" : "Off shift", jobsToday: 0, rating: 0 },
-        { id: `${opId}-dsp`, name: op.contact, role: "Dispatcher", phone: op.phone, vehicle: "—", verification: "Verified", status: base.length ? "On shift" : "Off shift", jobsToday: 0, rating: 0 },
+        { id: `${opId}-sup`, name: `${pk(FIRST, wr)} ${pk(LAST, wr)}`, role: "Supervisor", phone: `+234 ${pk(PHONES, wr)} ${btw(100, 999, wr)} ${btw(1000, 9999, wr)}`, vehicle: "Not set", verification: "Verified", status: base.length ? "On shift" : "Off shift", jobsToday: 0, rating: 0 },
+        { id: `${opId}-dsp`, name: op.contact, role: "Dispatcher", phone: op.phone, vehicle: "Not set", verification: "Verified", status: base.length ? "On shift" : "Off shift", jobsToday: 0, rating: 0 },
       ]
     : [];
   return [...base, ...office];
@@ -707,7 +707,7 @@ const DOC_TEMPLATE: Array<[string, string, string | undefined]> = [
   ["Fleet insurance", "Insurance", "2027-02-28"],
   ["Vehicle roadworthiness certificates", "Fleet", "2027-01-15"],
   ["Driver licences", "Workforce", "2027-04-30"],
-  ["Disposal site agreement — Uyo dumpsite", "Regulatory", "2027-03-31"],
+  ["Disposal site agreement, Uyo dumpsite", "Regulatory", "2027-03-31"],
   ["Health & safety policy", "Workforce", undefined],
   ["Bank account verification", "Financial", undefined],
   ["Director ID (NIN)", "Corporate", undefined],
@@ -716,7 +716,7 @@ type DocOverride = Partial<Omit<OpsDoc, "id" | "operatorId">>;
 const DOC_OVERRIDES: Record<string, Record<number, DocOverride>> = {
   "op-ufok": {
     2: { status: "Expiring", expires: "2026-10-31", uploaded: "2026-02-20", version: 2, size: "1.2 MB" },
-    4: { name: "Roadworthiness — AKS 588 KJ", status: "Expiring", expires: "2026-10-19" },
+    4: { name: "Roadworthiness, AKS 588 KJ", status: "Expiring", expires: "2026-10-19" },
   },
   "op-ibom": {
     6: { status: "Expiring", expires: "2026-10-12", uploaded: "2026-04-03", size: "640 KB" },
@@ -734,7 +734,7 @@ const DOC_OVERRIDES: Record<string, Record<number, DocOverride>> = {
     5: { status: "Pending", uploaded: "2026-09-24", size: "2.6 MB" },
   },
   "op-mkpok": {
-    0: { name: "Business name registration", status: "Rejected", uploaded: "2026-09-28", size: "150 KB", note: "Illegible scan — registration number cut off" },
+    0: { name: "Business name registration", status: "Rejected", uploaded: "2026-09-28", size: "150 KB", note: "Illegible scan, registration number cut off" },
     1: { status: "Pending", uploaded: "2026-09-28" },
     2: { status: "Missing" },
     3: { status: "Missing" },
@@ -787,7 +787,7 @@ export const expiringDocs = (days = 30) =>
 export const SHARED_DOC_IDS = documents.map((d) => d.id);
 
 /* ================================================================== */
-/* Operator exceptions — the escalation ladder                         */
+/* Operator exceptions, the escalation ladder                         */
 /* ================================================================== */
 
 export const LADDER = ["Warning", "Penalty", "Reassign customers", "Activate another operator", "Terminate"] as const;
@@ -805,7 +805,7 @@ export const OPERATOR_EXCEPTIONS: Record<string, ExceptionRecord[]> = {
   ],
   "op-obio": [
     { kind: "Warning", detail: "Completion 86% in July, below the 95% floor.", by: "Idara Umoh, Operations Admin", time: dayAt(-62, 10, 0) },
-    { kind: "Penalty", detail: "₦57,500 deducted from August payout — 23 missed pickups not recovered within 24h.", by: "Ekaette Archibong, Finance Admin", time: dayAt(-36, 12, 0), amount: 57500 },
+    { kind: "Penalty", detail: "₦57,500 deducted from August payout, 23 missed pickups not recovered within 24h.", by: "Ekaette Archibong, Finance Admin", time: dayAt(-36, 12, 0), amount: 57500 },
     { kind: "Reassign customers", detail: "All 284 customers moved to Ufok Environmental (212) and Nwaniba Clean Crew (72).", by: "Idara Umoh, Operations Admin", time: dayAt(-22, 9, 30) },
     { kind: "Suspension", detail: "Operator suspended pending contract review. Contract CT-UYO-008 terminated.", by: "Aniekan Etim, Super Admin", time: dayAt(-21, 18, 44) },
   ],
@@ -874,7 +874,7 @@ export const applications: Application[] = [
       { registration: "ITU 744 EK", type: "Pickup (bulk)", capacity: "3 m³", year: 2021, roadworthy: "Not provided" },
     ],
     workers: { drivers: 5, loaders: 10, supervisors: 2, ppe: true, training: "In-house induction, monthly toolbox talks" },
-    compliance: { permit: "AKSEPA/WHP/2024/0418", disposal: "Uyo dumpsite (Use Offot) — agreement to Jun 2027", insurance: "Fleet + public liability, ₦50m cover (Leadway)", incidents: "None reported in 24 months", references: ["Ibom Plaza Supermarket", "Unity Hotel Uyo"] },
+    compliance: { permit: "AKSEPA/WHP/2024/0418", disposal: "Uyo dumpsite (Use Offot), agreement to Jun 2027", insurance: "Fleet + public liability, ₦50m cover (Leadway)", incidents: "None reported in 24 months", references: ["Ibom Plaza Supermarket", "Unity Hotel Uyo"] },
     next: "Site visit at Itu Road yard, Wed 7 Oct 10:00",
   },
   {
@@ -888,7 +888,7 @@ export const applications: Application[] = [
     ],
     workers: { drivers: 2, loaders: 6, supervisors: 1, ppe: false, training: "None documented" },
     compliance: { permit: "Not provided", disposal: "Not provided", insurance: "Not provided", incidents: "Not declared", references: ["Use Offot Residents Forum"] },
-    next: "Waiting on operator — 4 documents requested on 30 Sep",
+    next: "Waiting on operator, 4 documents requested on 30 Sep",
     missing: ["Clear scan of business name registration", "AKSEPA waste-handling permit", "Fleet insurance", "Disposal site agreement", "Health & safety policy"],
   },
   {
@@ -904,18 +904,18 @@ export const applications: Application[] = [
       { registration: "PHC 775 AB", type: "Rear-loader", capacity: "12 m³", year: 2017, roadworthy: "Valid" },
     ],
     workers: { drivers: 13, loaders: 32, supervisors: 5, ppe: true, training: "ISO 45001-aligned programme" },
-    compliance: { permit: "RIWAMA/OP/2023/112", disposal: "Eneka dumpsite — RIWAMA allocation", insurance: "Fleet + public liability, ₦150m cover (AXA Mansard)", incidents: "One minor spill, Mar 2025 — closed", references: ["Grand Atlantic Group", "Trans-Amadi Industrial Association"] },
-    next: "Assign a reviewer — Port Harcourt launches 1 Feb 2027",
+    compliance: { permit: "RIWAMA/OP/2023/112", disposal: "Eneka dumpsite, RIWAMA allocation", insurance: "Fleet + public liability, ₦150m cover (AXA Mansard)", incidents: "One minor spill, Mar 2025, closed", references: ["Grand Atlantic Group", "Trans-Amadi Industrial Association"] },
+    next: "Assign a reviewer, Port Harcourt launches 1 Feb 2027",
   },
   {
     id: "op-ekim", company: "Ekim Collections", short: "Ekim Collections", stage: "Rejected", step: 2, failedStep: 2, submitted: "2026-08-14", created: "2026-08-14", city: "Uyo", state: "Akwa Ibom",
-    owner: "Itoro Effiong", source: "Referral", rc: "—", founded: 2024, hq: "Osongama Estate Phase 1, Uyo", contact: "Etimbuk Edet", phone: "+234 810 448 2290", email: "ekimcollect@gmail.com",
+    owner: "Itoro Effiong", source: "Referral", rc: "Not set", founded: 2024, hq: "Osongama Estate Phase 1, Uyo", contact: "Etimbuk Edet", phone: "+234 810 448 2290", email: "ekimcollect@gmail.com",
     focus: "Residential", zones: ["osongama"], areaNames: ["Osongama Estate"], wasteTypes: ["General household"],
     capacity: { customers: 120, pickupsPerDay: 30, tonnesPerDay: 2, hours: "06:00–12:00, Mon–Fri" },
     vehicles: [{ registration: "UYO 090 EK", type: "Pickup (bulk)", capacity: "3 m³", year: 2009, roadworthy: "Expired" }],
     workers: { drivers: 1, loaders: 3, supervisors: 0, ppe: false, training: "None" },
     compliance: { permit: "Belongs to another company", disposal: "None", insurance: "None", incidents: "Not declared", references: [] },
-    next: "Closed — may reapply after 6 months (from 21 Feb 2027)",
+    next: "Closed, may reapply after 6 months (from 21 Feb 2027)",
     rejection: "Not a registered company; waste permit belongs to a different business; the only vehicle failed roadworthiness. Rejected 21 Aug by Mbuotidem Udoh.",
   },
   {
@@ -930,7 +930,7 @@ export const applications: Application[] = [
     ],
     workers: { drivers: 3, loaders: 8, supervisors: 1, ppe: true, training: "Not yet provided" },
     compliance: { permit: "Not yet provided", disposal: "Not yet provided", insurance: "Not yet provided", incidents: "Not yet declared", references: ["Seen working Etinan market clearance"] },
-    next: "Invite sent 3 Oct — operator has not started onboarding",
+    next: "Invite sent 3 Oct, operator has not started onboarding",
   },
 ];
 export const applicationById = (id: string) => applications.find((a) => a.id === id);
@@ -962,7 +962,7 @@ export interface Booking {
   pickupId?: string;
 }
 const BOOKING_SERVICES: Array<[string, number, number, string[]]> = [
-  ["Bulk Waste Pickup", 15000, 48000, ["Old wardrobe and two mattresses", "Fridge and a broken generator", "Moving out — 14 bags and a sofa", "Office chairs (11) and a desk", "Renovation offcuts, 2 trips"]],
+  ["Bulk Waste Pickup", 15000, 48000, ["Old wardrobe and two mattresses", "Fridge and a broken generator", "Moving out, 14 bags and a sofa", "Office chairs (11) and a desk", "Renovation offcuts, 2 trips"]],
   ["Extra pickup", 3500, 3500, ["Party leftovers, 4 bags", "Extra bags after the weekend", "Second collection before travel"]],
   ["Special Collection", 45000, 120000, ["Construction debris from a fence rebuild", "Garden clearance, 3 palm trunks", "Burnt roofing sheets after a fire"]],
   ["Event Cleanup", 60000, 240000, ["Wedding reception, 400 guests", "Burial ceremony, 2 days", "Church harvest, 1,200 guests", "Conference, Ibom Hall"]],
@@ -997,7 +997,7 @@ export const bookings: Booking[] = (() => {
 })();
 
 /* ================================================================== */
-/* Service areas — zone metrics                                        */
+/* Service areas, zone metrics                                        */
 /* ================================================================== */
 
 export const ZONE_FACTS: Record<string, { households: number; demand: number; lga: string; estates: string[] }> = {
@@ -1111,12 +1111,12 @@ export function useExport(what: string) {
       : toast.success(`${what} exported as ${f}`, `${formatNumber(count)} rows · sent to idara.umoh@slate.ng`);
 }
 
-/** Section kicker — small label above a block. */
+/** Section kicker, small label above a block. */
 export function Kicker({ children, className }: { children: ReactNode; className?: string }) {
   return <p className={cn("t-micro text-ink-3", className)}>{children}</p>;
 }
 
-/** A row of figures separated by hairlines — sentence-like, not tiles. */
+/** A row of figures separated by hairlines, sentence-like, not tiles. */
 export function Figures({ items, className }: { items: Array<{ label: string; value: ReactNode; tone?: "danger" | "warning" | "success" }>; className?: string }) {
   return (
     <dl className={cn("flex flex-wrap gap-x-8 gap-y-3", className)}>
@@ -1144,7 +1144,7 @@ const TODAY_WINDOWS = ["10:00–12:00", "14:00–16:00"];
 const REASONS = ["Truck breakdown", "Operator no-show", "Operator over capacity", "Customer request", "Access problem", "Other"];
 
 /**
- * Reassign one or more pickups to another operator — Workflow 4 recovery.
+ * Reassign one or more pickups to another operator, Workflow 4 recovery.
  * Capacity check: spare contract capacity and stops still on today's sheet.
  */
 export function ReassignModal({
@@ -1176,7 +1176,7 @@ export function ReassignModal({
   };
   const submit = () => {
     if (!target) return setError("Choose the operator who will recover these pickups.");
-    if (!reason) return setError("Choose a reason — it goes on the operator's record.");
+    if (!reason) return setError("Choose a reason, it goes on the operator's record.");
     const tomorrow = when.startsWith("Tomorrow");
     const win = tomorrow ? "07:00–09:00" : when;
     const created = items.map((p) => opsStore.recover(p, target, win, tomorrow ? 1 : 0));
@@ -1246,8 +1246,8 @@ export function ReassignModal({
                       : covers === areas.length
                         ? `Covers ${areas.length === 1 ? areas[0] : "all affected areas"}`
                         : covers === 0
-                          ? "Outside contracted areas — overflow rate applies"
-                          : `Covers ${covers} of ${areas.length} areas — overflow rate for the rest`}
+                          ? "Outside contracted areas, overflow rate applies"
+                          : `Covers ${covers} of ${areas.length} areas, overflow rate for the rest`}
                   </span>
                 </span>
               </button>
@@ -1297,7 +1297,7 @@ export function RescheduleModal({ open, onClose, pickup, onDone }: { open: boole
     >
       <div className="flex flex-col gap-4 pb-2">
         <div className="grid gap-4 sm:grid-cols-2">
-          <Input label="Date" type="date" min="2026-10-05" value={date} onChange={(e) => setDate(e.target.value)} />
+          <DatePicker label="Date"  min="2026-10-05" value={date} onChange={(date) => setDate(date)} />
           <Select label="Window" value={win} onChange={(e) => setWin(e.target.value)} options={["06:00–08:00", "07:00–09:00", "08:00–10:00", "10:00–12:00", "14:00–16:00"]} />
         </div>
         <Textarea label="Reason" rows={2} value={reason} onChange={(e) => { setReason(e.target.value); setError(""); }} placeholder="e.g. Customer travelling, estate gate closed on Monday" error={error || undefined} />
@@ -1315,7 +1315,7 @@ export function CancelPickupModal({ open, onClose, pickup, onDone }: { open: boo
   const [error, setError] = useState("");
   const submit = () => {
     if (!reason) return setError("Choose why this pickup is being cancelled.");
-    if (pickup) opsStore.patchPickup(pickup.id, { status: "Cancelled", note: `Cancelled: ${reason}${note ? ` — ${note}` : ""}` });
+    if (pickup) opsStore.patchPickup(pickup.id, { status: "Cancelled", note: `Cancelled: ${reason}${note ? `, ${note}` : ""}` });
     toast.success("Pickup cancelled", `${pickup?.id ?? ""}${refund ? " · credit added to the customer's next bill" : ""}`);
     onDone?.();
     setError("");
@@ -1344,12 +1344,12 @@ export function CancelPickupModal({ open, onClose, pickup, onDone }: { open: boo
   );
 }
 
-/** Contact a customer or operator — SMS, WhatsApp, email or a logged call. */
+/** Contact a customer or operator, SMS, WhatsApp, email or a logged call. */
 export function ContactModal({ open, onClose, name, phone: tel, email, template }: { open: boolean; onClose: () => void; name: string; phone: string; email: string; template?: string }) {
   const toast = useToast();
   const [channel, setChannel] = useState<"SMS" | "WhatsApp" | "Email" | "Call">("SMS");
   const [msg, setMsg] = useState(template ?? `Hello ${name.split(" ")[0]}, this is Idara from Slate operations. `);
-  const [outcome, setOutcome] = useState("Answered — resolved");
+  const [outcome, setOutcome] = useState("Answered, resolved");
   const [error, setError] = useState("");
   const send = () => {
     if (channel !== "Call" && msg.trim().length < 12) return setError("Write a message first.");
@@ -1390,7 +1390,7 @@ export function ContactModal({ open, onClose, name, phone: tel, email, template 
               <span className="t-mono text-ink">{tel}</span>
               <span className="t-small font-medium text-ink-2">Call now</span>
             </a>
-            <Select label="Outcome" value={outcome} onChange={(e) => setOutcome(e.target.value)} options={["Answered — resolved", "Answered — follow-up needed", "No answer", "Wrong number"]} />
+            <Select label="Outcome" value={outcome} onChange={(e) => setOutcome(e.target.value)} options={["Answered, resolved", "Answered, follow-up needed", "No answer", "Wrong number"]} />
           </>
         ) : (
           <Textarea label="Message" rows={4} value={msg} onChange={(e) => { setMsg(e.target.value); setError(""); }} error={error || undefined} hint={channel === "SMS" ? `${msg.length} / 160 characters` : undefined} />
@@ -1400,7 +1400,7 @@ export function ContactModal({ open, onClose, name, phone: tel, email, template 
   );
 }
 
-/** Assign a service to a customer — service, frequency, start, operator. */
+/** Assign a service to a customer, service, frequency, start, operator. */
 export function AssignServiceModal({ open, onClose, customer }: { open: boolean; onClose: () => void; customer?: Customer }) {
   const toast = useToast();
   const ops = useOperators();
@@ -1449,7 +1449,7 @@ export function AssignServiceModal({ open, onClose, customer }: { open: boolean;
             setSvc(e.target.value);
             setFreq(services.find((s) => s.id === e.target.value)?.frequencies.length === 1 ? services.find((s) => s.id === e.target.value)!.frequencies[0]! : "");
           }}
-          options={eligible.map((s) => ({ value: s.id, label: `${s.name} — from ${formatNaira(s.priceFrom)}${s.priceUnit}` }))}
+          options={eligible.map((s) => ({ value: s.id, label: `${s.name}, from ${formatNaira(s.priceFrom)}${s.priceUnit}` }))}
           placeholder="Choose a service"
           error={error.svc}
         />
@@ -1460,13 +1460,13 @@ export function AssignServiceModal({ open, onClose, customer }: { open: boolean;
         )}
         <div className="grid gap-4 sm:grid-cols-2">
           <Select label="Frequency" value={freq} onChange={(e) => setFreq(e.target.value)} options={service?.frequencies ?? []} placeholder={service ? "Choose" : "Choose a service first"} disabled={!service} error={error.freq} />
-          <Input label="Start date" type="date" min="2026-10-05" value={start} onChange={(e) => setStart(e.target.value)} />
+          <DatePicker label="Start date"  min="2026-10-05" value={start} onChange={(date) => setStart(date)} />
         </div>
         <Select
           label="Operator"
           value={op}
           onChange={(e) => setOp(e.target.value)}
-          options={activeOps.map((o) => ({ value: o.id, label: `${o.short} — ${formatNumber(spareCapacity(o))} slots free${customer && o.areas.includes(customer.area) ? " · covers this area" : ""}` }))}
+          options={activeOps.map((o) => ({ value: o.id, label: `${o.short}, ${formatNumber(spareCapacity(o))} slots free${customer && o.areas.includes(customer.area) ? " · covers this area" : ""}` }))}
           placeholder="Choose an operator"
           error={error.op}
         />

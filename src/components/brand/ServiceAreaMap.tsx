@@ -91,10 +91,10 @@ export function ServiceAreaMap({
           );
         })}
       </svg>
-      <div className="absolute bottom-3 left-3 flex items-center gap-2 rounded-sm bg-surface/90 px-2.5 py-1.5 backdrop-blur">
+      {legend && <div className="absolute bottom-3 left-3 flex items-center gap-2 rounded-sm bg-surface/90 px-2.5 py-1.5 backdrop-blur">
         <span className="t-micro text-ink-2">{legend}</span>
         <span className="h-2 w-16 rounded-full" style={{ background: "linear-gradient(90deg, color-mix(in srgb,#2B3643 12%, var(--surface)), #2B3643)" }} />
-      </div>
+      </div>}
       {active && (
         <div className="absolute right-3 top-3 rounded-md bg-slate-950 px-3 py-2 text-white shadow-float">
           <p className="text-[13px] font-semibold">{active.name}</p>

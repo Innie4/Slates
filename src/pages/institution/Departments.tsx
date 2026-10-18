@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 import { formatNaira, formatNumber } from "@/lib/format";
 import { CHARGEBACK_MONTHS, departments as seed, facilityById, type Department } from "./_data";
 
-/** Slate ramp for proportions — not status colours. Index 0 is darkest. */
+/** Slate ramp for proportions, not status colours. Index 0 is darkest. */
 const RAMP = [
   "bg-slate-800 dark:bg-slate-100",
   "bg-slate-600 dark:bg-slate-300",

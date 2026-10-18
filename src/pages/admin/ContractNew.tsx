@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { ArrowLeft, ArrowRight, Check, CheckCircle2, Clock, FileText, Mail, Send } from "lucide-react";
 import { ServiceAreaMap } from "@/components/brand/ServiceAreaMap";
 import {
-  Alert, Badge, Button, Checkbox, ChipGroup, ChoiceCard, CurrencyInput, FileDrop, Input, PageHeader, Page, Segmented, Select, Spinner,
+  Alert, Badge, Button, Checkbox, ChipGroup, ChoiceCard, CurrencyInput, DatePicker, FileDrop, Input, PageHeader, Page, Segmented, Select, Spinner,
   Stepper, Switch, Textarea, useToast, type UploadedFile,
 } from "@/components/ui";
 import { AREAS, operators, type Contract } from "@/data";
@@ -26,9 +26,9 @@ const PH_AREAS = ["GRA Phase 2", "Trans-Amadi", "Old GRA", "Rumuola"];
 const WINDOWS = ["05:00–07:00", "06:00–08:00", "07:00–09:00", "08:00–10:00", "10:00–12:00", "14:00–16:00", "21:00–23:00"];
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const APPROVERS = [
-  { value: "Aniekan Etim", label: "Aniekan Etim — Super Admin" },
-  { value: "Ekaette Archibong", label: "Ekaette Archibong — Finance Admin" },
-  { value: "Itoro Effiong", label: "Itoro Effiong — Partnership Manager" },
+  { value: "Aniekan Etim", label: "Aniekan Etim, Super Admin" },
+  { value: "Ekaette Archibong", label: "Ekaette Archibong, Finance Admin" },
+  { value: "Itoro Effiong", label: "Itoro Effiong, Partnership Manager" },
 ];
 const MARGIN_FLOOR = 18;
 const FEE_RATE = 0.015;
@@ -168,7 +168,7 @@ export default function ContractNew() {
         start: !d.start ? "Choose a start date" : d.start < "2026-10-06" ? "Start date must be after today" : undefined,
         capacity: capacity <= 0 ? "Enter capacity" : op && capacity > op.capacity ? `${op.short} can take ${formatNumber(op.capacity)} at most` : undefined,
       };
-      case 7: return { penaltyMissed: num(d.penaltyMissed) <= 0 ? "Enter a penalty" : num(d.penaltyMissed) > payout * 2 ? "More than twice the payout — check the amount" : undefined };
+      case 7: return { penaltyMissed: num(d.penaltyMissed) <= 0 ? "Enter a penalty" : num(d.penaltyMissed) > payout * 2 ? "More than twice the payout, check the amount" : undefined };
       case 8: return { files: d.agreementMode === "upload" && !d.files.length ? "Upload the signed-off agreement, or generate it from the template" : undefined };
       case 9: return { approval: d.approval !== "approved" ? "Request approval and wait for it before sending" : undefined };
       case 10: return { sent: !d.sent ? "Send the contract to the operator to continue" : undefined };
@@ -229,16 +229,16 @@ export default function ContractNew() {
   };
 
   const summary: Array<[string, ReactNode, number]> = [
-    ["Operator", op?.short ?? "—", 0],
-    ["Areas", d.areas.length ? d.areas.join(", ") : "—", 1],
-    ["Services", d.services.length ? d.services.join(", ") : "—", 2],
-    ["Customer price", price ? `${formatNaira(price)} ${d.unit}` : "—", 3],
-    ["Operator payout", payout ? formatNaira(payout) : "—", 4],
-    ["Slate margin", price && payout ? `${formatNaira(m.amount)} · ${m.pct.toFixed(1)}%` : "—", 4],
+    ["Operator", op?.short ?? "Not set", 0],
+    ["Areas", d.areas.length ? d.areas.join(", ") : "Not set", 1],
+    ["Services", d.services.length ? d.services.join(", ") : "Not set", 2],
+    ["Customer price", price ? `${formatNaira(price)} ${d.unit}` : "Not set", 3],
+    ["Operator payout", payout ? formatNaira(payout) : "Not set", 4],
+    ["Slate margin", price && payout ? `${formatNaira(m.amount)} · ${m.pct.toFixed(1)}%` : "Not set", 4],
     ["SLA", `${d.sla}% · ${d.response} h response · max ${d.maxMissed} missed`, 5],
     ["Schedule", `${d.frequency}, ${d.days.join(" & ")}`, 6],
     ["Term", `${formatDate(d.start)} – ${formatDate(end)}`, 6],
-    ["Capacity", capacity ? formatNumber(capacity) : "—", 6],
+    ["Capacity", capacity ? formatNumber(capacity) : "Not set", 6],
     ["Penalty", `${formatNaira(num(d.penaltyMissed))} per missed pickup`, 7],
     ["Agreement", d.agreementMode === "generate" ? `${template.kind} template ${template.version}` : d.files[0]?.name ?? "Not uploaded", 8],
   ];
@@ -280,7 +280,7 @@ export default function ContractNew() {
                     description={
                       verified
                         ? `${o.focus} · ${o.areas.join(", ")} · score ${o.score} · ${formatNumber(free)} free capacity`
-                        : `${o.status} — verification must be complete before contracting`
+                        : `${o.status}, verification must be complete before contracting`
                     }
                     meta={verified ? <span className="tnum">{o.completion}%</span> : <Badge tone="warning">{o.status}</Badge>}
                   />
@@ -297,7 +297,7 @@ export default function ContractNew() {
                 label="City"
                 value={d.city}
                 onChange={(e) => setD((x) => ({ ...x, city: e.target.value as Draft["city"], areas: [] }))}
-                options={[{ value: "Uyo", label: "Uyo, Akwa Ibom — live" }, { value: "Port Harcourt", label: "Port Harcourt, Rivers — pilot from Feb 2027" }]}
+                options={[{ value: "Uyo", label: "Uyo, Akwa Ibom, live" }, { value: "Port Harcourt", label: "Port Harcourt, Rivers, pilot from Feb 2027" }]}
               />
               {d.city === "Uyo" && (
                 <ServiceAreaMap
@@ -431,7 +431,7 @@ export default function ContractNew() {
                 {err("days") && <p className="t-small text-danger" role="alert">{err("days")}</p>}
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <Input type="date" label="Start date" value={d.start} min="2026-10-06" onChange={(e) => set("start", e.target.value)} error={err("start")} />
+                <DatePicker  label="Start date" value={d.start} min="2026-10-06" onChange={(date) => set("start", date)} error={err("start")} />
                 <div className="flex flex-col gap-1.5">
                   <span className="t-small font-medium text-ink">Term</span>
                   <Segmented className="w-full" value={d.term} onChange={(v) => set("term", v)} options={[{ value: "6", label: "6 months" }, { value: "12", label: "12 months" }, { value: "24", label: "24 months" }]} />
@@ -465,7 +465,7 @@ export default function ContractNew() {
           {step === 8 && (
             <div className="flex flex-col gap-5">
               <div className="grid gap-3 sm:grid-cols-2">
-                <ChoiceCard selected={d.agreementMode === "generate"} onSelect={() => set("agreementMode", "generate")} icon={<FileText />} title="Generate from template" description={`${template.name} — ${template.kind}, ${template.version}, with these terms filled in`} />
+                <ChoiceCard selected={d.agreementMode === "generate"} onSelect={() => set("agreementMode", "generate")} icon={<FileText />} title="Generate from template" description={`${template.name}, ${template.kind}, ${template.version}, with these terms filled in`} />
                 <ChoiceCard selected={d.agreementMode === "upload"} onSelect={() => set("agreementMode", "upload")} icon={<Send />} title="Upload an agreement" description="A version Legal has already negotiated with the operator" />
               </div>
               {d.agreementMode === "upload" ? (
@@ -492,7 +492,7 @@ export default function ContractNew() {
                 onChange={(e) => set("approver", e.target.value)}
                 options={APPROVERS}
                 disabled={d.approval !== "none"}
-                hint={m.pct < MARGIN_FLOOR ? `Margin is ${m.pct.toFixed(1)}% — only a Super Admin can approve below ${MARGIN_FLOOR}%.` : "Finance or a Super Admin can approve standard terms."}
+                hint={m.pct < MARGIN_FLOOR ? `Margin is ${m.pct.toFixed(1)}%, only a Super Admin can approve below ${MARGIN_FLOOR}%.` : "Finance or a Super Admin can approve standard terms."}
                 error={m.pct < MARGIN_FLOOR && d.approver !== "Aniekan Etim" ? "Choose a Super Admin for a below-floor margin" : undefined}
               />
               <Textarea label="Note for the approver" optional rows={3} value={d.approvalNote} onChange={(e) => set("approvalNote", e.target.value)} disabled={d.approval !== "none"} placeholder="Context: why this operator, why this price" />
@@ -593,7 +593,7 @@ export default function ContractNew() {
             </div>
           )}
 
-          {/* Navigation — sticky above the tab bar on phones */}
+          {/* Navigation, sticky above the tab bar on phones */}
           <div className="sticky bottom-[88px] z-20 -mx-5 flex items-center gap-2 border-t border-line bg-glass px-5 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
             <Button variant="ghost" leading={<ArrowLeft className="size-4" />} onClick={() => go(Math.max(0, step - 1))} disabled={step === 0}>
               Back
@@ -613,7 +613,7 @@ export default function ContractNew() {
           </div>
         </div>
 
-        {/* Summary — desktop */}
+        {/* Summary, desktop */}
         <aside className="hidden lg:block">
           <div className="sticky top-32 flex flex-col gap-6">
             <ol className="flex flex-col">

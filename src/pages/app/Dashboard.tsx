@@ -13,7 +13,7 @@ import { DEMO_NOW, formatDate, formatDay, formatNaira, formatRelative, formatTim
 const STOPS = [0.18, 0.4, 0.78];
 
 /**
- * Customer home — the core screen (DIRECTION.md §2, §6).
+ * Customer home, the core screen (DIRECTION.md §2, §6).
  * The first thing is today's collection, live. When the truck reaches the
  * address, the slate is wiped clean (signature interaction).
  */
@@ -53,7 +53,7 @@ export default function Dashboard() {
     { kind: "Payment", title: `${formatNaira(lastPaid.amount)} paid`, sub: lastPaid.service, time: lastPaid.date, to: "/app/payments", status: lastPaid.status },
     { kind: "Report", title: myComplaints[1]!.issue, sub: `${myComplaints[1]!.id} · ${myComplaints[1]!.operatorName}`, time: myComplaints[1]!.created, to: `/app/complaints/${myComplaints[1]!.id}`, status: myComplaints[1]!.status },
     { kind: "Pickup", title: "Collected at 07:42", sub: `${formatDay(myPickups[3]!.date)} · ${myPickups[3]!.service}`, time: myPickups[3]!.completedAt!, to: `/app/pickups/${myPickups[3]!.id}`, status: "Completed" },
-    { kind: "Pickup", title: "No collection — public holiday", sub: `${formatDay(myPickups[9]!.date)} · Independence Day`, time: myPickups[9]!.date, to: `/app/pickups/${myPickups[9]!.id}`, status: "Cancelled" },
+    { kind: "Pickup", title: "No collection, public holiday", sub: `${formatDay(myPickups[9]!.date)} · Independence Day`, time: myPickups[9]!.date, to: `/app/pickups/${myPickups[9]!.id}`, status: "Cancelled" },
   ].sort((a, b) => b.time.localeCompare(a.time));
 
   return (
@@ -137,7 +137,7 @@ export default function Dashboard() {
             </section>
           </CleanSlate>
 
-          {/* Actions in context — not tinted chips */}
+          {/* Actions in context, not tinted chips */}
           <nav aria-label="Quick actions" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
               { label: "Extra pickup", to: "/app/extra-pickup", icon: Plus },
@@ -261,7 +261,7 @@ export default function Dashboard() {
             <Recycle className="mt-0.5 size-5 shrink-0 text-ink-3" strokeWidth={1.75} />
             <div className="flex-1">
               <p className="t-body font-medium text-ink">Recyclables pickup on Tue 13 Oct</p>
-              <p className="t-small text-ink-2">38 kg recovered from your home this year — mostly PET and cans.</p>
+              <p className="t-small text-ink-2">38 kg recovered from your home this year, mostly PET and cans.</p>
             </div>
             <ArrowRight className="mt-1 size-4 text-ink-3 transition-transform group-hover:translate-x-0.5" />
           </Link>
@@ -273,7 +273,7 @@ export default function Dashboard() {
   );
 }
 
-/** C26 — rating after a completed service. */
+/** C26, rating after a completed service. */
 export function RateModal({ open, onClose, when }: { open: boolean; onClose: () => void; when: string }) {
   const toast = useToast();
   const [overall, setOverall] = useState(0);
@@ -292,7 +292,7 @@ export function RateModal({ open, onClose, when }: { open: boolean; onClose: () 
             disabled={!overall}
             onClick={() => {
               onClose();
-              toast.success("Thanks — rating sent", "It helps us keep operators to the standard you pay for.");
+              toast.success("Thanks, rating sent", "It helps us keep operators to the standard you pay for.");
             }}
           >
             Send rating

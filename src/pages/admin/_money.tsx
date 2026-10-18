@@ -1,5 +1,5 @@
 /**
- * Admin — commercial & money helpers (contracts, partners, cities, finance,
+ * Admin, commercial & money helpers (contracts, partners, cities, finance,
  * payments, payouts, invoices, chargebacks, Smart Sweep).
  * Page-local data extensions and small presentational pieces shared by
  * the money pages. Shared data lives in `@/data`; nothing here mutates it.
@@ -314,7 +314,7 @@ export function cityLaunchLabel(c: City) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Finance model — closed months Apr–Sep 2026                          */
+/* Finance model, closed months Apr–Sep 2026                          */
 /* Operator payouts for Jul–Sep match the payout ledger exactly.       */
 /* ------------------------------------------------------------------ */
 
@@ -373,10 +373,10 @@ export const REVENUE_STREAMS = [
 /* ------------------------------------------------------------------ */
 
 const CB_META: Record<string, { type: Payment["customerType"]; service: string; method: string }> = {
-  "CB-0091": { type: "Business", service: "Commercial Collection — September", method: "Mastercard •• 4417" },
-  "CB-0090": { type: "Household", service: "Slate Home — September", method: "Verve •• 2290" },
-  "CB-0087": { type: "Business", service: "Commercial Collection — August", method: "Visa •• 6631" },
-  "CB-0081": { type: "Household", service: "Slate Home Lite — August", method: "Visa •• 0918" },
+  "CB-0091": { type: "Business", service: "Commercial Collection, September", method: "Mastercard •• 4417" },
+  "CB-0090": { type: "Household", service: "Slate Home, September", method: "Verve •• 2290" },
+  "CB-0087": { type: "Business", service: "Commercial Collection, August", method: "Visa •• 6631" },
+  "CB-0081": { type: "Household", service: "Slate Home Lite, August", method: "Visa •• 0918" },
 };
 export const paymentIdForChargeback = (cb: Chargeback) => `pay-${cb.id.toLowerCase()}`;
 const CB_PAYMENTS: Payment[] = chargebacks.map((cb) => {
@@ -393,9 +393,9 @@ export const allPayments: Payment[] = [...payments, ...CB_PAYMENTS].sort((a, b) 
 export const paymentByIdAll = (id: string) => allPayments.find((p) => p.id === id);
 export const chargebackForPayment = (p: Payment) => chargebacks.find((c) => c.txn === p.reference);
 
-/** Failed charges already recovered — by a later charge or by moving the balance to Smart Sweep. */
+/** Failed charges already recovered, by a later charge or by moving the balance to Smart Sweep. */
 export const RECOVERED: Record<string, string> = {
-  "pay-m4": "Recovered by a manual retry — TXN-4C9TBB",
+  "pay-m4": "Recovered by a manual retry, TXN-4C9TBB",
   "pay-2": "Balance moved to Smart Sweep (ss-2)",
   "pay-67": "Balance moved to Smart Sweep (ss-3)",
   "pay-20": "Recovered through Smart Sweep (ss-11, completed)",
@@ -443,7 +443,7 @@ export interface PayoutLine {
 }
 const OBIO_FINAL: Payout = { id: "PO-02598", operatorId: "op-obio", operatorName: "Obio Sanitation", period: "Final settlement", jobs: 1_204, gross: 412_500, deductions: 160_000, adjustments: 0, net: 252_500, status: "Failed", date: at(-3, 10) };
 export const allPayouts: Payout[] = [...payouts, OBIO_FINAL];
-export const PAYOUT_FAILURE: Record<string, string> = { "PO-02598": "Beneficiary account closed — Zenith Bank •• 4471. Ask Obio Sanitation for a new settlement account." };
+export const PAYOUT_FAILURE: Record<string, string> = { "PO-02598": "Beneficiary account closed, Zenith Bank •• 4471. Ask Obio Sanitation for a new settlement account." };
 export const BANKS: Record<string, string> = {
   "op-ufok": "Zenith Bank •• 2210", "op-atlantic": "GTBank •• 0934", "op-ibom": "First Bank •• 7718", "op-nwaniba": "Opay •• 5531", "op-obio": "Zenith Bank •• 4471",
 };
@@ -454,14 +454,14 @@ export function payoutDeductions(p: Payout): PayoutLine[] {
   if (p.operatorId === "op-nwaniba" && p.deductions === 35_000)
     return [
       { label: "Missed pickups not recovered in 24h × 8 at ₦2,500", amount: 20_000, ref: "CT-UYO-017 §7.1" },
-      { label: "Bin replacement — damaged during collection", amount: 15_000, ref: "CMP-1171" },
+      { label: "Bin replacement, damaged during collection", amount: 15_000, ref: "CMP-1171" },
     ];
   if (p.operatorId === "op-obio") return [{ label: "Unrecovered missed pickups × 64 at ₦2,500", amount: 160_000, ref: "CT-UYO-008 §7.1" }];
   const contract = allContracts.find((c) => c.operatorId === p.operatorId && c.status !== "Terminated");
   return [{ label: `Missed pickups not recovered in 24h × ${p.deductions / 2500} at ₦2,500`, amount: p.deductions, ref: contract ? `${contract.id} §7.1` : undefined }];
 }
 export function payoutAdjustments(p: Payout): PayoutLine[] {
-  if (p.id === "PO-02604") return [{ label: "Credit — extra crew for Le Meridien event clearance", amount: 12_000, ref: "PU-26-08187" }];
+  if (p.id === "PO-02604") return [{ label: "Credit, extra crew for Le Meridien event clearance", amount: 12_000, ref: "PU-26-08187" }];
   return p.adjustments ? [{ label: "Manual adjustment", amount: p.adjustments }] : [];
 }
 
@@ -536,7 +536,7 @@ export function Stop({ children, className }: { children: ReactNode; className?:
 
 /**
  * Where a customer's naira goes: operator, Slate, processor.
- * Three slate tones — money split is information, not status.
+ * Three slate tones, money split is information, not status.
  */
 export function AllocationBar({ operator, slate, fee, className, compact }: { operator: number; slate: number; fee: number; className?: string; compact?: boolean }) {
   const total = Math.max(1, operator + slate + fee);
@@ -570,7 +570,7 @@ export function AllocationBar({ operator, slate, fee, className, compact }: { op
   );
 }
 
-/** Ranked breakdown with proportional bars — hairline rows, no boxes. */
+/** Ranked breakdown with proportional bars, hairline rows, no boxes. */
 export function Breakdown({
   rows,
   format = formatNaira,
@@ -694,7 +694,7 @@ export function RefundModal({
           value={amount ? Number(amount.replace(/[^\d]/g, "") || 0).toLocaleString("en-NG") : ""}
           onChange={(e) => setAmount(e.target.value.replace(/[^\d]/g, ""))}
           error={tried ? amountErr : undefined}
-          hint={value > 0 && value < payment.amount ? "Partial refund — the payment stays successful for the rest." : "Full refund"}
+          hint={value > 0 && value < payment.amount ? "Partial refund, the payment stays successful for the rest." : "Full refund"}
         />
         <Select
           label="Reason"
@@ -717,4 +717,4 @@ export function RefundModal({
 }
 
 /** Operator label for a contract or payment, safely. */
-export const operatorShort = (id: string) => operatorById(id)?.short ?? "—";
+export const operatorShort = (id: string) => operatorById(id)?.short ?? "Not set";

@@ -16,7 +16,7 @@ const METRICS: Record<Metric, { label: string; data: number[]; compare?: number[
 
 const BAND_BAR = { suspend: "bg-danger", warning: "bg-warning", maintain: "bg-slate dark:bg-slate-400", reward: "bg-success" } as const;
 
-/** G15 — the partner score, how it's made, and where it moves. */
+/** G15, the partner score, how it's made, and where it moves. */
 export default function Performance() {
   const [metric, setMetric] = useState<Metric>("score");
   const m = METRICS[metric];

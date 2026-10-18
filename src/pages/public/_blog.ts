@@ -1,5 +1,5 @@
 /**
- * Slate journal — articles for /blog and /blog/:slug.
+ * Slate journal, articles for /blog and /blog/:slug.
  * Plain data: the pages render blocks with Slate's type system.
  */
 
@@ -81,7 +81,7 @@ export const ARTICLES: Article[] = [
           "Cash collected door to door. Someone has to walk the estate at the end of each month, chase the houses where nobody is in, and carry the money.",
           "Partial payment. In a good month, 60 to 70 percent of homes pay. The collectors expect the full amount, or quietly reduce service until the gap closes.",
           "Collectors who stop showing up. When fuel goes up, a truck breaks down or a better-paying job appears, Tuesday’s collection becomes Thursday’s, then next week’s.",
-          "The manager as complaints desk. Every overflowing bin becomes a call to the estate office, which has no leverage over the collectors and no record of what was promised.",
+          "The manager as complaints desk. Every overflowing bin becomes a call to the estate office, which has no influence over the collectors and no record of what was promised.",
         ],
       },
       {

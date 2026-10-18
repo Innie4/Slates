@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * SIGNATURE — "Clean slate" (DIRECTION.md §6).
+ * SIGNATURE, "Clean slate" (DIRECTION.md §6).
  * When `done` flips false → true, a chalk-eraser sweep crosses the slate field
  * and reveals the `after` surface. Haptic where supported; crossfade under
  * reduced motion. If `done` starts true, `after` shows without animation.

@@ -12,7 +12,7 @@ import { SUBSCRIPTIONS, type SubStatus, type Subscription } from "./_subs";
 type TabKey = "active" | "pending" | "paused" | "cancelled";
 const TAB_STATUS: Record<TabKey, SubStatus> = { active: "Active", pending: "Pending", paused: "Paused", cancelled: "Cancelled" };
 
-/** C6 — everything the customer pays Slate for, by state. */
+/** C6, everything the customer pays Slate for, by state. */
 export default function Subscriptions() {
   const [subs, setSubs] = useState<Subscription[]>(SUBSCRIPTIONS);
   const tab = useTab<TabKey>("tab", "active");
@@ -54,7 +54,7 @@ export default function Subscriptions() {
                 . {pending[0]!.service} adds <span className="font-semibold text-ink tnum">{formatNaira(pending[0]!.price)}</span> from Tue 13 Oct
               </>
             )}
-            . One payment, one support line — whoever collects.
+            . One payment, one support line, whoever collects.
           </>
         }
         actions={<ButtonLink to="/app/services" leading={<Plus className="size-4" />}>Add a service</ButtonLink>}
@@ -80,7 +80,7 @@ export default function Subscriptions() {
                 : tab === "pending"
                   ? "New bookings show here until their first pickup."
                   : tab === "paused"
-                    ? "Pause a subscription when you travel or the house is empty — no charges while paused."
+                    ? "Pause a subscription when you travel or the house is empty, no charges while paused."
                     : "Cancelled subscriptions stay here for your records."
             }
             action={tab === "active" || tab === "pending" ? <ButtonLink to="/app/services" variant="secondary">Browse services</ButtonLink> : undefined}
@@ -99,7 +99,7 @@ export default function Subscriptions() {
         <section className="flex flex-col gap-3 border-t border-line pt-8">
           <div>
             <h2 className="t-h2 text-ink">Next charges</h2>
-            <p className="t-small mt-1 text-ink-2">Taken automatically. Slate pays the operator — you never pay at the gate.</p>
+            <p className="t-small mt-1 text-ink-2">Taken automatically. Slate pays the operator, you never pay at the gate.</p>
           </div>
           <ul className="divide-y divide-line border-y border-line">
             {charges.map((c) => (

@@ -9,7 +9,7 @@ import { OPS_DRIVERS, ROUTES, type Job } from "./_opsData";
 import { RouteProgress, StopNumber, isLate, replaceRouteOrder, routeStat, stopState, useJobs } from "./_ops";
 
 /**
- * G10 — the day's routes, one per truck. The dispatcher sees progress, the map and
+ * G10, the day's routes, one per truck. The dispatcher sees progress, the map and
  * the stop order, and can reorder what's left without dragging (up/down buttons
  * work with gloves on a phone).
  */

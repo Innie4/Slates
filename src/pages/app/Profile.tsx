@@ -34,7 +34,7 @@ interface Address {
   primary: boolean;
 }
 
-/** C29 — the customer's profile and account. */
+/** C29, the customer's profile and account. */
 export default function Profile() {
   const toast = useToast();
   const active = useActiveSection(SECTIONS.map((s) => s.id));
@@ -137,7 +137,7 @@ export default function Profile() {
                 <PhoneInput
                   label="Second contact number"
                   optional
-                  hint="Someone at home we can call if we can't reach you — a spouse, a gateman."
+                  hint="Someone at home we can call if we can't reach you, a spouse, a gateman."
                   value={draft.alt}
                   onChange={(e) => setDraft({ ...draft, alt: e.target.value.replace(/[^\d ]/g, "") })}
                 />
@@ -381,7 +381,7 @@ export default function Profile() {
         open={!!primaryAsk}
         onClose={() => setPrimaryAsk(null)}
         title={`Make ${primaryAsk?.label ?? ""} your primary address?`}
-        description="Slate Home moves there from your next collection. Your operator, collection days and price may change — we'll confirm by SMS before anything is charged."
+        description="Slate Home moves there from your next collection. Your operator, collection days and price may change, we'll confirm by SMS before anything is charged."
         confirmLabel="Make primary"
         onConfirm={() => {
           setAddresses((xs) => xs.map((x) => ({ ...x, primary: x.id === primaryAsk!.id, use: x.id === primaryAsk!.id ? "Slate Home, Recycling Pickup" : "Bulk and extra pickups only" })));

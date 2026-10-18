@@ -179,7 +179,7 @@ export default function Reviews() {
                         )}
                         items={[
                           ...(r.status === "Flagged"
-                            ? [{ label: "Keep published", icon: <CheckCircle2 />, onSelect: () => { set(r.id, { status: "Published", reason: `Reviewed ${formatDate(DEMO_NOW).replace(/ \d{4}$/, "")} by Idara Umoh — meets policy` }); toast.success("Review kept published", "It meets the review policy."); } }]
+                            ? [{ label: "Keep published", icon: <CheckCircle2 />, onSelect: () => { set(r.id, { status: "Published", reason: `Reviewed ${formatDate(DEMO_NOW).replace(/ \d{4}$/, "")} by Idara Umoh, meets policy` }); toast.success("Review kept published", "It meets the review policy."); } }]
                             : []),
                           ...(r.status === "Published" || r.status === "Escalated"
                             ? [{ label: "Flag for review", icon: <Flag />, onSelect: () => { set(r.id, { status: "Flagged", reason: "Flagged by Idara Umoh" }); toast.info("Flagged for review"); } }]
@@ -262,7 +262,7 @@ export default function Reviews() {
       >
         {hiding && (
           <div className="flex flex-col gap-3">
-            <p className="rounded-md bg-sunken px-3.5 py-3 t-small text-ink-2">“{hiding.comment}” — {hiding.customerName}, {hiding.rating}★</p>
+            <p className="rounded-md bg-sunken px-3.5 py-3 t-small text-ink-2">“{hiding.comment}”, {hiding.customerName}, {hiding.rating}★</p>
             <Select label="Policy reason" value={hideReason} onChange={(e) => setHideReason(e.target.value)} options={HIDE_REASONS} />
           </div>
         )}

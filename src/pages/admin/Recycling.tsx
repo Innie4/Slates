@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 import {
-  BarChart, Button, ConfirmDialog, DataTable, Donut, Input, Meter, Modal, Page, PageHeader, Ref, Section, Select, StatusBadge, Switch, Tabs,
+  BarChart, Button, ConfirmDialog, DataTable, Donut, DatePicker, Input, Meter, Modal, Page, PageHeader, Ref, Section, Select, StatusBadge, Switch, Tabs,
   useTab, useToast, type Column,
 } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -52,7 +52,7 @@ const REQUESTS: PickupReq[] = [
   { id: "RCY-26-0415", customer: "Imaobong Akpan", area: "Ewet Housing Estate", materials: ["PET plastic", "Aluminium cans"], estKg: 6, requested: daysFromNow(-3), date: daysFromNow(8), partner: "Itam Recovery Ltd", status: "Scheduled" },
   { id: "RCY-26-0414", customer: "Unity Hotel Uyo", area: "Wellington Bassey Way", materials: ["Aluminium cans", "PET plastic"], estKg: 180, requested: daysFromNow(-4), date: daysFromNow(0), partner: "Ikot Metal Reclaim", status: "Collected" },
   { id: "RCY-26-0413", customer: "Shelter Afrique Estate", area: "Shelter Afrique Estate", materials: ["PET plastic", "HDPE"], estKg: 410, weighedKg: 386, requested: daysFromNow(-6), date: daysFromNow(-2), partner: "Itam Recovery Ltd", status: "Weighed" },
-  { id: "RCY-26-0412", customer: "Afang House Restaurant", area: "Aka Road", materials: ["Paper & cardboard"], estKg: 140, weighedKg: 0, requested: daysFromNow(-6), date: daysFromNow(-3), partner: "PaperLoop Uyo", status: "Rejected", note: "Cardboard soaked with food oil — contaminated" },
+  { id: "RCY-26-0412", customer: "Afang House Restaurant", area: "Aka Road", materials: ["Paper & cardboard"], estKg: 140, weighedKg: 0, requested: daysFromNow(-6), date: daysFromNow(-3), partner: "PaperLoop Uyo", status: "Rejected", note: "Cardboard soaked with food oil, contaminated" },
   { id: "RCY-26-0411", customer: "Brightway Pharmacy", area: "Udo Udoma Avenue", materials: ["E-waste"], estKg: 25, weighedKg: 31, requested: daysFromNow(-8), date: daysFromNow(-4), partner: "Ewet E-Cycle", status: "Weighed" },
   { id: "RCY-26-0410", customer: "Uyo Model Secondary School", area: "Abak Road", materials: ["Paper & cardboard", "PET plastic"], estKg: 520, weighedKg: 548, requested: daysFromNow(-9), date: daysFromNow(-5), partner: "PaperLoop Uyo", status: "Weighed" },
 ];
@@ -105,7 +105,7 @@ export default function Recycling() {
     { key: "materials", header: "Materials", cell: (r) => <span className="text-ink-2">{r.materials.join(", ")}</span> },
     { key: "kg", header: "Weight", align: "right", sortValue: (r) => r.weighedKg ?? r.estKg, cell: (r) => <span className="tnum">{r.weighedKg !== undefined ? `${formatNumber(r.weighedKg)} kg` : <span className="text-ink-3">~{formatNumber(r.estKg)} kg</span>}</span> },
     { key: "date", header: "Collection", sortValue: (r) => r.date ?? "", cell: (r) => (r.date ? formatDate(r.date).replace(/ \d{4}$/, "") : <span className="text-ink-3">Not scheduled</span>) },
-    { key: "partner", header: "Partner", cell: (r) => r.partner ?? <span className="text-ink-3">—</span>, hideOnMobile: true },
+    { key: "partner", header: "Partner", cell: (r) => r.partner ?? <span className="text-ink-3">, </span>, hideOnMobile: true },
     { key: "status", header: "Status", cell: (r) => <StatusBadge status={r.status === "Requested" ? "New" : r.status === "Weighed" ? "Completed" : r.status === "Collected" ? "In progress" : r.status} /> },
   ];
 
@@ -371,7 +371,7 @@ function RequestModal({ req, partners, onClose, onSave }: { req: PickupReq; part
           </>
         ) : canWeigh ? (
           <>
-            <Button variant="ghost" onClick={() => onSave({ ...req, status: "Rejected", weighedKg: 0, note: "Rejected at weighing — contaminated" }, `${req.id} rejected as contaminated`)}>
+            <Button variant="ghost" onClick={() => onSave({ ...req, status: "Rejected", weighedKg: 0, note: "Rejected at weighing, contaminated" }, `${req.id} rejected as contaminated`)}>
               Reject load
             </Button>
             <Button
@@ -403,7 +403,7 @@ function RequestModal({ req, partners, onClose, onSave }: { req: PickupReq; part
         {canSchedule && (
           <div className="grid gap-4 sm:grid-cols-2">
             <Select label="Recovery partner" placeholder="Choose" value={partner} onChange={(e) => { setPartner(e.target.value); setErr(null); }} options={partners} error={err ?? undefined} />
-            <Input label="Collection date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            <DatePicker label="Collection date"  value={date} onChange={(date) => setDate(date)} />
           </div>
         )}
         {canWeigh && <Input label="Weighed at partner's site" inputMode="decimal" trailing={<span className="pr-3 t-small text-ink-3">kg</span>} value={kg} onChange={(e) => { setKg(e.target.value); setErr(null); }} error={err ?? undefined} />}

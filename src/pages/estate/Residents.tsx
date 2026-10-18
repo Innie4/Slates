@@ -18,7 +18,7 @@ function pickupToday(p: Property) {
   return { label: `Due today, ~${r.eta}`, tone: "info" as const };
 }
 
-/** D3 — the people behind the units: their Slate account, contribution and today's pickup. */
+/** D3, the people behind the units: their Slate account, contribution and today's pickup. */
 export default function Residents() {
   const toast = useToast();
   const [rows, setRows] = useState(() => properties.filter((p) => p.status === "Occupied"));
@@ -139,7 +139,7 @@ export default function Residents() {
         />
         {tab === "Inactive" && (
           <p className="t-small text-ink-2">
-            These residents still get collection — they just haven't set up the Slate app, so they pay by transfer or at the estate office.{" "}
+            These residents still get collection, they just haven't set up the Slate app, so they pay by transfer or at the estate office.{" "}
             <button type="button" className="font-medium text-ink underline underline-offset-4" onClick={() => toast.success(`Activation link resent to ${counts.Inactive} residents`, "By SMS.")}>
               Resend activation links
             </button>
@@ -303,7 +303,7 @@ function ResidentDrawer({
             { label: "Phone", value: r.phone },
             { label: "Email", value: <span className="break-all">{r.email}</span> },
             { label: "Subscription", value: `Estate plan · ${formatNaira(PER_HOUSEHOLD)} a month` },
-            { label: "Resident since", value: r.since ? formatDate(r.since) : "—" },
+            { label: "Resident since", value: r.since ? formatDate(r.since) : "Not set" },
             { label: "Collection", value: `${ESTATE.schedule} at ${point.id}, ${point.name}` },
             { label: "Today", value: <Badge tone={pickup.tone} dot>{pickup.label}</Badge> },
           ]}
@@ -327,11 +327,11 @@ function ResidentDrawer({
                   <p className="t-small font-medium text-ink">{h.month}</p>
                   <p className="t-small text-ink-3">
                     {h.status === "Unpaid" ? `Due ${formatDate("2026-10-07")}` : `${formatDate(h.date)} · ${h.method}`}
-                    {h.id !== "—" && <span className="t-mono"> · {h.id}</span>}
+                    {h.id !== "Not set" && <span className="t-mono"> · {h.id}</span>}
                   </p>
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1">
-                  <span className={cn("t-mono", h.status === "Unpaid" ? "text-ink-3" : "text-ink")}>{h.amount ? formatNaira(h.amount) : "—"}</span>
+                  <span className={cn("t-mono", h.status === "Unpaid" ? "text-ink-3" : "text-ink")}>{h.amount ? formatNaira(h.amount) : "Not set"}</span>
                   {h.status !== "Successful" && <StatusBadge status={h.status} />}
                 </div>
               </li>

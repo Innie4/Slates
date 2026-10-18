@@ -90,7 +90,7 @@ export default function DesignSystem() {
               the signal.
             </h1>
             <p className="t-body max-w-xl text-ink-2 md:text-[18px] md:leading-[1.55]">
-              Every token, component and rule behind Slate — from the household app to the operations control centre. Everything on this page is the
+              Every token, component and rule behind Slate, from the household app to the operations control centre. Everything on this page is the
               real kit, running live. Switch the appearance and watch it hold.
             </p>
             <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
@@ -281,7 +281,7 @@ function Rule({ kind, children }: { kind: "do" | "dont"; children: ReactNode }) 
 
 const REFUSED = [
   ["Leaf-green primary", "Slate grey is the brand. Green only ever means success: collected, paid, approved."],
-  ["Recycling arrows and leaves as decoration", "Recycling is a service, shown with real numbers — 38 kg recovered, not a looping arrow."],
+  ["Recycling arrows and leaves as decoration", "Recycling is a service, shown with real numbers, 38 kg recovered, not a looping arrow."],
   ["Smiling illustrated people holding bins", "Stone strata, chalk lines and Uyo route maps. No people we invented."],
   ["Glassmorphism dashboards", "Flat content on chalk. Blur only on the mobile tab bar and sticky headers."],
   ["“Hello, Name 👋” headers", "The customer home opens with the day of the next pickup."],
@@ -294,7 +294,7 @@ function Principles() {
       id="principles"
       n="01"
       title="Slate is a clean slate"
-      lede="Every pickup wipes the slate clean. The product is a slab of dependable stone — layered, quiet, solid — with one hi-vis signal that tells you where the action is right now: the truck, the next pickup, the thing that needs you."
+      lede="Every pickup wipes the slate clean. The product is a slab of dependable stone, layered, quiet, solid, with one hi-vis signal that tells you where the action is right now: the truck, the next pickup, the thing that needs you."
     >
       <div className="grid gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-3">
         {[
@@ -314,7 +314,7 @@ function Principles() {
         <ol className="grid gap-6 md:grid-cols-3">
           {[
             ["Roofing slate and school chalk slates", "Layered stone, chalk marks, the matte grey of a board wiped clean. Gives us the palette, the strata and the grain."],
-            ["Hi-vis vests and truck beacons at 6am", "The one orange thing on a grey Uyo street is the truck. Gives us signal — and its single job."],
+            ["Hi-vis vests and truck beacons at 6am", "The one orange thing on a grey Uyo street is the truck. Gives us signal, and its single job."],
             ["A well-run railway timetable board", "Rows, times, references, nothing extra. Gives us hairline lists, tabular figures and mono references."],
           ].map(([t, d], i) => (
             <li key={t} className="flex flex-col gap-2 border-t border-line pt-4">
@@ -337,11 +337,11 @@ function Principles() {
         </div>
       </Sub>
 
-      <Sub title="Working rules" note="The short version of DIRECTION.md §10 — what every page in the platform follows.">
+      <Sub title="Working rules" note="The short version of DIRECTION.md §10, what every page in the platform follows.">
         <ol className="grid gap-x-10 gap-y-5 md:grid-cols-2">
           {[
             ["Tokens only", "Semantic utilities for every colour. No raw hex outside illustration. Dark mode comes free."],
-            ["One accent, one role", "Signal means live, now or needs-you — plus the single marketing CTA. Never decoration."],
+            ["One accent, one role", "Signal means live, now or needs-you, plus the single marketing CTA. Never decoration."],
             ["Space and hairlines first", "Panels only for objects: a pickup, an invoice, a contract. No cards inside cards."],
             ["Status is never colour alone", "Every badge carries a word. Every chart carries a label."],
             ["Mobile first, thumb first", "Designed at 390px. Primary actions in the thumb zone. Tables become stacked rows."],
@@ -371,9 +371,9 @@ function LogoSection() {
       id="logo"
       n="02"
       title="Logo"
-      lede="A placeholder wordmark until the real mark arrives. Three cut slabs, the lowest one in signal — the only place the accent lives in the brand."
+      lede="A placeholder wordmark until the real mark arrives. Three cut slabs, the lowest one in signal, the only place the accent lives in the brand."
     >
-      <Alert tone="neutral" title="Placeholder — this logo will be replaced">
+      <Alert tone="neutral" title="Placeholder, this logo will be replaced">
         Every surface renders the brand through one component, <span className="t-mono text-ink">src/components/brand/Logo.tsx</span>. Swap that file and the
         header, footer, auth screens, portals and favicon follow.
       </Alert>
@@ -418,7 +418,7 @@ function LogoSection() {
 
       <div className="grid gap-x-10 gap-y-4 md:grid-cols-3">
         {[
-          ["Construction", "Three slabs, each rising 4.2 over a 22-unit run — the same 11° cleft as the strata. Wordmark in Bricolage Grotesque 700, tracking −0.04em."],
+          ["Construction", "Three slabs, each rising 4.2 over a 22-unit run, the same 11° cleft as the strata. Wordmark in Bricolage Grotesque 700, tracking −0.04em."],
           ["Clear space", "Keep one slab height clear on every side. Never place the mark on photography or on a signal field."],
           ["Minimum size", "Mark: 16px on screen. Wordmark lockup: 72px wide. Below that, use the mark alone."],
         ].map(([t, d]) => (
@@ -443,7 +443,7 @@ const TOKEN_GROUPS: Array<{ title: string; note: string; tokens: Token[] }> = [
     title: "Ground and ink",
     note: "Chalk ground, stone panels, slate-black ink. Secondary text holds 6:1 on canvas; tertiary never drops below 4.5:1.",
     tokens: [
-      { name: "canvas", light: "#F2F4F6", dark: "#0E1318", role: "Page ground — chalk" },
+      { name: "canvas", light: "#F2F4F6", dark: "#0E1318", role: "Page ground, chalk" },
       { name: "surface", light: "#FFFFFF", dark: "#161D25", role: "Panels, sheets, inputs" },
       { name: "sunken", light: "#E8ECF0", dark: "#0A0E12", role: "Wells, table headers, tracks" },
       { name: "ink", light: "#111820", dark: "#EDF1F4", role: "Primary text" },
@@ -461,14 +461,14 @@ const TOKEN_GROUPS: Array<{ title: string; note: string; tokens: Token[] }> = [
       { name: "slate-ink", light: "#F2F4F6", dark: "#EDF1F4", role: "Text on slate" },
       { name: "stone", light: "#DCE3EA", dark: "#2A3540", role: "Secondary buttons, chips, selected rows" },
       { name: "stone-ink", light: "#1C242E", dark: "#EDF1F4", role: "Text on stone" },
-      { name: "signal", light: "#FF5B1F", dark: "#FF6A33", role: "Live, now, needs you — one role" },
+      { name: "signal", light: "#FF5B1F", dark: "#FF6A33", role: "Live, now, needs you, one role" },
       { name: "signal-ink", light: "#1A0D06", dark: "#1A0D06", role: "Text on signal" },
       { name: "signal-soft", light: "#FFE7DC", dark: "#3A1C10", role: "Signal badge ground" },
     ],
   },
   {
     title: "Status",
-    note: "Semantic only. Always paired with a word — never colour alone.",
+    note: "Semantic only. Always paired with a word, never colour alone.",
     tokens: [
       { name: "success", light: "#127A57", dark: "#3FBF8F", role: "Collected, paid, approved" },
       { name: "success-bg", light: "#E1F2EA", dark: "#10291F", role: "Success ground" },
@@ -545,7 +545,7 @@ function ColourSection() {
       id="colour"
       n="03"
       title="Colour"
-      lede="Slate grey is primary. Lighter stone tints are secondary. Every other colour is there because it has a job. Roles are CSS variables that swap under .dark — each swatch shows both values."
+      lede="Slate grey is primary. Lighter stone tints are secondary. Every other colour is there because it has a job. Roles are CSS variables that swap under .dark, each swatch shows both values."
     >
       {TOKEN_GROUPS.map((g) => (
         <Sub key={g.title} title={g.title} note={g.note} api={g.title === "Status" ? "bg-success-bg text-success" : g.title === "Brand" ? "bg-slate text-slate-ink" : "bg-canvas text-ink-2"}>
@@ -557,7 +557,7 @@ function ColourSection() {
         </Sub>
       ))}
 
-      <Sub title="Slate ramp" note="Hue ≈ 212°. Exposed for illustration and data visualisation only — never for UI text or surfaces." api="bg-slate-50 … bg-slate-950">
+      <Sub title="Slate ramp" note="Hue ≈ 212°. Exposed for illustration and data visualisation only, never for UI text or surfaces." api="bg-slate-50 … bg-slate-950">
         <div className="grid overflow-hidden rounded-lg ring-1 ring-line md:grid-cols-11">
           {RAMP.map(([step, hex]) => (
             <div
@@ -617,7 +617,7 @@ function ColourSection() {
         <p className="t-small text-ink-3">In dark mode the primary button inverts to chalk on ink, so the slate pair is measured as it is actually drawn.</p>
       </Sub>
 
-      <Sub title="Signal — one accent, one role" note="If two things on a screen are orange, one of them is wrong.">
+      <Sub title="Signal, one accent, one role" note="If two things on a screen are orange, one of them is wrong.">
         <div className="grid gap-4 md:grid-cols-2">
           <Specimen label="Use signal for">
             <div className="flex flex-col gap-4">
@@ -650,8 +650,8 @@ function ColourSection() {
               </div>
               <div className="flex flex-col gap-2.5">
                 <Rule kind="dont">Headings, icons or borders for emphasis.</Rule>
-                <Rule kind="dont">Errors — that's danger. Signal is not a warning colour.</Rule>
-                <Rule kind="dont">Primary actions inside the portals — those are slate.</Rule>
+                <Rule kind="dont">Errors, that's danger. Signal is not a warning colour.</Rule>
+                <Rule kind="dont">Primary actions inside the portals, those are slate.</Rule>
               </div>
             </div>
           </Specimen>
@@ -673,7 +673,7 @@ const TYPE_STEPS: Array<{ cls: string; family: string; size: string; weight: str
   { cls: "t-h3", family: "Geist", size: "16px / 1.4", weight: "600", tracking: "−0.005em", use: "Panel and row titles", sample: "Slate Home · twice weekly" },
   { cls: "t-body", family: "Geist", size: "15px / 1.6", weight: "400", tracking: "0", use: "Running text", sample: "Collected at 07:42 by Aniekan from Ufok Environmental. Next collection is Thursday, 07:00–09:00." },
   { cls: "t-small", family: "Geist", size: "13px / 1.5", weight: "450", tracking: "0", use: "Metadata", sample: "14 Ewet Housing Estate · opposite the estate clinic, blue gate" },
-  { cls: "t-micro", family: "Geist", size: "12px / 1.35", weight: "500", tracking: "0.01em", use: "Labels, badges — the floor", sample: "Next charge · 1 Nov" },
+  { cls: "t-micro", family: "Geist", size: "12px / 1.35", weight: "500", tracking: "0.01em", use: "Labels, badges, the floor", sample: "Next charge · 1 Nov" },
   { cls: "t-mono", family: "Geist Mono", size: "13px", weight: "500", tracking: "0", use: "References read out to support", sample: "PU-26-08813   TXN-7Q4K2M   CT-UYO-014" },
 ];
 
@@ -683,7 +683,7 @@ function TypeSection() {
       id="type"
       n="04"
       title="Typography"
-      lede="Bricolage Grotesque's ink traps and slightly hand-cut shapes read like chalk signage on a slate board — characterful without being cute. Geist is the calm workhorse with honest tabular figures. Mono is only for things a person might read out on the phone."
+      lede="Bricolage Grotesque's ink traps and slightly hand-cut shapes read like chalk signage on a slate board, characterful without being cute. Geist is the calm workhorse with honest tabular figures. Mono is only for things a person might read out on the phone."
     >
       <div className="grid gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-3">
         {[
@@ -697,7 +697,7 @@ function TypeSection() {
               <p className="t-h3 text-ink">{x.name}</p>
               <p className="t-small text-ink-2">{x.role}</p>
             </div>
-            <p className={cn(x.f, "break-all text-[14px] leading-relaxed text-ink-2")}>ABCDEFGHIJKLM NOPQRSTUVWXYZ abcdefghijklm nopqrstuvwxyz 0123456789 ₦ · — ‘’</p>
+            <p className={cn(x.f, "break-all text-[14px] leading-relaxed text-ink-2")}>ABCDEFGHIJKLM NOPQRSTUVWXYZ abcdefghijklm nopqrstuvwxyz 0123456789 ₦ ·, ‘’</p>
           </div>
         ))}
       </div>
@@ -723,7 +723,7 @@ function TypeSection() {
         <div className="grid gap-4 sm:grid-cols-2">
           {[
             { label: "Proportional", cls: "" },
-            { label: "Tabular — .tnum", cls: "tnum" },
+            { label: "Tabular, .tnum", cls: "tnum" },
           ].map((c) => (
             <Specimen key={c.label} label={c.label}>
               <ul className={cn("flex flex-col items-end gap-1 font-display text-[26px] font-bold leading-tight text-ink", c.cls)}>
@@ -786,7 +786,7 @@ function SpaceSection() {
                 <p className="t-small font-medium text-ink">Operator</p>
                 <p className="t-body text-ink-2">Ufok Environmental · KTU 482 XA</p>
               </div>
-              <Gap px={56} label="56 — one rest" />
+              <Gap px={56} label="56, one rest" />
               <Button block>Track pickup</Button>
             </div>
           </Specimen>
@@ -809,7 +809,7 @@ function SpaceSection() {
         </div>
       </Sub>
 
-      <Sub title="Radius — cut stone" note="Four radii. Badges are squared chips at 6px, never pills.">
+      <Sub title="Radius, cut stone" note="Four radii. Badges are squared chips at 6px, never pills.">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {[
             { r: 6, cls: "rounded-sm", use: "Controls, badges, chips", token: "rounded-sm" },
@@ -918,7 +918,7 @@ function IconSection() {
           ["Library", "lucide-react"],
           ["Stroke", "1.75px"],
           ["Size", "18px inline · 20px in buttons and nav"],
-          ["Colour", "currentColor — inherits ink, ink-2 or ink-3"],
+          ["Colour", "currentColor, inherits ink, ink-2 or ink-3"],
         ].map(([k, v]) => (
           <div key={k} className="border-t border-line pt-3">
             <p className="t-micro text-ink-3">{k}</p>
@@ -927,14 +927,14 @@ function IconSection() {
         ))}
       </div>
       <div className="grid gap-4 md:grid-cols-2">
-        <Specimen label="Do — glyphs only in settings-like lists">
+        <Specimen label="Do, glyphs only in settings-like lists">
           <List>
             <ListRow leading={<Glyph><CreditCard /></Glyph>} title="Payment methods" subtitle="Visa •• 4021, Verve •• 7735" chevron />
             <ListRow leading={<Glyph><Bell /></Glyph>} title="Notifications" subtitle="SMS, WhatsApp and app" chevron />
             <ListRow leading={<Glyph><ShieldCheck /></Glyph>} title="Security" subtitle="Two-factor on" chevron />
           </List>
         </Specimen>
-        <Specimen label="Don't — tinted icon chips as decoration">
+        <Specimen label="Don't, tinted icon chips as decoration">
           <div className="grid grid-cols-3 gap-3 opacity-80" aria-hidden>
             {[
               [Leaf, "bg-success-bg text-success"],
@@ -972,7 +972,7 @@ function RichnessSection() {
       id="richness"
       n="07"
       title="Richness"
-      lede="Our illustration is the material itself: layered slabs of slate, chalk lines and stylised Uyo street maps. Always drawn by one hand — the same band rhythm, the same slight tilt. Never blobs, never gradients."
+      lede="Our illustration is the material itself: layered slabs of slate, chalk lines and stylised Uyo street maps. Always drawn by one hand, the same band rhythm, the same slight tilt. Never blobs, never gradients."
     >
       <Sub title="Strata" note="3–5 bands in a 1 : 1.6 : 2.6 rhythm, tilted 3°, with one chalk line. A slim signal band appears only when something is live." api="<Strata tone bands live seed />">
         <div className="grid gap-4 md:grid-cols-3">
@@ -1000,7 +1000,7 @@ function RichnessSection() {
         <p className="t-small text-ink-3">Same hand, different stone: the seed changes the cleft edges, never the rhythm.</p>
       </Sub>
 
-      <Sub title="Chalk grain and chalk lines" note="Slate fields carry a 5.5% fractal-noise grain — material, not texture for its own sake. Chalk lines are 1.5px, dashed or hand-curved, chalk at 40–55%; the route line turns signal when live." api=".chalk-grain">
+      <Sub title="Chalk grain and chalk lines" note="Slate fields carry a 5.5% fractal-noise grain, material, not texture for its own sake. Chalk lines are 1.5px, dashed or hand-curved, chalk at 40–55%; the route line turns signal when live." api=".chalk-grain">
         <div className="grid gap-4 md:grid-cols-3">
           <div className="flex flex-col gap-2.5">
             <div className="flex aspect-[4/3] items-end rounded-lg bg-slate p-4">
@@ -1026,7 +1026,7 @@ function RichnessSection() {
         </div>
       </Sub>
 
-      <Sub title="Route map" note="Stylised Uyo streets — Aka Road, Oron Road, Ikot Ekpene Road, Abak Road. Drag to move the truck along the route." api="<RouteMap progress stops tone />">
+      <Sub title="Route map" note="Stylised Uyo streets, Aka Road, Oron Road, Ikot Ekpene Road, Abak Road. Drag to move the truck along the route." api="<RouteMap progress stops tone />">
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
           <div className="relative aspect-[16/11] overflow-hidden rounded-lg bg-slate chalk-grain">
             <RouteMap progress={progress} className="absolute inset-0 h-full w-full" />
@@ -1105,7 +1105,7 @@ function ComponentsSection() {
       id="components"
       n="08"
       title="Components"
-      lede="The kit every page is composed from — imported from @/components/ui. Every example here is live: type in the fields, sort the table, press the buttons."
+      lede="The kit every page is composed from, imported from @/components/ui. Every example here is live: type in the fields, sort the table, press the buttons."
     >
       <ButtonsDemo />
       <BadgesDemo />
@@ -1188,7 +1188,7 @@ function ButtonsDemo() {
           </div>
         </Specimen>
       </div>
-      <Specimen label="block — full width on phones, thumb zone" className="md:max-w-sm">
+      <Specimen label="block, full width on phones, thumb zone" className="md:max-w-sm">
         <div className="flex flex-col gap-2">
           <Button block size="lg">Confirm booking</Button>
           <Button block variant="ghost">Back</Button>
@@ -1200,7 +1200,7 @@ function ButtonsDemo() {
 
 function BadgesDemo() {
   return (
-    <Sub title="Badges and status" note="Squared 6px chips. StatusBadge maps every domain status in the platform to a tone — always with the word." api="<StatusBadge status />">
+    <Sub title="Badges and status" note="Squared 6px chips. StatusBadge maps every domain status in the platform to a tone, always with the word." api="<StatusBadge status />">
       <Specimen label="<Badge tone />">
         <div className="flex flex-wrap items-center gap-2.5">
           {TONES.map((t) => (
@@ -1297,7 +1297,7 @@ function FormsDemo() {
             </div>
           </div>
         </Specimen>
-        <Specimen label="<AddressInput />  — Uyo suggestions">
+        <Specimen label="<AddressInput /> , Uyo suggestions">
           <AddressInput value={address} onChange={setAddress} hint="Type “ewet” or “aka”." />
         </Specimen>
         <Specimen label="<FileDrop />  documents and photos">
@@ -1319,7 +1319,7 @@ function ChoiceDemo() {
   const [freq, setFreq] = useState<"weekly" | "twice" | "three">("twice");
   const [types, setTypes] = useState<string[]>(["General household", "PET plastic"]);
   return (
-    <Sub title="Choices" note="Checkbox, Switch, ChoiceCard, Segmented and ChipGroup — each for a different kind of decision." api="<ChoiceCard selected onSelect />">
+    <Sub title="Choices" note="Checkbox, Switch, ChoiceCard, Segmented and ChipGroup, each for a different kind of decision." api="<ChoiceCard selected onSelect />">
       <div className="grid gap-4 md:grid-cols-2">
         <Specimen label="<Checkbox />  <Switch />">
           <div className="flex flex-col gap-5">
@@ -1415,7 +1415,7 @@ function TableDemo() {
     { key: "status", header: "Status", cell: (r) => <StatusBadge status={r.status} />, sortValue: (r) => r.status },
   ];
   return (
-    <Sub title="Data table and filter bar" note="A table from 768px, stacked rows on phones — never sideways scroll for primary data. Filters move into a sheet on small screens." api="<DataTable rows columns />  <FilterBar />">
+    <Sub title="Data table and filter bar" note="A table from 768px, stacked rows on phones, never sideways scroll for primary data. Filters move into a sheet on small screens." api="<DataTable rows columns />  <FilterBar />">
       <FilterBar
         search={search}
         onSearch={setSearch}
@@ -1574,7 +1574,7 @@ function ChartsDemo() {
 
 function PeopleAndSurfacesDemo() {
   return (
-    <Sub title="People, surfaces and lists" note="Avatars use initials in slate tints — no stock faces. Panels are for objects; lists are hairlines." api="<Avatar />  <Panel />  <List />  <DescriptionList />">
+    <Sub title="People, surfaces and lists" note="Avatars use initials in slate tints, no stock faces. Panels are for objects; lists are hairlines." api="<Avatar />  <Panel />  <List />  <DescriptionList />">
       <div className="grid gap-4 md:grid-cols-2">
         <Specimen label="<Avatar size />  <AvatarStack />">
           <div className="flex flex-wrap items-end gap-3">
@@ -1869,7 +1869,7 @@ function StatesSection() {
       id="states"
       n="10"
       title="System states"
-      lede="Every major flow handles all thirteen. One component, StateView, with Slate's words for each — override the title and description where the context is specific."
+      lede="Every major flow handles all thirteen. One component, StateView, with Slate's words for each, override the title and description where the context is specific."
     >
       <div className="grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2 xl:grid-cols-3">
         {STATES.map((s) => (
@@ -1978,7 +1978,7 @@ function SignatureSection() {
           <DescriptionList
             columns={1}
             items={[
-              { label: "Trigger", value: "The pickup's status becomes Collected — the operator's photo and GPS check-in are accepted." },
+              { label: "Trigger", value: "The pickup's status becomes Collected, the operator's photo and GPS check-in are accepted." },
               { label: "Easing", value: <span className="t-mono">cubic-bezier(.2, .8, .2, 1)</span> },
               { label: "Haptic", value: <span><span className="t-mono">navigator.vibrate([10, 30, 14])</span> where supported, after a user gesture.</span> },
               { label: "Reduced motion", value: "A 160 ms crossfade. No sweep, no movement." },
@@ -2271,7 +2271,7 @@ function LayoutSection() {
         {[
           ["Tables collapse", "Into stacked rows on phones: title, subtitle, status, then a two-column detail grid. Never sideways scroll for primary data."],
           ["Thumb zone", "The primary action of a mobile screen sits in the bottom third. Sheet footers stack full width."],
-          ["Hiding buttons", "Use a variant like max-md:hidden — bare hidden loses to the button's own inline-flex."],
+          ["Hiding buttons", "Use a variant like max-md:hidden, bare hidden loses to the button's own inline-flex."],
         ].map(([t, d]) => (
           <div key={t} className="border-t border-line pt-4">
             <p className="t-h3 text-ink">{t}</p>

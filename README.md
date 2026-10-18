@@ -1,67 +1,80 @@
-# Slate — web platform (frontend)
+# Slate
 
-Slate is a managed waste-management service for Nigeria, starting in Uyo. It sources, verifies and contracts
-waste operators, then gives households, estates, businesses and institutions one reliable service:
-one company, one payment, one support channel, one service standard.
+Waste collection requests for homes and sites in Uyo. React, TypeScript and Vite on the frontend; a Node.js 24 HTTP API with PostgreSQL through `DATABASE_URL`, or local SQLite when that variable is absent.
 
-This repository is the **frontend only**: a mobile-first, responsive React app with every page of the product
-spec routed, using realistic demo data (no backend).
+The public site, service guide, account screens and shared calendars use Slate's slate-grey and orange design. Fonts are served locally under the included open-source licences.
 
-## Run it
+## Run locally
 
-```bash
-npm install
-npm run dev        # http://localhost:5173
-npm run build      # type-checks, then builds to dist/
-npm run preview    # serves the production build
+Requires Node.js 24 LTS and npm.
+
+```sh
+npm ci
+npm run dev
 ```
 
-Requires Node 20+. The app is a single-page app — deploy `dist/` with a fallback to `index.html`
-(`vercel.json` and `public/_redirects` for Netlify are included).
+Open http://localhost:5173. The dev command starts Vite and the API on port 3001, proxies `/api`, and stops both processes together. `npm run dev`, `npm run dev:api` and `npm start` load the ignored `.env` file. Copy [.env.example](.env.example) for local defaults, or use the configured Neon pooled `DATABASE_URL` to connect PostgreSQL. To use another local address, set `APP_ORIGIN`, for example `APP_ORIGIN=http://127.0.0.1:5173 npm run dev`.
 
-## Try the portals
+Create a household account at `/signup`. Real accounts use an expiring HttpOnly session cookie. They can request and cancel collections, revisit saved records, send support messages and view account activity. A collection request is awaiting review until staff confirms availability and price. This release does not charge money.
 
-Open `/login` and use **Demo access** to sign in as any role, or go straight to a portal URL:
+Development sign-in includes clearly marked sample portals for household, estate, business, institution, operator and admin experiences. Sample actions do not operate the API. These previews are disabled in production builds unless `VITE_ENABLE_DEMO=true` is explicitly set at build time. Real accounts cannot change roles by visiting a URL or modifying local storage.
 
-| Experience | Start at |
-|---|---|
-| Public website | `/` |
-| Design system (living style guide) | `/design-system` |
-| Household customer | `/app/dashboard` (onboarding: `/app/onboarding`) |
-| Estate / property manager | `/estate/dashboard` |
-| Business | `/business/dashboard` |
-| Institution | `/institution/dashboard` |
-| Waste operator | `/operator/dashboard` (application: `/operator/onboarding`) |
-| Slate admin / operations | `/admin/dashboard` |
+## Verification
 
-Inside any portal: **⌘K / Ctrl K** opens global search; the account menu switches portals and appearance (light/dark).
-
-The demo clock is **Monday 5 October 2026, 08:12 WAT**. The household's collection is on its way when you open
-`/app/dashboard` — wait a few seconds to see the signature "clean slate" interaction when it's collected.
-
-## Structure
-
-```
-DIRECTION.md               Design direction, tokens, signature interaction, implementation guide
-src/index.css              Design tokens (light + dark), type styles, motion
-src/components/ui/         Component kit (buttons, fields, overlays, tables, charts, states…)
-src/components/brand/      Logo (placeholder), Strata, RouteMap, ServiceAreaMap, CleanSlate
-src/components/layout/     Public, auth and portal shells, nav config, command palette, admin command bar
-src/data/                  Typed demo data shared by every portal
-src/pages/<area>/          Pages: public, auth, app (customer), estate, business, institution, operator, admin, system
-src/routes.tsx             Generated router — edit scripts/routes.py and run `python3 scripts/routes.py`
-scripts/shot.mjs           Screenshot + QA (console errors, overflow, tiny text) at phone and desktop widths
+```sh
+npm run typecheck
+npm test
+npm run build
+npm run test:calendar
+npm run test:production   # actual dist assets through an isolated local HTTPS gateway
+# With npm run dev running in another terminal:
+npm run test:browser
+npm run test:sessions
+npm run test:public
 ```
 
-## Replacing the logo
+Browser tests use existing Chrome at `/usr/bin/google-chrome`; set `CHROME` to another Chrome/Chromium executable if needed. For an alternate app address, set `BASE_URL`. The journey creates `example.test` accounts in the running development database; use a dedicated PostgreSQL test database or branch, or unset `DATABASE_URL` and choose a temporary `DATABASE_PATH` for SQLite. The registration limiter intentionally restricts repeated runs against one database. Session-ordering and public failure tests use mocked HTTP responses to make race conditions and retries deterministic; the main journey uses the real API.
 
-Everything renders the brand through `src/components/brand/Logo.tsx` (wordmark + slab mark) and
-`public/favicon.svg`. Swap those two files when the final logo is ready.
+For PostgreSQL integration tests, set `SLATE_TEST_DATABASE_URL` to a direct connection for an isolated test database with schema creation permissions, then run:
 
-## Design in one paragraph
+```sh
+node --env-file-if-exists=.env --test tests/server/postgres.test.ts
+```
 
-"Slate is a clean slate." Deep slate grey is the primary colour, light stone slate the secondary, and a single
-hi-vis signal orange marks what is live or needs you right now (the truck, the next pickup, the one CTA).
-Bricolage Grotesque for display, Geist for text, Geist Mono for references. Richness comes from layered
-"strata" slabs, chalk route lines and stylised Uyo maps — never green leaves, illustrated people or gradients.
-See `DIRECTION.md` for the full system.
+The tests create and remove randomly named schemas. Database-dependent cases skip when `SLATE_TEST_DATABASE_URL` is absent. See [the API documentation](server/README.md) for the optional TLS rejection test and database operating limits. A skipped case is not a passing database test.
+
+`npm test` checks HTTP/database behavior, all 159 declared route patterns, static internal destinations and the product copy rules. The calendar fixture checks keyboard interaction, limits, leap years, validation, focus, modals and responsive themes. These checks do not establish production readiness on their own.
+
+To capture every sample route on a local development server:
+
+```sh
+node scripts/shot.mjs --base http://localhost:5173 --all --preview --out shots/routes
+```
+
+## Release configuration
+
+```sh
+npm run build
+# Set APP_ORIGIN to your public HTTPS origin before starting.
+# Set DATABASE_URL to the Neon pooled PostgreSQL connection URL.
+# If using SQLite instead, DATABASE_PATH needs a persistent local volume.
+npm start
+```
+
+`npm start` loads `.env` if present, enforces production mode and serves `dist/` plus the API from one origin. Set the variables described in [.env.example](.env.example). Put the listener behind a TLS gateway and prevent direct public access. If a proxy is trusted to identify clients, configure its exact addresses in `TRUSTED_PROXY_IPS` and have it overwrite `X-Real-IP`. Arbitrary forwarded headers are never trusted.
+
+Use the Neon pooled `DATABASE_URL` for free staging on Render; a free Render web service cannot persist SQLite files. PostgreSQL startup applies the versioned schema and verifies TLS before accepting traffic. A Neon Free project and a Render project have been provisioned; the hosted web application and its release checks remain pending. See [the API documentation](server/README.md) for database configuration and [the production setup and release requirements](docs/production-readiness.md) for free-tier limits and remaining email, recovery, fulfillment and payment connections. No paid service or live payment is enabled.
+
+## Project map
+
+- `server/`: shared contracts, HTTP routes, persistence and [API documentation](server/README.md).
+- `src/pages/live/`: server-backed household screens.
+- `src/pages/public/`: service, coverage, pricing, proposal and contact pages.
+- `src/pages/<portal>/`: explicitly labelled sample experiences.
+- `src/components/ui/`: the shared component kit and accessible calendar.
+- `src/components/layout/`: public, authentication and protected portal shells.
+- `scripts/routes.py`: route manifest; regenerate with `python3 scripts/routes.py`.
+- `tests/`: API integration, browser journey, session ordering and calendar checks.
+- `public/fonts/`: unchanged Fontsource WOFF2 files and SIL Open Font licences.
+
+[DIRECTION.md](DIRECTION.md) describes the original demo's brand and history. Some historical verification claims in that document refer to earlier work; use the current checks and [release record](docs/production-readiness.md) for this implementation.

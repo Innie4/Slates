@@ -3,7 +3,7 @@
  * Screenshot + QA for Slate routes.
  *
  *   node scripts/shot.mjs --base http://localhost:5310 --out shots/r1 [--widths 390,1440] [--dark] [--full] /path /other ...
- *   node scripts/shot.mjs --base http://localhost:5310 --out shots/all --all     # every route in src/routes.tsx
+ *   node scripts/shot.mjs --base http://localhost:5310 --out shots/all --all --preview
  *
  * For each path × width: saves a PNG, and reports console errors, page errors,
  * horizontal overflow (no sideways scroll allowed), text under 12px, and
@@ -24,6 +24,7 @@ const out = opt("out", "shots/latest");
 const widths = opt("widths", "390,1440").split(",").map(Number);
 const dark = flag("dark");
 const full = flag("full");
+const preview = flag("preview");
 let paths = args.filter((a, i) => a.startsWith("/") && !args[i - 1]?.startsWith("--"));
 if (flag("all")) {
   const src = readFileSync(new URL("../src/routes.tsx", import.meta.url), "utf8");
@@ -45,7 +46,7 @@ if (flag("all")) {
     .replace("/admin/payments/x", "/admin/payments/pay-m1")
     .replace("/admin/cities/x", "/admin/cities/uyo")
     .replace("/admin/partnerships/x", "/admin/partnerships/pt-1")
-    .replace("/blog/x", "/blog/why-estates-switch-to-managed-waste"));
+    .replace("/blog/x", "/blog/prepare-for-collection"));
 }
 if (!paths.length) paths = ["/"];
 
@@ -62,9 +63,15 @@ for (const w of widths) {
     isMobile: w < 600,
     hasTouch: w < 600,
   });
-  await ctx.addInitScript((d) => {
-    try { localStorage.setItem("slate-theme", d ? "dark" : "light"); } catch {}
-  }, dark);
+  await ctx.addInitScript(({ dark, preview }) => {
+    try {
+      localStorage.setItem("slate-theme", dark ? "dark" : "light");
+      const roles = { app: "household", estate: "estate", business: "business", institution: "institution", operator: "operator", admin: "admin" };
+      const role = roles[location.pathname.split("/")[1]];
+      if (preview && role) localStorage.setItem("slate-preview-role", role);
+      else localStorage.removeItem("slate-preview-role");
+    } catch {}
+  }, { dark, preview });
   for (const p of paths) {
     const page = await ctx.newPage();
     const errors = [];

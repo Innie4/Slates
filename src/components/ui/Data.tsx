@@ -8,7 +8,7 @@ import { EmptyState } from "./Feedback";
 import { Modal } from "./Overlay";
 
 /* ------------------------------------------------------------------ */
-/* DataTable — table on ≥768px, stacked rows on phones                 */
+/* DataTable, table on ≥768px, stacked rows on phones                 */
 /* ------------------------------------------------------------------ */
 
 export interface Column<T> {
@@ -449,7 +449,7 @@ export function Stat({
   );
 }
 
-/** A row of stats separated by hairlines — not boxes. */
+/** A row of stats separated by hairlines, not boxes. */
 export function StatStrip({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div className={cn("grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-3 lg:grid-cols-4 [&>*]:bg-surface [&>*]:p-4 sm:[&>*]:p-5", className)}>

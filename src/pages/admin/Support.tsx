@@ -24,7 +24,7 @@ const PAUSED: Status[] = ["Pending", "Waiting"];
 const PRIORITY_TONE: Record<Ticket["priority"], Tone> = { Urgent: "danger", High: "warning", Normal: "neutral", Low: "outline" };
 const CHANNEL_ICON = { "In-app": Smartphone, Email: Mail, Phone: Phone, WhatsApp: MessageCircle } as const;
 
-/** Hours since opened, for tickets still being worked — keeps SLA clocks believable. */
+/** Hours since opened, for tickets still being worked, keeps SLA clocks believable. */
 const AGE: Record<string, number> = {
   "TCK-4408": 26, "TCK-4401": 11, "TCK-4413": 9.2, "TCK-4406": 31, "TCK-4420": 7.4, "TCK-4409": 3, "TCK-4416": 3.5, "TCK-4417": 5,
   "TCK-4402": 6.5, "TCK-4418": 1, "TCK-4422": 2, "TCK-4423": 40, "TCK-4405": 4.4, "TCK-4419": 4, "TCK-4404": 0.8, "TCK-4415": 52, "TCK-4414": 70,
@@ -34,7 +34,7 @@ type Thread = { first: string; reply: string; follow?: string; close?: string };
 const THREADS: Record<string, Thread> = {
   "How do I change my pickup day?": {
     first: "Our estate gate stays locked on Mondays until 9. Can we move collection to Tuesday?",
-    reply: "Yes. Tuesday collections in your area run 07:00–09:00. I can move you from next week — shall I go ahead?",
+    reply: "Yes. Tuesday collections in your area run 07:00–09:00. I can move you from next week, shall I go ahead?",
     follow: "I asked two days ago and still nobody has changed it. The bin was full again this morning.",
     close: "Done. From next Tuesday your collection is 07:00–09:00. You'll get the usual reminder the evening before.",
   },
@@ -64,7 +64,7 @@ const THREADS: Record<string, Thread> = {
   "Want to add a second bin": {
     first: "We need a second 240-litre bin. One isn't enough since we moved the shop downstairs.",
     reply: "A second bin is ₦2,000 a month and arrives with your next collection. Shall I add it?",
-    follow: "Yes please, but we need it before Friday — we have an event.",
+    follow: "Yes please, but we need it before Friday, we have an event.",
     close: "Added. The bin arrives Thursday with your collection and the ₦2,000 is pro-rated this month.",
   },
   "Payout for September not received": {
@@ -82,12 +82,12 @@ const THREADS: Record<string, Thread> = {
   "Route for Thursday has 14 stops too many": {
     first: "Thursday's route for AKS 588 KJ has 52 stops. We can do 38 before the window closes.",
     reply: "Thanks. I'm checking capacity with the other operators in that area and will confirm by 4pm.",
-    follow: "The route still shows 52 stops this morning. Thursday is close — we need an answer today.",
+    follow: "The route still shows 52 stops this morning. Thursday is close, we need an answer today.",
     close: "Moved 14 Shelter Afrique Block D stops to Nwaniba Clean Crew for Thursday. Your route is now 38 stops.",
   },
   "Customer address cannot be found": {
     first: "22 Udo Umana Street doesn't match any gate. Driver called the customer twice, no answer.",
-    reply: "I've reached the customer — it's the yellow gate behind the pharmacy. Pin updated in the app.",
+    reply: "I've reached the customer, it's the yellow gate behind the pharmacy. Pin updated in the app.",
     close: "Address corrected and the pickup is completed.",
   },
 };
@@ -105,7 +105,7 @@ function buildTicket(t: Ticket): SupportTicket {
   if (t.status !== "Open") msgs.push({ kind: "out", by: agent, at: at(span * 0.2), text: th.reply });
   if (t.status === "Escalated") {
     if (th.follow) msgs.push({ kind: "in", by: t.from, at: at(span * 0.6), text: th.follow });
-    msgs.push({ kind: "note", by: agent, at: at(span * 0.7), text: "Escalated to Idara — needs operations to act, not just a reply." });
+    msgs.push({ kind: "note", by: agent, at: at(span * 0.7), text: "Escalated to Idara, needs operations to act, not just a reply." });
   }
   if (t.status === "Resolved" || t.status === "Closed") {
     msgs.push({ kind: "note", by: agent, at: at(span * 0.4), text: "Checked and confirmed before replying." });
@@ -120,7 +120,7 @@ const TEMPLATES: Array<{ name: string; body: string }> = [
   { name: "Refund in progress", body: "Hi {first}, your refund is approved. Card refunds take 3–5 working days to show, depending on your bank." },
   { name: "Receipt sent", body: "Hi {first}, your receipt is in your email and under Payments → Receipts in the app." },
   { name: "Pause confirmed", body: "Hi {first}, your service is paused for the dates you asked. Your next charge moves by the same number of days." },
-  { name: "Closing — no reply", body: "Hi {first}, we haven't heard back so we'll close this for now. Reply here any time and it reopens." },
+  { name: "Closing, no reply", body: "Hi {first}, we haven't heard back so we'll close this for now. Reply here any time and it reopens." },
 ];
 
 type ListTab = "open" | "waiting" | "escalated" | "resolved";
@@ -509,7 +509,7 @@ function NewTicketModal({ open, onClose, onCreate, nextId }: { open: boolean; on
           fieldClassName="sm:col-span-2"
           value={from}
           onChange={(e) => setFrom(e.target.value)}
-          options={kind === "Customer" ? customers.map((c) => ({ value: c.name, label: `${c.name} — ${c.type}, ${c.area}` })).filter((o, i, a) => a.findIndex((x) => x.value === o.value) === i) : activeOperators.map((o) => o.short)}
+          options={kind === "Customer" ? customers.map((c) => ({ value: c.name, label: `${c.name}, ${c.type}, ${c.area}` })).filter((o, i, a) => a.findIndex((x) => x.value === o.value) === i) : activeOperators.map((o) => o.short)}
           error={errors.from}
         />
         <Input label="Subject" fieldClassName="sm:col-span-2" value={subject} onChange={(e) => setSubject(e.target.value)} error={errors.subject} placeholder="Wants collection moved to Saturdays" />
@@ -517,7 +517,7 @@ function NewTicketModal({ open, onClose, onCreate, nextId }: { open: boolean; on
         <Select
           label="Priority"
           value={priority}
-          options={(["Urgent", "High", "Normal", "Low"] as const).map((p) => ({ value: p, label: `${p} — ${SLA_BY_PRIORITY[p]}h SLA` }))}
+          options={(["Urgent", "High", "Normal", "Low"] as const).map((p) => ({ value: p, label: `${p}, ${SLA_BY_PRIORITY[p]}h SLA` }))}
           onChange={(e) => setPriority(e.target.value as Ticket["priority"])}
         />
         <Select label="Assign to" value={assignee} options={["Unassigned", ...SUPPORT_AGENTS]} onChange={(e) => setAssignee(e.target.value)} />

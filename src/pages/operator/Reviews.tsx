@@ -8,7 +8,7 @@ import { OP_REVIEWS, RATING_SUMMARY, type OpReview } from "./_bizData";
 
 const FILTERS = ["All", "5 stars", "4 stars", "3 stars", "2 stars", "1 star"];
 
-/** G17 — ratings and reviews from Slate customers after collections. */
+/** G17, ratings and reviews from Slate customers after collections. */
 export default function Reviews() {
   const toast = useToast();
   const [filter, setFilter] = useState("All");
@@ -140,7 +140,7 @@ export default function Reviews() {
   );
 }
 
-/** Columns scaled 4.0–5.0, value and count printed — no hover needed. */
+/** Columns scaled 4.0–5.0, value and count printed, no hover needed. */
 function MonthlyChart() {
   const s = RATING_SUMMARY;
   const last = s.monthly.length - 1;

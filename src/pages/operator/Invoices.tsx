@@ -13,7 +13,7 @@ type TabKey = "All" | OpInvoiceStatus;
 const TABS: TabKey[] = ["All", "Draft", "Submitted", "Approved", "Paid", "Rejected"];
 const NOW = DEMO_NOW.toISOString();
 
-/** G14 — invoices from Ufok to Slate for work outside the monthly statement. */
+/** G14, invoices from Ufok to Slate for work outside the monthly statement. */
 export default function Invoices() {
   const toast = useToast();
   const download = useDownload();

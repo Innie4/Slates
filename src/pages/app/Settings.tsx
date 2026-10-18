@@ -235,7 +235,7 @@ export default function Settings() {
                     toast.success(v ? "Automatic timing on" : "Automatic timing off");
                   }}
                   label="Automatic timing"
-                  description="If a charge fails, retry on the days your past charges succeeded — up to 3 days later, never earlier."
+                  description="If a charge fails, retry on the days your past charges succeeded, up to 3 days later, never earlier."
                 />
               </div>
               <div className="flex flex-col gap-1 rounded-md bg-sunken px-4 py-3.5">

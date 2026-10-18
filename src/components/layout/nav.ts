@@ -81,6 +81,30 @@ export const customerNav: PortalConfig = {
   ],
 };
 
+export const liveCustomerNav: PortalConfig = {
+  key: "app", base: "/app",
+  primaryAction: { label: "Request collection", to: "/app/book" },
+  groups: [
+    { items: [
+      { label: "Home", to: "/app/dashboard", icon: Home },
+      { label: "Collection requests", to: "/app/pickups", icon: Truck },
+      { label: "Services", to: "/app/services", icon: Layers },
+    ] },
+    { label: "Your account", items: [
+      { label: "Support", to: "/app/support", icon: LifeBuoy },
+      { label: "Activity", to: "/app/notifications", icon: Bell },
+      { label: "Billing", to: "/app/payments", icon: CreditCard },
+      { label: "Profile and settings", to: "/app/profile", icon: User },
+    ] },
+  ],
+  tabs: [
+    { label: "Home", to: "/app/dashboard", icon: Home },
+    { label: "Requests", to: "/app/pickups", icon: Truck },
+    { label: "Services", to: "/app/services", icon: Layers },
+    { label: "Support", to: "/app/support", icon: LifeBuoy },
+  ],
+};
+
 export const estateNav: PortalConfig = {
   key: "estate",
   label: "Estate",
@@ -336,4 +360,3 @@ export const adminNav: PortalConfig = {
 };
 
 export const PORTALS = { app: customerNav, estate: estateNav, business: businessNav, institution: institutionNav, operator: operatorNav, admin: adminNav };
-

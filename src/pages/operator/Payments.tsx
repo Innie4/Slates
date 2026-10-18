@@ -24,7 +24,7 @@ interface PayoutRow {
 
 const BANKS = ["Access Bank", "First Bank", "Guaranty Trust Bank", "Fidelity Bank", "Polaris Bank", "United Bank for Africa", "Union Bank", "Wema Bank", "Zenith Bank"];
 
-/** G13 — what Slate pays Ufok, and why. Leads with the next money in. */
+/** G13, what Slate pays Ufok, and why. Leads with the next money in. */
 export default function Payments() {
   const toast = useToast();
   const download = useDownload();
@@ -57,8 +57,8 @@ export default function Payments() {
     { key: "id", header: "Statement", cell: (r) => <span className="t-mono text-ink-2">{r.id}</span> },
     { key: "jobs", header: "Collections", align: "right", cell: (r) => <span className="tnum">{formatNumber(r.jobs)}</span>, sortValue: (r) => r.jobs },
     { key: "gross", header: "Gross", align: "right", cell: (r) => <span className="t-mono">{formatNaira(r.gross)}</span>, sortValue: (r) => r.gross },
-    { key: "ded", header: "Deductions", align: "right", cell: (r) => <span className={cn("t-mono", r.deductions ? "text-danger" : "text-ink-3")}>{r.deductions ? `−${formatNaira(r.deductions)}` : "—"}</span>, sortValue: (r) => r.deductions },
-    { key: "adj", header: "Adjustments", align: "right", cell: (r) => <span className={cn("t-mono", r.adjustments ? "text-ink" : "text-ink-3")}>{r.adjustments ? `+${formatNaira(r.adjustments)}` : "—"}</span> },
+    { key: "ded", header: "Deductions", align: "right", cell: (r) => <span className={cn("t-mono", r.deductions ? "text-danger" : "text-ink-3")}>{r.deductions ? `−${formatNaira(r.deductions)}` : "Not set"}</span>, sortValue: (r) => r.deductions },
+    { key: "adj", header: "Adjustments", align: "right", cell: (r) => <span className={cn("t-mono", r.adjustments ? "text-ink" : "text-ink-3")}>{r.adjustments ? `+${formatNaira(r.adjustments)}` : "Not set"}</span> },
     { key: "net", header: "Net", align: "right", cell: (r) => <span className="t-mono font-semibold text-ink">{formatNaira(r.net)}</span>, sortValue: (r) => r.net },
     { key: "date", header: "Paid on", cell: (r) => <span className="tnum text-ink-2">{r.status === "Paid" ? formatDate(r.date) : `Due ${formatDay(r.date)}`}</span> },
     { key: "status", header: "Status", cell: (r) => <StatusBadge status={r.status} /> },
@@ -106,7 +106,7 @@ export default function Payments() {
       />
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-10">
-        {/* Statement — an object, so a Panel */}
+        {/* Statement, an object, so a Panel */}
         <Panel
           title="September 2026 statement"
           description={`${SEPT_STATEMENT.id} · approved ${formatDateTime(SEPT_STATEMENT.approved)} by Slate finance`}

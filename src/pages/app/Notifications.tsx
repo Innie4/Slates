@@ -24,7 +24,7 @@ const EMPTY: Record<Cat, string> = {
   Payments: "Charges, receipts and card problems appear here.",
   Service: "Complaint updates, route changes and plan changes appear here.",
   Community: "Updates from projects in your estate appear here.",
-  Promotions: "Slate rarely sends offers. When it does, they're here — and you can turn them off in Settings.",
+  Promotions: "Slate rarely sends offers. When it does, they're here, and you can turn them off in Settings.",
   Support: "Replies to your support tickets appear here.",
 };
 
@@ -38,7 +38,7 @@ function groupOf(iso: string) {
   return "Earlier";
 }
 
-/** C28 — notification inbox. */
+/** C28, notification inbox. */
 export default function Notifications() {
   const toast = useToast();
   const [cat, setCat] = useState<Cat | "All">("All");

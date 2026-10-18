@@ -1,5 +1,5 @@
 /**
- * Slate demo data — a believable Uyo world shared by every portal.
+ * Slate demo data, a believable Uyo world shared by every portal.
  * Deterministic: the same seed always produces the same records.
  * The demo clock is Monday 5 October 2026, 08:12 WAT (see DEMO_NOW).
  */
@@ -54,7 +54,7 @@ export const operators: Operator[] = [
   { id: "op-mkpok", name: "Mkpok Environmental", short: "Mkpok Environmental", focus: "Residential", city: "Uyo", areas: ["Use Offot", "Abak Road"], wasteTypes: ["General household", "Recyclables"], vehicles: 2, staff: 9, capacity: 600, assigned: 0, status: "More information required", score: 0, completion: 0, missed30d: 0, complaints30d: 0, rating: 0, responseMins: 0, contact: "Abasiama Eyo", phone: "+234 909 115 3360", email: "mkpokenv@yahoo.com", joined: "2026-09-28", docsExpiring: 0, payoutMonthly: 0, rc: "BN 3402157" },
   { id: "op-portside", name: "Portside Waste Partners", short: "Portside", focus: "Commercial", city: "Port Harcourt", areas: ["GRA Phase 2", "Trans-Amadi"], wasteTypes: ["Commercial general", "Industrial"], vehicles: 11, staff: 54, capacity: 900, assigned: 0, status: "Submitted", score: 0, completion: 0, missed30d: 0, complaints30d: 0, rating: 0, responseMins: 0, contact: "Ngozi Okafor", phone: "+234 805 330 7719", email: "bd@portsidewaste.com", joined: "2026-10-02", docsExpiring: 0, payoutMonthly: 0, rc: "RC 822914" },
   { id: "op-obio", name: "Obio Sanitation Services", short: "Obio Sanitation", focus: "Residential", city: "Uyo", areas: ["Ikot Ekpene Road"], wasteTypes: ["General household"], vehicles: 2, staff: 8, capacity: 300, assigned: 0, status: "Suspended", score: 58, completion: 79.4, missed30d: 23, complaints30d: 17, rating: 3.1, responseMins: 210, contact: "Ubong Ntuk", phone: "+234 807 551 9023", email: "obiosanitation@gmail.com", joined: "2026-03-30", docsExpiring: 3, payoutMonthly: 0, rc: "BN 2981104" },
-  { id: "op-ekim", name: "Ekim Collections", short: "Ekim Collections", focus: "Residential", city: "Uyo", areas: ["Osongama Estate"], wasteTypes: ["General household"], vehicles: 1, staff: 4, capacity: 120, assigned: 0, status: "Rejected", score: 0, completion: 0, missed30d: 0, complaints30d: 0, rating: 0, responseMins: 0, contact: "Etimbuk Edet", phone: "+234 810 448 2290", email: "ekimcollect@gmail.com", joined: "2026-08-14", docsExpiring: 0, payoutMonthly: 0, rc: "—" },
+  { id: "op-ekim", name: "Ekim Collections", short: "Ekim Collections", focus: "Residential", city: "Uyo", areas: ["Osongama Estate"], wasteTypes: ["General household"], vehicles: 1, staff: 4, capacity: 120, assigned: 0, status: "Rejected", score: 0, completion: 0, missed30d: 0, complaints30d: 0, rating: 0, responseMins: 0, contact: "Etimbuk Edet", phone: "+234 810 448 2290", email: "ekimcollect@gmail.com", joined: "2026-08-14", docsExpiring: 0, payoutMonthly: 0, rc: "Not set" },
 ];
 export const activeOperators = operators.filter((o) => o.status === "Active");
 export const operatorById = (id: string) => operators.find((o) => o.id === id);
@@ -131,7 +131,7 @@ export const myPickups: Pickup[] = [
   { id: "PU-26-08377", customerId: "cus-0001", customerName: me.household.name, customerType: "Household", address: me.household.address, area: "Ewet Housing Estate", service: "Slate Home", operatorId: "op-ufok", operatorName: "Ufok Environmental", date: day(-14, 7), window: "07:00–09:00", status: "Completed", completedAt: day(-14, 8, 6), driver: "Emmanuel Udo", vehicle: "AKS 214 XA", bins: 1 },
   { id: "PU-26-08301", customerId: "cus-0001", customerName: me.household.name, customerType: "Household", address: me.household.address, area: "Ewet Housing Estate", service: "Slate Home", operatorId: "op-ufok", operatorName: "Ufok Environmental", date: day(-18, 7), window: "07:00–09:00", status: "Completed", completedAt: day(-18, 7, 31), driver: "Emmanuel Udo", vehicle: "AKS 214 XA", bins: 2 },
   { id: "PU-26-08244", customerId: "cus-0001", customerName: me.household.name, customerType: "Household", address: me.household.address, area: "Ewet Housing Estate", service: "Recycling Pickup", operatorId: "op-ufok", operatorName: "Ufok Environmental", date: day(-13, 14), window: "14:00–16:00", status: "Completed", completedAt: day(-13, 15, 2), driver: "Samuel Akpan", vehicle: "UYO 903 BG" },
-  { id: "PU-26-08150", customerId: "cus-0001", customerName: me.household.name, customerType: "Household", address: me.household.address, area: "Ewet Housing Estate", service: "Slate Home", operatorId: "op-ufok", operatorName: "Ufok Environmental", date: day(-4, 7), window: "07:00–09:00", status: "Cancelled", driver: "Emmanuel Udo", vehicle: "AKS 214 XA", note: "Public holiday — Independence Day" },
+  { id: "PU-26-08150", customerId: "cus-0001", customerName: me.household.name, customerType: "Household", address: me.household.address, area: "Ewet Housing Estate", service: "Slate Home", operatorId: "op-ufok", operatorName: "Ufok Environmental", date: day(-4, 7), window: "07:00–09:00", status: "Cancelled", driver: "Emmanuel Udo", vehicle: "AKS 214 XA", note: "Public holiday, Independence Day" },
 ];
 
 const STATUS_TODAY: PickupStatus[] = ["Completed", "Completed", "Completed", "Completed", "Completed", "In progress", "En route", "Scheduled", "Scheduled", "Scheduled", "Late", "Missed", "Failed"];
@@ -160,13 +160,13 @@ export const pickupById = (id: string) => pickups.find((p) => p.id === id);
 
 /* ---------- payments ---------- */
 export const myPayments: Payment[] = [
-  { id: "pay-m1", reference: "TXN-7Q4K2M", customerName: me.household.name, customerType: "Household", service: "Slate Home — October", amount: 7000, fee: 105, operatorAllocation: 5500, slateRevenue: 1395, date: day(-4, 6, 2), method: "Visa •• 4021", processor: "Paystack", status: "Successful", attempts: 1 },
-  { id: "pay-m2", reference: "TXN-6HZ8RV", customerName: me.household.name, customerType: "Household", service: "Ewet borehole repair — contribution", amount: 2500, fee: 38, operatorAllocation: 0, slateRevenue: 0, date: day(-9, 19, 44), method: "Visa •• 4021", processor: "Paystack", status: "Successful", attempts: 1 },
-  { id: "pay-m3", reference: "TXN-5MN3XD", customerName: me.household.name, customerType: "Household", service: "Bulk Waste Pickup — deposit", amount: 9000, fee: 135, operatorAllocation: 7200, slateRevenue: 1665, date: day(-1, 21, 10), method: "Visa •• 4021", processor: "Paystack", status: "Pending", attempts: 1 },
-  { id: "pay-m4", reference: "TXN-4C9TBA", customerName: me.household.name, customerType: "Household", service: "Slate Home — September", amount: 7000, fee: 105, operatorAllocation: 5500, slateRevenue: 1395, date: day(-34, 6, 1), method: "Verve •• 7735", processor: "Paystack", status: "Failed", attempts: 3 },
-  { id: "pay-m5", reference: "TXN-4C9TBB", customerName: me.household.name, customerType: "Household", service: "Slate Home — September", amount: 7000, fee: 105, operatorAllocation: 5500, slateRevenue: 1395, date: day(-33, 12, 30), method: "Visa •• 4021", processor: "Paystack", status: "Successful", attempts: 1 },
-  { id: "pay-m6", reference: "TXN-3PQ7LE", customerName: me.household.name, customerType: "Household", service: "Slate Home — August", amount: 7000, fee: 105, operatorAllocation: 5500, slateRevenue: 1395, date: day(-65, 6, 3), method: "Visa •• 4021", processor: "Paystack", status: "Successful", attempts: 1 },
-  { id: "pay-m7", reference: "TXN-2WD5KA", customerName: me.household.name, customerType: "Household", service: "Extra pickup — 22 Aug", amount: 3500, fee: 53, operatorAllocation: 2800, slateRevenue: 647, date: day(-44, 15, 18), method: "Visa •• 4021", processor: "Paystack", status: "Refunded", attempts: 1 },
+  { id: "pay-m1", reference: "TXN-7Q4K2M", customerName: me.household.name, customerType: "Household", service: "Slate Home, October", amount: 7000, fee: 105, operatorAllocation: 5500, slateRevenue: 1395, date: day(-4, 6, 2), method: "Visa •• 4021", processor: "Paystack", status: "Successful", attempts: 1 },
+  { id: "pay-m2", reference: "TXN-6HZ8RV", customerName: me.household.name, customerType: "Household", service: "Ewet borehole repair, contribution", amount: 2500, fee: 38, operatorAllocation: 0, slateRevenue: 0, date: day(-9, 19, 44), method: "Visa •• 4021", processor: "Paystack", status: "Successful", attempts: 1 },
+  { id: "pay-m3", reference: "TXN-5MN3XD", customerName: me.household.name, customerType: "Household", service: "Bulk Waste Pickup, deposit", amount: 9000, fee: 135, operatorAllocation: 7200, slateRevenue: 1665, date: day(-1, 21, 10), method: "Visa •• 4021", processor: "Paystack", status: "Pending", attempts: 1 },
+  { id: "pay-m4", reference: "TXN-4C9TBA", customerName: me.household.name, customerType: "Household", service: "Slate Home, September", amount: 7000, fee: 105, operatorAllocation: 5500, slateRevenue: 1395, date: day(-34, 6, 1), method: "Verve •• 7735", processor: "Paystack", status: "Failed", attempts: 3 },
+  { id: "pay-m5", reference: "TXN-4C9TBB", customerName: me.household.name, customerType: "Household", service: "Slate Home, September", amount: 7000, fee: 105, operatorAllocation: 5500, slateRevenue: 1395, date: day(-33, 12, 30), method: "Visa •• 4021", processor: "Paystack", status: "Successful", attempts: 1 },
+  { id: "pay-m6", reference: "TXN-3PQ7LE", customerName: me.household.name, customerType: "Household", service: "Slate Home, August", amount: 7000, fee: 105, operatorAllocation: 5500, slateRevenue: 1395, date: day(-65, 6, 3), method: "Visa •• 4021", processor: "Paystack", status: "Successful", attempts: 1 },
+  { id: "pay-m7", reference: "TXN-2WD5KA", customerName: me.household.name, customerType: "Household", service: "Extra pickup, 22 Aug", amount: 3500, fee: 53, operatorAllocation: 2800, slateRevenue: 647, date: day(-44, 15, 18), method: "Visa •• 4021", processor: "Paystack", status: "Refunded", attempts: 1 },
 ];
 
 export const payments: Payment[] = [
@@ -180,7 +180,7 @@ export const payments: Payment[] = [
       id: `pay-${i}`,
       reference: `TXN-${code(6)}`,
       customerName: c.name, customerType: c.type,
-      service: `${c.plan} — ${pick(["October", "October", "September"])}`,
+      service: `${c.plan}, ${pick(["October", "October", "September"])}`,
       amount, fee, operatorAllocation: opAlloc, slateRevenue: amount - opAlloc - fee,
       date: day(-between(0, 30), between(5, 22), between(0, 59)),
       method: `${pick(["Visa", "Mastercard", "Verve", "Bank transfer"])} •• ${between(1000, 9999)}`,
@@ -359,9 +359,9 @@ export const adminAlerts = {
 export const documents: DocumentItem[] = [
   { id: "doc-1", name: "CAC certificate", owner: "Ufok Environmental", category: "Operator documents", uploaded: "2026-02-20", status: "Verified", version: 1, size: "412 KB" },
   { id: "doc-2", name: "AKSEPA waste-handling permit", owner: "Ufok Environmental", category: "Compliance documents", uploaded: "2026-02-20", expires: "2026-10-31", status: "Expiring", version: 2, size: "1.2 MB" },
-  { id: "doc-3", name: "Fleet insurance — 9 vehicles", owner: "Ufok Environmental", category: "Operator documents", uploaded: "2026-03-01", expires: "2027-02-28", status: "Verified", version: 1, size: "2.4 MB" },
+  { id: "doc-3", name: "Fleet insurance, 9 vehicles", owner: "Ufok Environmental", category: "Operator documents", uploaded: "2026-03-01", expires: "2027-02-28", status: "Verified", version: 1, size: "2.4 MB" },
   { id: "doc-4", name: "Waste Service Partner Agreement v3", owner: "CT-UYO-011", category: "Contracts", uploaded: "2026-09-02", status: "Verified", version: 3, size: "880 KB" },
-  { id: "doc-5", name: "Disposal site agreement — Uyo dumpsite", owner: "Ibom Hauliers", category: "Compliance documents", uploaded: "2026-04-03", expires: "2026-10-12", status: "Expiring", version: 1, size: "640 KB" },
+  { id: "doc-5", name: "Disposal site agreement, Uyo dumpsite", owner: "Ibom Hauliers", category: "Compliance documents", uploaded: "2026-04-03", expires: "2026-10-12", status: "Expiring", version: 1, size: "640 KB" },
   { id: "doc-6", name: "Driver licences (5)", owner: "Ibom Hauliers", category: "Operator documents", uploaded: "2026-04-03", expires: "2026-09-30", status: "Expired", version: 1, size: "3.1 MB" },
   { id: "doc-7", name: "Tax clearance certificate 2026", owner: "Atlantic Coast", category: "Financial documents", uploaded: "2026-03-18", expires: "2026-12-31", status: "Verified", version: 1, size: "220 KB" },
   { id: "doc-8", name: "Estate service agreement", owner: "Shelter Afrique Estate", category: "Customer documents", uploaded: "2026-05-02", status: "Verified", version: 2, size: "530 KB" },
@@ -376,12 +376,12 @@ export const auditLog: AuditEntry[] = [
   { id: "a1", user: "Idara Umoh", role: "Operations Admin", action: "Reassigned pickup", entity: "PU-26-08519", previous: "Operator: Ufok Environmental", next: "Operator: Nwaniba Clean Crew", time: day(-5, 9, 2), ip: "102.89.34.11" },
   { id: "a2", user: "Aniekan Etim", role: "Super Admin", action: "Approved operator", entity: "Nwaniba Clean Crew", previous: "Under review", next: "Approved", time: day(-12, 15, 30), ip: "102.89.34.20" },
   { id: "a3", user: "Ekaette Archibong", role: "Finance Admin", action: "Issued refund", entity: "TXN-2WD5KA", previous: "Successful", next: "Refunded (₦3,500)", time: day(-44, 16, 2), ip: "105.112.7.88" },
-  { id: "a4", user: "Itoro Effiong", role: "Partnership Manager", action: "Changed contract", entity: "CT-UYO-011", previous: "v2 — payout ₦5,400", next: "v3 — payout ₦5,500", time: day(-33, 11, 12), ip: "102.89.34.11" },
+  { id: "a4", user: "Itoro Effiong", role: "Partnership Manager", action: "Changed contract", entity: "CT-UYO-011", previous: "v2, payout ₦5,400", next: "v3, payout ₦5,500", time: day(-33, 11, 12), ip: "102.89.34.11" },
   { id: "a5", user: "Aniekan Etim", role: "Super Admin", action: "Suspended operator", entity: "Obio Sanitation", previous: "Active", next: "Suspended", time: day(-21, 18, 44), ip: "102.89.34.20" },
   { id: "a6", user: "Utibe Ekanem", role: "Customer Support", action: "Status change", entity: "CMP-1183", previous: "Investigating", next: "Resolved", time: day(-5, 12, 6), ip: "197.210.55.4" },
   { id: "a7", user: "Ekaette Archibong", role: "Finance Admin", action: "Payout", entity: "PO-02601", previous: "Pending", next: "Paid (₦6,412,000)", time: day(-28, 10, 0), ip: "105.112.7.88" },
-  { id: "a8", user: "Idara Umoh", role: "Operations Admin", action: "Login", entity: "admin.slate.ng", previous: "—", next: "Session started (Chrome, macOS)", time: day(0, 7, 58), ip: "102.89.34.11" },
-  { id: "a9", user: "Mbuotidem Udoh", role: "Compliance Admin", action: "Rejected document", entity: "Mkpok Environmental — BN registration", previous: "Pending", next: "Rejected (illegible scan)", time: day(-6, 14, 18), ip: "102.89.40.2" },
+  { id: "a8", user: "Idara Umoh", role: "Operations Admin", action: "Login", entity: "admin.slate.ng", previous: "Not set", next: "Session started (Chrome, macOS)", time: day(0, 7, 58), ip: "102.89.34.11" },
+  { id: "a9", user: "Mbuotidem Udoh", role: "Compliance Admin", action: "Rejected document", entity: "Mkpok Environmental, BN registration", previous: "Pending", next: "Rejected (illegible scan)", time: day(-6, 14, 18), ip: "102.89.40.2" },
   { id: "a10", user: "Idara Umoh", role: "Operations Admin", action: "Suspended customer", entity: "cus-0031", previous: "Active", next: "Suspended (3 failed payments)", time: day(-2, 9, 41), ip: "102.89.34.11" },
   { id: "a11", user: "Ekaette Archibong", role: "Finance Admin", action: "Payment", entity: "TXN-4C9TBB", previous: "Failed ×3", next: "Successful (manual retry)", time: day(-33, 12, 30), ip: "105.112.7.88" },
 ];
@@ -390,10 +390,10 @@ export const vehicles: Vehicle[] = [
   { id: "v1", registration: "AKS 214 XA", type: "7-tonne compactor", capacity: "14 m³", status: "Active", driver: "Emmanuel Udo", docStatus: "Verified", inspection: "2026-08-14" },
   { id: "v2", registration: "AKS 588 KJ", type: "7-tonne compactor", capacity: "14 m³", status: "Active", driver: "Godwin Etuk", docStatus: "Expiring", inspection: "2026-04-19" },
   { id: "v3", registration: "UYO 903 BG", type: "Tipper truck", capacity: "10 m³", status: "Active", driver: "Samuel Akpan", docStatus: "Verified", inspection: "2026-07-02" },
-  { id: "v4", registration: "AKS 117 HT", type: "Skip loader", capacity: "8 m³", status: "In maintenance", driver: "—", docStatus: "Verified", inspection: "2026-06-21" },
+  { id: "v4", registration: "AKS 117 HT", type: "Skip loader", capacity: "8 m³", status: "In maintenance", driver: "Not set", docStatus: "Verified", inspection: "2026-06-21" },
   { id: "v5", registration: "AKS 330 FG", type: "Pickup (bulk)", capacity: "3 m³", status: "Active", driver: "Okon Essien", docStatus: "Verified", inspection: "2026-09-08" },
   { id: "v6", registration: "AKS 902 QE", type: "7-tonne compactor", capacity: "14 m³", status: "Active", driver: "Daniel Inyang", docStatus: "Verified", inspection: "2026-09-22" },
-  { id: "v7", registration: "AKS 415 BD", type: "Tipper truck", capacity: "10 m³", status: "Inactive", driver: "—", docStatus: "Expired", inspection: "2025-12-11" },
+  { id: "v7", registration: "AKS 415 BD", type: "Tipper truck", capacity: "10 m³", status: "Inactive", driver: "Not set", docStatus: "Expired", inspection: "2025-12-11" },
 ];
 
 export const drivers: Driver[] = [
@@ -402,7 +402,7 @@ export const drivers: Driver[] = [
   { id: "d3", name: "Samuel Akpan", phone: "+234 703 558 3311", vehicle: "UYO 903 BG", verification: "Verified", status: "On shift", jobsToday: 21, rating: 4.6 },
   { id: "d4", name: "Okon Essien", phone: "+234 909 220 6643", vehicle: "AKS 330 FG", verification: "Pending", status: "Off shift", jobsToday: 0, rating: 4.2 },
   { id: "d5", name: "Daniel Inyang", phone: "+234 816 903 1185", vehicle: "AKS 902 QE", verification: "Verified", status: "On shift", jobsToday: 29, rating: 4.7 },
-  { id: "d6", name: "Moses Ekpo", phone: "+234 802 774 5540", vehicle: "—", verification: "Expired", status: "Suspended", jobsToday: 0, rating: 3.8 },
+  { id: "d6", name: "Moses Ekpo", phone: "+234 802 774 5540", vehicle: "Not set", verification: "Expired", status: "Suspended", jobsToday: 0, rating: 3.8 },
 ];
 
 /* ---------- partners, cities, smart sweep, chargebacks ---------- */

@@ -14,7 +14,7 @@ const START = 4.55; // compactor between the academic block and the senate build
 
 /**
  * Institution overview. The first screen answers "is waste being collected
- * across campus today?" — live, on the campus plan. Then the decisions that
+ * across campus today?", live, on the campus plan. Then the decisions that
  * need the Director: the renewal, compliance, spend, and service levels.
  */
 export default function Dashboard() {
@@ -50,7 +50,7 @@ export default function Dashboard() {
   for (const p of today) {
     const cur = states[p.facilityId];
     const s: FacilityState = p.status === "Completed" ? "collected" : p.status === "Scheduled" ? "scheduled" : "live";
-    // live beats scheduled beats collected — but a later scheduled run doesn't hide a morning collection
+    // live beats scheduled beats collected, but a later scheduled run doesn't hide a morning collection
     if (s === "live" || !cur || (cur === "collected" && s === "scheduled" && p.facilityId !== "kitchen")) states[p.facilityId] = s;
     if (p.status === "Completed") sublabels[p.facilityId] = `✓ ${formatTime(p.completedAt!)}`;
     else if (!sublabels[p.facilityId] || p.facilityId !== "kitchen") sublabels[p.facilityId] = p.status === "Scheduled" ? p.window.slice(0, 5) : p.status === "Arrived" ? "loading" : "arriving";
@@ -64,7 +64,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-10">
-        {/* LEFT — today across campus */}
+        {/* LEFT, today across campus */}
         <div className="flex min-w-0 flex-col gap-8 md:gap-10">
           <section aria-label="Today's collections across campus" className="relative isolate overflow-hidden rounded-xl bg-slate text-slate-ink chalk-grain">
             <div className="flex flex-col gap-3 p-5 pb-2 sm:p-8 sm:pb-3">
@@ -155,7 +155,7 @@ export default function Dashboard() {
           </section>
         </div>
 
-        {/* RIGHT — decisions and standing */}
+        {/* RIGHT, decisions and standing */}
         <aside className="flex min-w-0 flex-col gap-8">
           <RenewalDecision />
           <ComplianceStanding />

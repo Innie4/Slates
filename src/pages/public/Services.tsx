@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { ArrowRight } from "lucide-react";
 import { Badge, Segmented } from "@/components/ui";
@@ -31,14 +30,13 @@ const PLURAL: Record<CustomerType, string> = { Household: "Households", Estate: 
 export default function Services() {
   const [params, setParams] = useSearchParams();
   const initial = (FILTERS.find((f) => f.value === params.get("for"))?.value ?? "All") as Filter;
-  const [filter, setFilter] = useState<Filter>(initial);
+  const filter = initial;
   const list = services.filter((s) => filter === "All" || s.eligible.includes(filter));
 
   // One entry per category: the first service is the lead; siblings are listed as plans.
   const categories = Array.from(new Set(list.map((s) => s.category)));
 
   const choose = (f: Filter) => {
-    setFilter(f);
     const next = new URLSearchParams(params);
     if (f === "All") next.delete("for");
     else next.set("for", f);
@@ -51,8 +49,8 @@ export default function Services() {
         tone="light"
         crumbs={[{ label: "Home", to: "/" }, { label: "Services" }]}
         eyebrow="Services"
-        title="Everything that leaves your gate, managed."
-        body="Scheduled collection for homes, estates, businesses and institutions, plus one-off pickups for the things a weekly bin can't take. Every service is delivered by a verified operator and managed by Slate."
+        title="A service for your site."
+        body="Scheduled collection for homes, estates, businesses and institutions, plus one-off pickups for the things a weekly bin can't take. Availability and service terms are confirmed when your request is reviewed."
       />
 
       <section className="container-page pb-20 lg:pb-28">

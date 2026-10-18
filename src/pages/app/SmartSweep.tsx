@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { Check, Pause, Pencil, Play, Plus, Square, X } from "lucide-react";
 import { Strata } from "@/components/brand/Strata";
 import {
-  Alert, Badge, Button, Checkbox, ChoiceCard, ConfirmDialog, CurrencyInput, Field, Input, List, Modal, Page, PageHeader, Ref, Section, Segmented, Select,
+  Alert, Badge, Button, Checkbox, ChoiceCard, ConfirmDialog, CurrencyInput, DatePicker, Field, List, Modal, Page, PageHeader, Ref, Section, Segmented, Select,
   StatusBadge, Switch, useToast,
 } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -46,7 +46,7 @@ const PAYDAYS = [
 
 const shortDay = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
-/** C15 / C16 / C17 — Smart Sweep: split what you owe into smaller scheduled charges. */
+/** C15 / C16 / C17, Smart Sweep: split what you owe into smaller scheduled charges. */
 export default function SmartSweep() {
   const toast = useToast();
   const [plan, setPlan] = useState<Plan>(INITIAL);
@@ -125,7 +125,7 @@ export default function SmartSweep() {
           {plan.status !== "Stopped" && (
             <Section
               title="Coming up"
-              description={plan.status === "Paused" ? "Paused — these run once you resume." : `${upcoming.length} more ${upcoming.length === 1 ? "charge" : "charges"}, ${formatNaira(remaining)} in total.`}
+              description={plan.status === "Paused" ? "Paused, these run once you resume." : `${upcoming.length} more ${upcoming.length === 1 ? "charge" : "charges"}, ${formatNaira(remaining)} in total.`}
             >
               <List className="border-y border-line">
                 {upcoming.slice(0, 6).map((c, i) => (
@@ -188,7 +188,7 @@ export default function SmartSweep() {
               {[
                 ["You set the limit", "Slate never charges more than your maximum in one go."],
                 ["You set the pace", "Every 3 days, weekly or fortnightly, on the day you pick."],
-                ["Three tries, then pause", "If a charge fails, we retry up to 3 times. After that the plan pauses and we message you — no surprise debits."],
+                ["Three tries, then pause", "If a charge fails, we retry up to 3 times. After that the plan pauses and we message you, no surprise debits."],
                 ["Only Slate's own records", "Timing uses the outcome of Slate's past charges. We never read your bank statement or balance."],
               ].map(([t, d], i) => (
                 <li key={t} className="flex gap-3.5 py-3.5">
@@ -234,7 +234,7 @@ export default function SmartSweep() {
                   ))}
                 </div>
                 <p className="t-small text-ink-2">
-                  <span className="font-semibold text-ink">{firstTry} of {charges}</span> succeeded first time. The one failure, on 17 Sept, came 8 days before payday — the retry the next day went through.
+                  <span className="font-semibold text-ink">{firstTry} of {charges}</span> succeeded first time. The one failure, on 17 Sept, came 8 days before payday, the retry the next day went through.
                   {autoTiming && payday === "25" && " With automatic timing, a charge due between 20 and 24 Oct will run on 26 Oct instead."}
                 </p>
               </div>
@@ -282,7 +282,7 @@ export default function SmartSweep() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Hero — the plan as a run of cut slabs, one per charge                */
+/* Hero, the plan as a run of cut slabs, one per charge                */
 /* ------------------------------------------------------------------ */
 
 function PlanHero({ plan, remaining, upcoming, finish }: { plan: Plan; remaining: number; upcoming: PlannedCharge[]; finish?: Date }) {
@@ -317,7 +317,7 @@ function PlanHero({ plan, remaining, upcoming, finish }: { plan: Plan; remaining
               <>Paused with <span className="font-semibold text-slate-ink tnum">{formatNaira(remaining)}</span> to go. Nothing will be charged until you resume.</>
             ) : (
               <>
-                <span className="font-semibold text-slate-ink tnum">{formatNaira(remaining)}</span> to go — {describePlan(upcoming).replace(/^(\d+)/, "$1 more")}
+                <span className="font-semibold text-slate-ink tnum">{formatNaira(remaining)}</span> to go, {describePlan(upcoming).replace(/^(\d+)/, "$1 more")}
                 {finish && "."}
               </>
             )}
@@ -349,7 +349,7 @@ function PlanHero({ plan, remaining, upcoming, finish }: { plan: Plan; remaining
 
         <dl className="grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/12 pt-5 sm:grid-cols-4">
           {[
-            ["Next charge", paused ? "None while paused" : upcoming[0] ? `${formatNaira(upcoming[0].amount)} · ${formatDay(upcoming[0].date)}` : "—"],
+            ["Next charge", paused ? "None while paused" : upcoming[0] ? `${formatNaira(upcoming[0].amount)} · ${formatDay(upcoming[0].date)}` : "Not set"],
             ["Limit", `${formatNaira(plan.max)} per charge`],
             ["Pace", plan.freq === "Every 3 days" ? "Every 3 days" : `${plan.freq}, ${WEEKDAYS[plan.weekday]}s`],
             ["Card", "Visa •• 4021"],
@@ -366,7 +366,7 @@ function PlanHero({ plan, remaining, upcoming, finish }: { plan: Plan; remaining
 }
 
 /* ------------------------------------------------------------------ */
-/* C16 — Setup / edit                                                   */
+/* C16, Setup / edit                                                   */
 /* ------------------------------------------------------------------ */
 
 interface SetupValues {
@@ -498,14 +498,14 @@ function SetupForm({ mode, plan, remaining, onClose, onSave }: { mode: "new" | "
               disabled={freq === "Every 3 days"}
               onChange={(e) => setWeekday(Number(e.target.value))}
             />
-            <Input
+            <DatePicker
               label="Start date"
-              type="date"
+
               min={toInputDate(DEMO_NOW)}
               value={start}
               error={errors.start}
-              onChange={(e) => {
-                setStart(e.target.value);
+              onChange={(date) => {
+                setStart(date);
                 setErrors((x) => ({ ...x, start: undefined }));
               }}
             />
@@ -569,7 +569,7 @@ function SetupForm({ mode, plan, remaining, onClose, onSave }: { mode: "new" | "
             />
             {errors.auth && <p className="t-small text-danger" role="alert">{errors.auth}</p>}
           </div>
-          <Alert tone="neutral">Smart Sweep never reads your bank statement or balance — it only uses the outcome of Slate's own charges.</Alert>
+          <Alert tone="neutral">Smart Sweep never reads your bank statement or balance, it only uses the outcome of Slate's own charges.</Alert>
         </div>
       </div>
     </Modal>

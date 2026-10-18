@@ -24,7 +24,7 @@ type MethodId = (typeof METHODS)[number]["id"];
 
 const walletId = (p: Project) => `CW-${p.community.slice(0, 3).toUpperCase()}-${String(([...p.id].reduce((a, c) => a + c.charCodeAt(0), 0) % 90) + 10).padStart(4, "0")}`;
 
-/** C19–C22 — a community project, its wallet and the contribution flow. */
+/** C19–C22, a community project, its wallet and the contribution flow. */
 export default function CommunityProject() {
   const { id } = useParams();
   const project = communityProjects.find((p) => p.id === id);
@@ -90,7 +90,7 @@ function ProjectView({ base }: { base: Project }) {
       />
 
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
-        {/* Funding — first on phones, sticky aside on desktop */}
+        {/* Funding, first on phones, sticky aside on desktop */}
         <aside className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1 lg:self-start">
           <FundingPanel
             p={p}
@@ -311,7 +311,7 @@ function ContributionRow({ c }: { c: Recent }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* C21 — community wallet                                              */
+/* C21, community wallet                                              */
 /* ------------------------------------------------------------------ */
 
 function WalletSection({ p, remaining }: { p: Project; remaining: number }) {
@@ -399,7 +399,7 @@ function WalletSection({ p, remaining }: { p: Project; remaining: number }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* C22 — Community Guarantee (planned, disabled)                       */
+/* C22, Community Guarantee (planned, disabled)                       */
 /* ------------------------------------------------------------------ */
 
 function GuaranteePlanned({ p, pct, remaining }: { p: Project; pct: number; remaining: number }) {
@@ -420,7 +420,7 @@ function GuaranteePlanned({ p, pct, remaining }: { p: Project; pct: number; rema
         </div>
         <p className="t-small max-w-xl text-ink-2">
           When a project is close to its target, a lending partner could advance the rest so work starts sooner. Contributors keep paying in, and Slate
-          repays the partner from the wallet. This isn't available yet — here's how this project would qualify.
+          repays the partner from the wallet. This isn't available yet, here's how this project would qualify.
         </p>
       </div>
       <div className="grid gap-6 border-t border-dashed border-line-strong p-5 opacity-70 sm:p-6 md:grid-cols-2" aria-disabled="true">
@@ -469,7 +469,7 @@ function GuaranteePlanned({ p, pct, remaining }: { p: Project; pct: number; rema
 }
 
 /* ------------------------------------------------------------------ */
-/* C20 — contribution flow                                             */
+/* C20, contribution flow                                             */
 /* ------------------------------------------------------------------ */
 
 const refCode = () => {
@@ -679,7 +679,7 @@ function ContributeModal({
               ["Amount", sweep ? `${formatNaira(amount)} in 4 weekly charges` : formatNaira(amount)],
               ["Charged today", formatNaira(chargeNow)],
               ["Pay with", methodLabel],
-              ["Processing fee", "₦0 — covered by Slate"],
+              ["Processing fee", "₦0, covered by Slate"],
               ["Shown as", showName ? me.household.name : "A neighbour"],
             ].map(([k, v], i) => (
               <div key={i} className="flex items-baseline justify-between gap-4 py-3">

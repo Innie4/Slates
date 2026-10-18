@@ -17,7 +17,7 @@ import {
 const WINDOWS = ["06:00–08:00", "07:00–09:00", "08:00–10:00", "10:00–12:00", "14:00–16:00"];
 
 /**
- * H1 — Control centre. Answers "what is going wrong right now?" first:
+ * H1, Control centre. Answers "what is going wrong right now?" first:
  * today's sheet live, then the exceptions queue, then the business.
  */
 export default function Dashboard() {
@@ -74,7 +74,7 @@ export default function Dashboard() {
 
   return (
     <Page className="gap-10 md:gap-14">
-      {/* Header — the date and the clock, not a greeting */}
+      {/* Header, the date and the clock, not a greeting */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex flex-col gap-1.5">
           <p className="t-small text-ink-3 tnum">
@@ -112,7 +112,7 @@ export default function Dashboard() {
                 <span className="text-slate-ink">
                   {breakdown.vehicle} broke down on {breakdown.area} at {formatTime(breakdown.breakdownAt!)}
                 </span>
-                {missedOpen.length ? ` — ${missedOpen.length} stops not reached.` : " — all stops reassigned."}
+                {missedOpen.length ? `, ${missedOpen.length} stops not reached.` : ", all stops reassigned."}
               </p>
             </div>
           </div>
@@ -163,8 +163,8 @@ export default function Dashboard() {
               <Exception
                 tone="signal"
                 count={missedOpen.length}
-                title={`Missed on ${breakdown.area} — needs reassignment`}
-                detail={`Nwaniba Clean Crew · ${breakdown.vehicle} broke down ${formatTime(breakdown.breakdownAt!)}. Contract CT-UYO-017 recovery SLA is 6h — due 12:52.`}
+                title={`Missed on ${breakdown.area}, needs reassignment`}
+                detail={`Nwaniba Clean Crew · ${breakdown.vehicle} broke down ${formatTime(breakdown.breakdownAt!)}. Contract CT-UYO-017 recovery SLA is 6h, due 12:52.`}
               >
                 <Button size="sm" onClick={() => setReassign(true)}>Reassign {missedOpen.length}</Button>
                 <InlineLink to="/admin/pickups?tab=missed">Missed queue</InlineLink>
@@ -177,7 +177,7 @@ export default function Dashboard() {
             <Exception
               tone="warning"
               count={late.length}
-              title="Late — window closed, crews still coming"
+              title="Late, window closed, crews still coming"
               detail={`${lateRoutes.map((r) => `${r.id} (${r.stops - r.done - 1} stops)`).join(", ")}. Customers expect 08:00.`}
             >
               <Button size="sm" variant="secondary" onClick={() => toast.success(`Delay SMS sent to ${late.length} customers`, "“Your crew is running about 30 minutes late today.”")}>
@@ -215,7 +215,7 @@ export default function Dashboard() {
         </section>
       </div>
 
-      {/* THE BUSINESS — one board, one row per domain */}
+      {/* THE BUSINESS, one board, one row per domain */}
       <Section title="The business" description="Month to date unless noted. Each row opens its workspace.">
         <div className="flex flex-col border-y border-line">
           <BoardRow
@@ -276,7 +276,7 @@ export default function Dashboard() {
           <dl className="flex flex-col divide-y divide-line border-y border-line">
             {[
               ["Gross service value", formatNaira(gsv), "Everything customers paid for, incl. one-off jobs"],
-              ["Operator payouts", formatNaira(payouts.filter((p) => p.period === "September 2026").reduce((a, p) => a + p.net, 0)), "September, net of ₦130,000 deductions — due 7 Oct"],
+              ["Operator payouts", formatNaira(payouts.filter((p) => p.period === "September 2026").reduce((a, p) => a + p.net, 0)), "September, net of ₦130,000 deductions, due 7 Oct"],
               ["Slate share after payouts", formatNaira(Math.round(gsv * 0.214)), "21.4% blended take rate"],
               ["Contracts renewing in 60 days", String(contracts.filter((x) => x.status === "Renewal approaching" || x.status === "Expiring").length), "CT-UYO-014 Ibom Hauliers, CT-UYO-017 Nwaniba Clean Crew"],
             ].map(([k, v, hint]) => (
@@ -295,7 +295,7 @@ export default function Dashboard() {
       {/* OPERATOR LEAGUE */}
       <Section
         title="Operator league"
-        description="Ranked by Slate score — completion, missed pickups, complaints, response time and ratings over 30 days."
+        description="Ranked by Slate score, completion, missed pickups, complaints, response time and ratings over 30 days."
         actions={<Link to="/admin/operators" className="t-small font-medium text-ink-2 hover:text-ink">All operators</Link>}
       >
         <League operators={[...active].sort((a, b) => b.score - a.score)} />

@@ -5,7 +5,7 @@ import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui";
 
 /**
- * Legal template — one layout for every legal document on slate.ng.
+ * Legal template, one layout for every legal document on slate.ng.
  * Title, effective date, an "in short" summary, a table of contents
  * (sticky rail on desktop, collapsible on phones) and numbered sections
  * with numbered clauses (3.1, 3.2 …).
@@ -131,7 +131,7 @@ export function LegalPage({ doc, title, lede, effective, updated, version, summa
           <div className="flex items-end sm:ml-auto">
             <p className="inline-flex items-center gap-2 rounded-sm border border-dashed border-line-strong px-2.5 py-1 t-micro text-ink-3">
               <Scale className="size-3.5" aria-hidden />
-              Template — to be reviewed by counsel
+              Template, to be reviewed by counsel
             </p>
           </div>
         </dl>
@@ -347,7 +347,7 @@ export function Term({ children }: { children: ReactNode }) {
   return <strong className="font-semibold text-ink">{children}</strong>;
 }
 
-/** A quiet aside inside a section — for plain-language explanations. */
+/** A quiet aside inside a section, for plain-language explanations. */
 export function LegalNote({ children, title = "In plain language" }: { children: ReactNode; title?: string }) {
   return (
     <aside className="mt-4 border-l-2 border-ink pl-4">

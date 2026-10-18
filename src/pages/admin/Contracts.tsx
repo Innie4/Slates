@@ -290,7 +290,7 @@ export default function Contracts() {
       <Modal
         open={!!preview}
         onClose={() => setPreview(null)}
-        title={preview ? `${preview.name} — ${preview.kind}` : undefined}
+        title={preview ? `${preview.name}, ${preview.kind}` : undefined}
         description={preview ? `${preview.version} · last changed ${formatDate(preview.updated)} by Legal` : undefined}
         footer={
           <>

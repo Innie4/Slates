@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ============================================================
-   SLATE DESIGN TOKENS — see DIRECTION.md §4
+   SLATE DESIGN TOKENS : see DIRECTION.md §4
    Semantic roles are CSS variables swapped by `.dark`.
    Tailwind utilities: bg-canvas, bg-surface, text-ink, text-ink-2,
    border-line, bg-slate, text-slate-ink, bg-stone, bg-signal, …
@@ -108,7 +108,7 @@
 }
 
 @theme {
-  /* Slate ramp — hue ≈ 212°. For illustration and data-viz only. */
+  /* Slate ramp : hue ≈ 212°. For illustration and data-viz only. */
   --color-slate-50: #f4f6f8;
   --color-slate-100: #e8ecf0;
   --color-slate-200: #d3dae1;
@@ -225,12 +225,12 @@
   @media (width >= 768px) { padding-inline: 32px; }
 }
 
-/* Chalk grain on slate fields — material, not decoration */
+/* Chalk grain on slate fields : material, not decoration */
 @utility chalk-grain {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .055 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-/* Uyo route field — a quiet geographic layer behind every portal page. */
+/* Uyo route field : a quiet geographic layer behind every portal page. */
 .portal-main::before {
   content: "";
   position: fixed;

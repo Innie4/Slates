@@ -1,6 +1,7 @@
 export * from "./Button";
 export * from "./Badge";
 export * from "./Field";
+export * from "./DatePicker";
 export * from "./Surface";
 export * from "./Tabs";
 export * from "./Overlay";

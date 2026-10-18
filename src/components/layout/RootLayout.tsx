@@ -9,7 +9,7 @@ export function RootLayout() {
   const [online, setOnline] = useState(typeof navigator === "undefined" ? true : navigator.onLine);
 
   useEffect(() => {
-    document.title = title?.title && title.title !== "Home" ? `${title.title} · Slate` : "Slate — Reliable waste collection";
+    document.title = title?.title && title.title !== "Home" ? `${title.title} · Slate` : "Slate | Reliable waste collection";
   }, [title]);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export function RootLayout() {
     <>
       {!online && (
         <div role="status" className="fixed inset-x-0 top-0 z-[120] flex items-center justify-center gap-2 bg-slate-950 px-4 py-2 text-[13px] font-medium text-white">
-          <WifiOff className="size-4" /> You're offline. Changes will sync when you reconnect.
+          <WifiOff className="size-4" /> You're offline. Reconnect before sending a request.
         </div>
       )}
       <Outlet />

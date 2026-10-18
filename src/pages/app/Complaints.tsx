@@ -12,7 +12,7 @@ import { addCareComplaint, careComplaints, complaintLabel, complaintTab, formatS
 
 const CATEGORIES: Complaint["category"][] = ["Missed pickup", "Late pickup", "Spillage", "Damaged bin", "Conduct", "Billing", "Other"];
 
-/** C25 — the customer's complaints. */
+/** C25, the customer's complaints. */
 export default function Complaints() {
   const tab = useTab<ComplaintTab>("tab", "open");
   const [rows, setRows] = useState<CareComplaint[]>(() => [...careComplaints]);
@@ -163,7 +163,7 @@ function NewComplaintModal({ open, onClose, onCreated }: { open: boolean; onClos
   const [busy, setBusy] = useState(false);
   const errors = {
     category: category.length ? undefined : "Choose what kind of problem this is.",
-    text: text.trim().length < 20 ? "Tell us what happened in a sentence or two — at least 20 characters." : undefined,
+    text: text.trim().length < 20 ? "Tell us what happened in a sentence or two, at least 20 characters." : undefined,
   };
   const pickups = myPickups.filter((p) => p.status !== "Scheduled" && p.status !== "En route");
   const reset = () => {
@@ -202,7 +202,7 @@ function NewComplaintModal({ open, onClose, onCreated }: { open: boolean; onClos
         evidenceItems: [],
         thread: [
           { id: "t1", author: "you", name: me.household.name, role: "You", time: now, body: text.trim(), attachments: files.map((f) => f.name) },
-          { id: "t2", author: "system", name: "Slate", role: "Automatic", time: now, body: "Received. Slate Care replies within 24 hours — by 08:12 tomorrow at the latest." },
+          { id: "t2", author: "system", name: "Slate", role: "Automatic", time: now, body: "Received. Slate Care replies within 24 hours, by 08:12 tomorrow at the latest." },
         ],
         stepTimes: [now, now, null, null, null, null, null, null, null],
       };

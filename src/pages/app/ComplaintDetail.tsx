@@ -25,7 +25,7 @@ export default function ComplaintDetail() {
         <StateView
           state="not-found"
           title={`We couldn't find ${id ?? "that complaint"}`}
-          description="Check the reference in your SMS or email — it looks like CMP-1201. Complaints from other accounts aren't visible here."
+          description="Check the reference in your SMS or email, it looks like CMP-1201. Complaints from other accounts aren't visible here."
           action={<ButtonLink to="/app/complaints">All complaints</ButtonLink>}
         />
       </Page>
@@ -113,7 +113,7 @@ function DetailView({ base }: { base: CareComplaint }) {
                       {base.pickupId}
                     </Link>
                   ) : (
-                    "—"
+                    "Not set"
                   ),
                 ],
                 ["Category", base.category],
@@ -266,7 +266,7 @@ function DetailView({ base }: { base: CareComplaint }) {
         confirmLabel="Escalate"
         onConfirm={() => {
           setStatus("Escalated");
-          setThread((th) => [...th, system(`Escalated to Idara Umoh, Operations lead${reason ? ` — ${reason.toLowerCase()}` : ""}. Reply due by ${formatDateTime(new Date(DEMO_NOW.getTime() + 4 * H))}.`)]);
+          setThread((th) => [...th, system(`Escalated to Idara Umoh, Operations lead${reason ? `, ${reason.toLowerCase()}` : ""}. Reply due by ${formatDateTime(new Date(DEMO_NOW.getTime() + 4 * H))}.`)]);
           setReason("");
           toast.success(`${base.id} escalated`, "Idara Umoh will reply within 4 hours.");
         }}
@@ -384,7 +384,7 @@ function timelineItems(c: CareComplaint, steps: Array<string | null>, status: Co
   return COMPLAINT_STEPS.map((title, i) => {
     const t = steps[i];
     if (t) return { title, time: formatDateTime(t), description: desc[title], state: "done" };
-    if (i < last) return { title, description: "Not needed for this complaint.", state: "done", time: "—" };
+    if (i < last) return { title, description: "Not needed for this complaint.", state: "done", time: "Not set" };
     if (i === last + 1)
       return {
         title,

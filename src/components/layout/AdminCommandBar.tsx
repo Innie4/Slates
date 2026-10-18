@@ -5,7 +5,7 @@ import { Menu } from "@/components/ui";
 import { cn } from "@/lib/cn";
 
 /**
- * Part S — persistent operations command bar for Slate staff.
+ * Part S, persistent operations command bar for Slate staff.
  * Global alerts link straight to the queue that needs attention.
  */
 const ALERTS = [

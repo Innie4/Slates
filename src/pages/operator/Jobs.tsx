@@ -39,7 +39,7 @@ const sorters: Record<TabKey, (a: Job, b: Job) => number> = {
   cancelled: (a, b) => b.date.localeCompare(a.date),
 };
 
-/** G8 — every job assigned to Ufok, by day and outcome. Dispatchers bulk-assign from here. */
+/** G8, every job assigned to Ufok, by day and outcome. Dispatchers bulk-assign from here. */
 export default function Jobs() {
   const toast = useToast();
   const jobs = useJobs();
@@ -256,7 +256,7 @@ export default function Jobs() {
         )}
       />
 
-      {/* Bulk action bar — thumb zone on phones, above the tab bar */}
+      {/* Bulk action bar, thumb zone on phones, above the tab bar */}
       {selected.length > 0 && (
         <div className="fixed inset-x-3 bottom-[calc(max(12px,env(safe-area-inset-bottom))+76px)] z-40 flex items-center gap-2 rounded-lg border border-line-strong bg-surface p-2 pl-4 text-ink shadow-float animate-toast-in sm:inset-x-auto sm:left-1/2 sm:w-[460px] sm:-translate-x-1/2 lg:bottom-6 lg:left-[calc(50%+128px)]">
           <span className="flex-1 text-[14px] font-medium tnum">{selected.length} selected</span>
@@ -324,7 +324,7 @@ function AssignModal({ open, count, onClose, onAssign }: { open: boolean; count:
     >
       <div className="flex flex-col gap-2 pb-2">
         {OPS_DRIVERS.map((d) => {
-          const blocked = d.status === "Suspended" ? "Suspended" : d.verification !== "Verified" ? "Licence awaiting Slate verification" : d.vehicle === "—" ? "No vehicle" : null;
+          const blocked = d.status === "Suspended" ? "Suspended" : d.verification !== "Verified" ? "Licence awaiting Slate verification" : d.vehicle === "Not set" ? "No vehicle" : null;
           return (
             <ChoiceCard
               key={d.id}

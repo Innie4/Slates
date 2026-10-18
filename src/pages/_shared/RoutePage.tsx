@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import { useLocation, useMatches, useParams } from "react-router";
-import { ArrowRight, Building2, CalendarDays, Check, CircleDollarSign, Download, FileText, Filter, Plus, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, Building2, Check, CircleDollarSign, Download, FileText, Filter, Plus, ShieldCheck, Users } from "lucide-react";
 import { RouteMap } from "@/components/brand/RouteMap";
 import { ServiceAreaMap } from "@/components/brand/ServiceAreaMap";
 import { Strata } from "@/components/brand/Strata";
 import {
   Alert, AreaChart, Avatar, Badge, BarChart, Button, ButtonLink, DescriptionList, Donut,
-  Input, List, ListRow, Page, PageHeader, Panel, ProgressBar, Ref, SearchInput,
+  DatePicker, Input, List, ListRow, Page, PageHeader, Panel, ProgressBar, Ref, SearchInput,
   Segmented, Select, Stat, StatStrip, StatusBadge, Switch, Textarea, Timeline, useToast,
 } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -239,7 +239,7 @@ function Marketing({ title }: { title: string }) {
   };
   const sections = isFaq ? [
     ["What happens when a pickup is missed?", "Report it within 48 hours. Slate dispatches a recovery collection within 24 hours."],
-    ["Who do I call — Slate or the operator?", "Slate. Your subscription, payment and support relationship is always with Slate."],
+    ["Who do I call, Slate or the operator?", "Slate. Your subscription, payment and support relationship is always with Slate."],
     ["Can I pause my service?", "Yes. Pause for up to 60 days without losing your route slot."],
     ["Are prices all-in?", "Yes. The amount shown includes operator service, supervision and customer support."],
   ] : [
@@ -306,11 +306,11 @@ function Detail({ title, area }: { title: string; area: Area }) {
 }
 
 function Schedule({ title, area }: { title: string; area: Area }) {
-  const [day, setDay] = useState<"today" | "week">("today"); const rows = rowsByTitle.Pickups!;
+  const [day, setDay] = useState<"today" | "week">("today"); const [date, setDate] = useState("2026-10-05"); const rows = rowsByTitle.Pickups!;
   return <Page><PageHeader title={title} description={description(title, area)} actions={<Button leading={<Plus className="size-4" />}>Create {title === "Routes" ? "route" : "booking"}</Button>} />
     <section className="relative overflow-hidden rounded-xl bg-slate p-6 text-slate-ink chalk-grain lg:min-h-[340px] lg:p-8"><RouteMap progress={0.58} tone="on-slate" className="absolute inset-0 size-full opacity-75" /><div className="relative z-10 max-w-sm rounded-lg border border-white/10 bg-slate-950/75 p-5 backdrop-blur-md"><div className="flex items-center gap-2"><span className="size-2.5 animate-pulse rounded-full bg-signal" /><span className="t-micro text-white/60">Live route</span></div><p className="t-h2 mt-3 text-white">Ewet route A</p><p className="t-small mt-1 text-white/65">Truck AKS 214 XA · 2 stops to 14 Ewet</p><div className="mt-5 flex items-end justify-between"><span className="font-display text-[34px] font-bold text-white tnum">18 / 26</span><Badge tone="signal">07:42 ETA</Badge></div></div></section>
-    <div className="flex items-center justify-between gap-3"><Segmented value={day} onChange={setDay} options={[{ value: "today", label: "Today" }, { value: "week", label: "This week" }]} /><Button variant="outline" leading={<CalendarDays className="size-4" />}>5 Oct 2026</Button></div>
-    <Panel padded={false} title="Service queue" description={`${day === "today" ? "Today's" : "This week's"} routed work`}><List className="px-5 sm:px-6">{rows.map((row, index) => <ListRow key={row.id} leading={<span className={cn("t-mono flex size-9 items-center justify-center rounded-sm", index === 0 ? "bg-signal text-signal-ink" : "bg-sunken text-ink-2")}>{String(index + 1).padStart(2, "0")}</span>} title={row.name} subtitle={row.detail} meta={row.meta} trailing={<StatusBadge status={row.status} />} chevron />)}</List></Panel>
+    <div className="flex flex-wrap items-center justify-between gap-3"><Segmented value={day} onChange={setDay} options={[{ value: "today", label: "Today" }, { value: "week", label: "This week" }]} /><DatePicker aria-label="Schedule date" value={date} onChange={setDate} required fieldClassName="w-48" /></div>
+    <Panel padded={false} title="Service queue" description={`${day === "today" ? "Daily" : "Weekly"} routed work for ${new Date(`${date}T12:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`}><List className="px-5 sm:px-6">{rows.map((row, index) => <ListRow key={row.id} leading={<span className={cn("t-mono flex size-9 items-center justify-center rounded-sm", index === 0 ? "bg-signal text-signal-ink" : "bg-sunken text-ink-2")}>{String(index + 1).padStart(2, "0")}</span>} title={row.name} subtitle={row.detail} meta={row.meta} trailing={<StatusBadge status={row.status} />} chevron />)}</List></Panel>
   </Page>;
 }
 

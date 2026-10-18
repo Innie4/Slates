@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 /**
- * Panel — a contained surface. Use only when the content is an object
+ * Panel, a contained surface. Use only when the content is an object
  * (a pickup, an invoice, a contract) or needs a boundary. Group sections
  * with space and hairlines first (DIRECTION.md §4).
  */
@@ -54,7 +54,7 @@ export function Panel({
   );
 }
 
-/** Section — a titled group on a page, separated by space, not a box. */
+/** Section, a titled group on a page, separated by space, not a box. */
 export function Section({
   title,
   description,
@@ -188,7 +188,7 @@ export function List({ children, className }: { children: ReactNode; className?:
   return <div className={cn("divide-y divide-line", className)}>{children}</div>;
 }
 
-/** Glyph in a neutral square — only for settings-like lists. */
+/** Glyph in a neutral square, only for settings-like lists. */
 export function Glyph({ children, tone = "neutral", className }: { children: ReactNode; tone?: "neutral" | "slate" | "signal"; className?: string }) {
   return (
     <span

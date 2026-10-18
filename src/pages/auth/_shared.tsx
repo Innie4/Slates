@@ -14,7 +14,7 @@ export const DEMO_OTP = "482913";
 export const EXPIRED_OTP = "000000";
 
 /* ------------------------------------------------------------------ */
-/* Sign-up draft — carried from /signup through verification           */
+/* Sign-up draft, carried from /signup through verification           */
 /* ------------------------------------------------------------------ */
 
 export type SignupAccount = "Residential" | "Business" | "Institution";
@@ -226,7 +226,7 @@ const LEGAL = {
     points: [
       ["Your contract is with Slate", "You buy collection from Slate Waste Services Ltd, not from the operator. Slate assigns, pays and supervises a verified, contracted operator for your area."],
       ["What we promise", "Collection on your scheduled days and window. If a pickup is missed, Slate sends a crew within 24 hours or credits the visit on your next bill."],
-      ["What we need from you", "Waste bagged and at the agreed collection point by 07:00. No hazardous, medical or construction waste in regular bins — book a special collection for those."],
+      ["What we need from you", "Waste bagged and at the agreed collection point by 07:00. No hazardous, medical or construction waste in regular bins, book a special collection for those."],
       ["Payments", "Plans are billed monthly in advance through Paystack. Failed payments are retried up to three times before service pauses. You can cancel any time from Subscriptions; the current month is not refunded."],
       ["Complaints", "Report problems in the app. Slate responds within one working day and handles the operator for you."],
     ],
@@ -237,7 +237,7 @@ const LEGAL = {
     updated: "Updated 1 September 2026",
     points: [
       ["What we collect", "Your name, contact details, service address, landmark and payment outcomes. Card details are held by Paystack, never by Slate."],
-      ["Who sees it", "Your assigned operator sees your address, landmark and pickup notes — never your payment details. We don't sell your data."],
+      ["Who sees it", "Your assigned operator sees your address, landmark and pickup notes, never your payment details. We don't sell your data."],
       ["Location", "Used once during setup to find your address and service zone. We don't track your device."],
       ["Your rights", "Download or delete your data from Settings, or write to privacy@slate.ng. We follow the Nigeria Data Protection Act 2023."],
     ],

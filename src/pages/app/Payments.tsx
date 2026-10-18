@@ -13,7 +13,7 @@ const TAB_STATUS: Record<TabKey, TxnStatus> = { upcoming: "Upcoming", successful
 
 const shortDate = (d: string) => formatDate(d).replace(/ \d{4}$/, "");
 
-/** C13 — Payment history and upcoming charges. */
+/** C13, Payment history and upcoming charges. */
 export default function Payments() {
   const toast = useToast();
   const tab = useTab<TabKey>("tab", "upcoming");
@@ -184,7 +184,7 @@ export default function Payments() {
             Next: {upcoming.map((u, i) => (
               <span key={u.id}>
                 {i > 0 && (i === upcoming.length - 1 ? ", then " : ", ")}
-                <span className="font-medium text-ink tnum">{formatNaira(u.amount)}</span> {u.kind === "smart-sweep" ? "Smart Sweep" : u.service.replace("Slate Home — ", "for ")} on {formatDay(u.date)}
+                <span className="font-medium text-ink tnum">{formatNaira(u.amount)}</span> {u.kind === "smart-sweep" ? "Smart Sweep" : u.service.replace("Slate Home, ", "for ")} on {formatDay(u.date)}
               </span>
             ))}
             , to Visa •• 4021.
@@ -196,10 +196,10 @@ export default function Payments() {
         <Alert
           key={t.id}
           tone="danger"
-          title={`${t.service.split(" — ")[0]} charge of ${formatNaira(t.amount)} didn't go through`}
+          title={`${t.service.split(", ")[0]} charge of ${formatNaira(t.amount)} didn't go through`}
         >
           <p>
-            {t.failureReason} — tried {t.attempts} times on {t.method}. Retry with your default card, or{" "}
+            {t.failureReason}, tried {t.attempts} times on {t.method}. Retry with your default card, or{" "}
             <Link to="/app/payment-methods" className="font-medium text-ink underline underline-offset-2">update your cards</Link>.
           </p>
           <Button size="sm" className="mt-3" loading={retrying === t.id} leading={<RotateCw className="size-3.5" />} onClick={() => retry(t)}>
@@ -283,7 +283,7 @@ export default function Payments() {
       </div>
 
       <p className="t-small text-ink-3">
-        Payments are processed by Paystack. Slate pays your operator from what you pay — you never pay the operator directly.{" "}
+        Payments are processed by Paystack. Slate pays your operator from what you pay, you never pay the operator directly.{" "}
         <Link to="/app/support" className="font-medium text-ink-2 underline decoration-line-strong underline-offset-4 hover:text-ink">Billing help</Link>
       </p>
 

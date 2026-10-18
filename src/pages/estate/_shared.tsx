@@ -214,8 +214,8 @@ export function UpdateResidentsModal({ open, onClose, waiting, current }: { open
   const [channels, setChannels] = useState<string[]>(["SMS", "WhatsApp"]);
   const range = waiting.length ? (waiting.length > 1 ? `${waiting[0]}–${waiting[waiting.length - 1]}` : waiting[0]) : "";
   const defaultMsg = waiting.length
-    ? `Shelter Afrique Estate: ${ESTATE.operator} is collecting Block ${current ?? "C"} now. Blocks ${range}, please have your bins at your collection point within the hour. — Estate office`
-    : `Shelter Afrique Estate: today's collection is complete for Blocks A–H. Next collection Thursday 8 Oct from 06:30. — Estate office`;
+    ? `Shelter Afrique Estate: ${ESTATE.operator} is collecting Block ${current ?? "C"} now. Blocks ${range}, please have your bins at your collection point within the hour., Estate office`
+    : `Shelter Afrique Estate: today's collection is complete for Blocks A–H. Next collection Thursday 8 Oct from 06:30., Estate office`;
   const [msg, setMsg] = useState(defaultMsg);
   useEffect(() => {
     if (open) {

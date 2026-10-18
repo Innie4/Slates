@@ -257,7 +257,7 @@ export default function Complaints() {
   );
 }
 /* ------------------------------------------------------------------ */
-/* Drawer — full complaint                                             */
+/* Drawer, full complaint                                             */
 /* ------------------------------------------------------------------ */
 
 function ComplaintDrawer({
@@ -295,7 +295,7 @@ function ComplaintDrawer({
   };
   const resolve = () => {
     if (!resType) return setResError("Choose what fixed it.");
-    if (resText.trim().length < 12) return setResError("Describe the resolution in a sentence — the customer will see it.");
+    if (resText.trim().length < 12) return setResError("Describe the resolution in a sentence, the customer will see it.");
     setResError(null);
     onUpdate(c.id, { status: "Resolved", resolution: `${resType}. ${resText.trim()}`, resolvedAt: now.toISOString(), slaMet: new Date(c.slaDue) > now }, `Resolved: ${resType}. Customer notified by SMS and in-app.`);
     setResType("");
@@ -507,14 +507,14 @@ function workflow(c: AdminComplaint, now: Date): TimelineItem[] {
     { title: "Complaint created", description: c.id, f: 0 },
     {
       title: "SLA timer started",
-      description: breached ? `Breached — was due ${formatDateTime(c.slaDue)}` : `${SLA_HOURS[c.severity]}-hour target · due ${formatDateTime(c.slaDue)}`,
+      description: breached ? `Breached, was due ${formatDateTime(c.slaDue)}` : `${SLA_HOURS[c.severity]}-hour target · due ${formatDateTime(c.slaDue)}`,
       f: 0,
     },
     { title: "Operator notified", description: `${c.operatorName} dispatch, by app and SMS`, f: 0.04 },
     { title: "Operations reviews", description: c.assignee === "Unassigned" ? "Waiting for an owner" : `${c.assignee} reviewing`, f: 0.15 },
     {
       title: "Operator responds",
-      description: c.status === "Escalated" ? "Escalated — operator response overdue, operations lead informed" : `${c.operatorName} sends their account and photos`,
+      description: c.status === "Escalated" ? "Escalated, operator response overdue, operations lead informed" : `${c.operatorName} sends their account and photos`,
       f: 0.45,
     },
     { title: "Slate reviews the response", description: c.status === "Waiting" ? `Waiting on ${first} to confirm` : "Checked against driver log and photos", f: 0.7 },
@@ -601,7 +601,7 @@ function NewComplaintModal({ open, onClose, onCreate, nextId }: { open: boolean;
     const e: Record<string, string> = {};
     if (!cust) e.customer = "Choose the customer who reported it.";
     if (!category) e.category = "Choose a category.";
-    if (!severity) e.severity = "Choose a severity — it sets the SLA.";
+    if (!severity) e.severity = "Choose a severity, it sets the SLA.";
     if (issue.trim().length < 10) e.issue = "Describe the issue in the customer's words (at least 10 characters).";
     setErrors(e);
     if (Object.keys(e).length || !cust || !severity) return;
@@ -652,7 +652,7 @@ function NewComplaintModal({ open, onClose, onCreate, nextId }: { open: boolean;
           fieldClassName="sm:col-span-2"
           value={customer}
           onChange={(e) => { setCustomer(e.target.value); setPickupId(""); }}
-          options={customers.map((c) => ({ value: c.id, label: `${c.name} — ${c.type}, ${c.area}` }))}
+          options={customers.map((c) => ({ value: c.id, label: `${c.name}, ${c.type}, ${c.area}` }))}
           error={errors.customer}
         />
         <Select
@@ -670,7 +670,7 @@ function NewComplaintModal({ open, onClose, onCreate, nextId }: { open: boolean;
           label="Severity"
           placeholder="Choose"
           value={severity}
-          options={SEVERITIES.map((s) => ({ value: s, label: `${s} — ${SLA_HOURS[s]}h SLA` }))}
+          options={SEVERITIES.map((s) => ({ value: s, label: `${s}, ${SLA_HOURS[s]}h SLA` }))}
           onChange={(e) => setSeverity(e.target.value as Complaint["severity"])}
           error={errors.severity}
         />

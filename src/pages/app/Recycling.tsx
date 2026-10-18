@@ -34,7 +34,7 @@ const SLOTS: Slot[] = [
   { id: "s-10", day: cday(5, 10), window: "10:00–12:00", note: "Extra pickup, Saturday", extra: 1000 },
 ];
 
-/** C23 — recycling for a household. */
+/** C23, recycling for a household. */
 export default function Recycling() {
   const toast = useToast();
   const { theme } = useSession();
@@ -86,7 +86,7 @@ export default function Recycling() {
             </p>
             <p className="t-display-xl text-ink tnum">{kg(year)}</p>
             <p className="t-body max-w-xl text-ink-2">
-              Mostly PET and cans — roughly <span className="font-semibold text-ink tnum">{bottles}</span> bottles and{" "}
+              Mostly PET and cans, roughly <span className="font-semibold text-ink tnum">{bottles}</span> bottles and{" "}
               <span className="font-semibold text-ink tnum">{cans}</span> cans that went to recovery partners instead of the Uyo dumpsite.
             </p>
           </div>
@@ -343,7 +343,7 @@ export default function Recycling() {
         open={skipOpen}
         onClose={() => setSkipOpen(false)}
         title="Skip October's recycling pickup?"
-        description="Keep your recyclables for next month — Tue 10 Nov. You won't be charged the ₦1,500 for October."
+        description="Keep your recyclables for next month, Tue 10 Nov. You won't be charged the ₦1,500 for October."
         confirmLabel="Skip October"
         onConfirm={() => {
           setSkipped(true);

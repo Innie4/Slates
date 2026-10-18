@@ -1,3 +1,5 @@
-import RoutePage from "@/pages/_shared/RoutePage";
+import { ServiceDetail } from "./_service";
 
-export default RoutePage;
+export default function ServiceRecycling() {
+  return <ServiceDetail kind="recycling" />;
+}

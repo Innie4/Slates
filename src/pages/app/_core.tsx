@@ -1,5 +1,5 @@
 /**
- * Customer core — page-local helpers shared by Services, Book, Subscriptions,
+ * Customer core, page-local helpers shared by Services, Book, Subscriptions,
  * Pickups, Extra/Bulk requests and Report missed. Not a shared component:
  * lives with the pages (DIRECTION.md §10.10).
  */
@@ -28,7 +28,7 @@ export const SUPPORT_PHONE = "+234 700 752 8300";
 export const SUPPORT_TEL = "tel:+2347007528300";
 export const SUPPORT_WHATSAPP = "https://wa.me/2347007528300";
 
-/** Contact Slate — chat, call or WhatsApp. Slate is the one number, never the operator. */
+/** Contact Slate, chat, call or WhatsApp. Slate is the one number, never the operator. */
 export function ContactSheet({ open, onClose, reference, topic }: { open: boolean; onClose: () => void; reference?: string; topic?: string }) {
   const rows: Array<{ icon: LucideIcon; title: string; sub: string; meta: string; href?: string; to?: string }> = [
     { icon: MessagesSquare, title: "Chat with Slate", sub: "In the app, with your history attached", meta: "Replies in about 4 min", to: "/app/support" },
@@ -40,7 +40,7 @@ export function ContactSheet({ open, onClose, reference, topic }: { open: boolea
       open={open}
       onClose={onClose}
       title="Contact Slate"
-      description={topic ?? "One team for everything — the operator never needs to be called directly."}
+      description={topic ?? "One team for everything, the operator never needs to be called directly."}
     >
       <div className="flex flex-col gap-4 pb-3">
         {reference && (
@@ -149,7 +149,7 @@ export const feeFor = (monthly: number) => (monthly >= 4000 ? 250 : 100);
 export const FREQ_META: Record<string, { days: number; line: string }> = {
   Weekly: { days: 1, line: "One collection a week, same day each week" },
   "Twice weekly": { days: 2, line: "Two collections a week, on two fixed days" },
-  "Three times weekly": { days: 3, line: "Three collections a week — for large households" },
+  "Three times weekly": { days: 3, line: "Three collections a week, for large households" },
   Monthly: { days: 1, line: "Once a month, on the same weekday" },
   "Twice monthly": { days: 1, line: "Every other week, on the same weekday" },
   Daily: { days: 6, line: "Monday to Saturday" },
@@ -158,7 +158,7 @@ export const FREQ_META: Record<string, { days: number; line: string }> = {
 };
 
 export const WINDOWS = ["06:00–08:00", "07:00–09:00", "08:00–10:00", "14:00–16:00"] as const;
-/** Ewet's route days are Mon & Thu — the truck is already on your street. */
+/** Ewet's route days are Mon & Thu, the truck is already on your street. */
 export const ROUTE_DAYS: Weekday[] = ["Mon", "Thu"];
 
 export type SlotState = "open" | "few" | "full";
@@ -192,11 +192,11 @@ export const fromIsoDay = (s: string) => new Date(`${s}T07:00:00+01:00`);
 /* ------------------------------------------------------------------ */
 
 const TERMS: Array<[string, string]> = [
-  ["What Slate provides", "Collection on your agreed days, inside your window, by a verified operator that Slate contracts and supervises. Slate is responsible for the service — not the operator."],
-  ["Your part", "Bins at the gate by the start of your window, waste bagged. No medical, chemical or construction waste in household bins — book a special collection for those."],
+  ["What Slate provides", "Collection on your agreed days, inside your window, by a verified operator that Slate contracts and supervises. Slate is responsible for the service, not the operator."],
+  ["Your part", "Bins at the gate by the start of your window, waste bagged. No medical, chemical or construction waste in household bins, book a special collection for those."],
   ["Missed pickups", "Report within 48 hours. Slate sends a recovery crew within 24 hours of your report. If we miss that, one collection is credited to your next bill."],
   ["Billing", "Monthly in advance on the 1st; your first month is pro-rated. A failed payment is retried three times over three days and your service continues for 7 days."],
-  ["Changes and pauses", "Change days, window or frequency at any time — it applies from your next collection. Pause for up to 60 days without losing your route slot."],
+  ["Changes and pauses", "Change days, window or frequency at any time, it applies from your next collection. Pause for up to 60 days without losing your route slot."],
   ["Bins", "Slate bins remain Slate property. A lost or burnt bin is replaced for ₦8,500; damage during collection is replaced free."],
 ];
 const CANCELLATION: Array<[string, string]> = [
@@ -262,7 +262,7 @@ export function DateTile({ date, live, muted, className }: { date: string | Date
   );
 }
 
-/** "Collected by Ufok Environmental for Slate" — the operator, shown modestly. */
+/** "Collected by Ufok Environmental for Slate", the operator, shown modestly. */
 export function OperatorLine({ name, verb = "Collected", className }: { name: string | null; verb?: string; className?: string }) {
   if (!name) return <span className={cn("text-ink-2", className)}>Slate is assigning a verified operator</span>;
   return (
@@ -310,7 +310,7 @@ export function PriceLine({ label, sub, value, strong, muted }: { label: ReactNo
 }
 
 /* ------------------------------------------------------------------ */
-/* Week strip — the schedule, drawn as a timetable                     */
+/* Week strip, the schedule, drawn as a timetable                     */
 /* ------------------------------------------------------------------ */
 
 export function WeekStrip({
@@ -371,7 +371,7 @@ export function WeekStrip({
                   {short && <span className="text-[12px] font-medium tnum leading-none">{short}</span>}
                 </>
               ) : (
-                <span className="t-micro">—</span>
+                <span className="t-micro">, </span>
               )}
               {on && !isLive && <span className="absolute inset-x-1.5 bottom-1.5 h-px border-t border-dashed border-white/35" aria-hidden />}
             </span>
@@ -399,7 +399,7 @@ export function WeekStrip({
 }
 
 /* ------------------------------------------------------------------ */
-/* Live route — same mechanism as the dashboard                        */
+/* Live route, same mechanism as the dashboard                        */
 /* ------------------------------------------------------------------ */
 
 export const LIVE_STOPS = [0.18, 0.4, 0.78];
@@ -497,7 +497,7 @@ export function LiveStrip({ pickup, route, onRate }: { pickup: Pickup; route: Re
 }
 
 /* ------------------------------------------------------------------ */
-/* Evidence — a designed slate field, never a grey box                 */
+/* Evidence, a designed slate field, never a grey box                 */
 /* ------------------------------------------------------------------ */
 
 export function EvidenceField({
@@ -567,7 +567,7 @@ export function EvidenceField({
 }
 
 /* ------------------------------------------------------------------ */
-/* SLA countdown — 24 hours to recovery                                */
+/* SLA countdown, 24 hours to recovery                                */
 /* ------------------------------------------------------------------ */
 
 export function SlaCountdown({ startedAt, hours = 24, due }: { startedAt: number; hours?: number; due: string }) {
@@ -638,7 +638,7 @@ export const dayLabel = (d: Date | string) => {
 export const joinDays = (days: string[]) => (days.length <= 1 ? days.join("") : `${days.slice(0, -1).join(", ")} & ${days[days.length - 1]}`);
 
 /* ------------------------------------------------------------------ */
-/* Subscription actions — shared by C6 and C7                          */
+/* Subscription actions, shared by C6 and C7                          */
 /* ------------------------------------------------------------------ */
 
 /** Next date (≥ `lead` days from DEMO_NOW) that falls on one of `days`. */
@@ -718,7 +718,7 @@ export function SubscriptionDialogs({
                 const next = nextOn(days);
                 onUpdate(sub.id, { frequency: freq, days, window: win, price, nextPickup: sub.status === "Active" && next ? next.toISOString() : sub.nextPickup });
                 onClose();
-                toast.success("Schedule updated", `${joinDays(days)}, ${win}${next && sub.status === "Active" ? ` — from ${formatDay(next)}` : ""}. ${price !== sub.price ? `New price ${formatNaira(price)}/month from 1 Nov.` : ""}`);
+                toast.success("Schedule updated", `${joinDays(days)}, ${win}${next && sub.status === "Active" ? `, from ${formatDay(next)}` : ""}. ${price !== sub.price ? `New price ${formatNaira(price)}/month from 1 Nov.` : ""}`);
               }}
             >
               Save changes
@@ -768,7 +768,7 @@ export function SubscriptionDialogs({
         description="No collections and no charges while paused. Your route slot is held for up to 60 days."
         confirmLabel="Pause subscription"
         onConfirm={() => {
-          onUpdate(sub.id, { status: "Paused", nextPickup: null, nextPayment: null, pausedOn: DEMO_NOW.toISOString(), statusNote: pauseFor === "Until I resume" ? "Paused today — resume any time within 60 days" : `Paused until ${formatDay(pauseUntil)}` });
+          onUpdate(sub.id, { status: "Paused", nextPickup: null, nextPayment: null, pausedOn: DEMO_NOW.toISOString(), statusNote: pauseFor === "Until I resume" ? "Paused today, resume any time within 60 days" : `Paused until ${formatDay(pauseUntil)}` });
           toast.success("Subscription paused", pauseFor === "Until I resume" ? "Resume any time from Subscriptions." : `Collections restart automatically on ${formatDay(pauseUntil)}.`);
         }}
       >
@@ -786,7 +786,7 @@ export function SubscriptionDialogs({
         description={`Collections restart ${resumeDate ? `on ${formatDay(resumeDate)}` : "this week"} at ${sub.address.split(",")[0]}, ${joinDays(sub.days)} ${sub.window}. ${formatNaira(sub.price)}/month, pro-rated for October.`}
         confirmLabel="Resume"
         onConfirm={() => {
-          onUpdate(sub.id, { status: "Active", nextPickup: resumeDate?.toISOString() ?? null, nextPayment: new Date("2026-11-01T06:00:00+01:00").toISOString(), statusNote: `Resumed today — first collection ${resumeDate ? formatDay(resumeDate) : "this week"}` });
+          onUpdate(sub.id, { status: "Active", nextPickup: resumeDate?.toISOString() ?? null, nextPayment: new Date("2026-11-01T06:00:00+01:00").toISOString(), statusNote: `Resumed today, first collection ${resumeDate ? formatDay(resumeDate) : "this week"}` });
           toast.success("Subscription resumed", `First collection ${resumeDate ? formatDay(resumeDate) : "this week"}. ${sub.operator ?? "Your operator"} has been notified by Slate.`);
         }}
       />
@@ -807,7 +807,7 @@ export function SubscriptionDialogs({
         confirmLabel="Cancel subscription"
         cancelLabel="Keep it"
         onConfirm={() => {
-          onUpdate(sub.id, { status: "Cancelled", nextPickup: null, nextPayment: null, cancelledOn: DEMO_NOW.toISOString(), cancelReason: reason || "No reason given", statusNote: `Cancelled today${reason ? ` — ${reason.toLowerCase()}` : ""}` });
+          onUpdate(sub.id, { status: "Cancelled", nextPickup: null, nextPayment: null, cancelledOn: DEMO_NOW.toISOString(), cancelReason: reason || "No reason given", statusNote: `Cancelled today${reason ? `, ${reason.toLowerCase()}` : ""}` });
           toast.success("Subscription cancelled", refund ? `${formatNaira(refund)} refund on its way to ${sub.paymentMethod}.` : "Nothing further will be charged.");
         }}
       >
@@ -845,7 +845,7 @@ export function SubscriptionDialogs({
       >
         <div className="flex flex-col gap-2.5 pb-3" role="radiogroup">
           <ChoiceCard selected={method === "Visa •• 4021"} onSelect={() => setMethod("Visa •• 4021")} icon={<CreditCard />} title="Visa •• 4021" description="Default · expires 08/28" />
-          <ChoiceCard selected={method === "Verve •• 7735"} onSelect={() => setMethod("Verve •• 7735")} icon={<CreditCard />} title="Verve •• 7735" description="Declined 3 times on 1 Sep — check your balance before using" />
+          <ChoiceCard selected={method === "Verve •• 7735"} onSelect={() => setMethod("Verve •• 7735")} icon={<CreditCard />} title="Verve •• 7735" description="Declined 3 times on 1 Sep, check your balance before using" />
           <ChoiceCard selected={method === "Smart Sweep"} onSelect={() => setMethod("Smart Sweep")} icon={<Coins />} title="Smart Sweep" description={`About ${formatNaira(Math.ceil(sub.price / 4 / 50) * 50)} a week, charged automatically. No interest.`} />
           <Link to="/app/payment-methods" className="mt-1 inline-flex w-fit items-center gap-1.5 t-small font-medium text-ink-2 hover:text-ink">
             <Plus className="size-4" /> Add a card in Payment methods

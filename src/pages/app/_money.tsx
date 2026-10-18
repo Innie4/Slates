@@ -26,7 +26,7 @@ export interface Txn {
   attempts: number;
   /** Short explanation shown under the row (why it failed, what's pending, what settled it). */
   note?: string;
-  /** Failed charge already settled by another payment — no retry. */
+  /** Failed charge already settled by another payment, no retry. */
   settledBy?: string;
   failureReason?: string;
 }
@@ -55,14 +55,14 @@ export function buildTransactions(): Txn[] {
     if (t.reference === "TXN-4C9TBA")
       return { ...t, failureReason: "Card expired", settledBy: "TXN-4C9TBB", note: "Verve •• 7735 had expired. Settled the next day with Visa •• 4021." };
     if (t.status === "Pending") return { ...t, note: "Your bank is confirming this. Saturday's bulk pickup is held for you." };
-    if (t.status === "Refunded") return { ...t, note: "Refunded in full on 26 Aug — the crew couldn't access your gate." };
+    if (t.status === "Refunded") return { ...t, note: "Refunded in full on 26 Aug, the crew couldn't access your gate." };
     return t;
   });
   return [
     {
       id: "up-sweep",
       reference: "SWP-8K2Q-06",
-      service: "Smart Sweep — charge 7",
+      service: "Smart Sweep, charge 7",
       amount: sweep.maxCharge,
       date: sweep.nextCharge,
       method: "Visa •• 4021",
@@ -75,7 +75,7 @@ export function buildTransactions(): Txn[] {
     {
       id: "up-nov",
       reference: "INV-26-11-0001",
-      service: "Slate Home — November",
+      service: "Slate Home, November",
       amount: me.household.monthly,
       date: "2026-11-01T06:00:00+01:00",
       method: "Visa •• 4021",
@@ -88,7 +88,7 @@ export function buildTransactions(): Txn[] {
     {
       id: "pay-x1",
       reference: "TXN-8RK2PF",
-      service: "Extra pickup — 29 Sept",
+      service: "Extra pickup, 29 Sept",
       amount: 3500,
       date: "2026-09-29T16:40:00+01:00",
       method: "Verve •• 7735",
@@ -97,7 +97,7 @@ export function buildTransactions(): Txn[] {
       kind: "extra",
       attempts: 3,
       failureReason: "Card expired",
-      note: "Verve •• 7735 expired in September. The pickup went ahead — this charge is still owed.",
+      note: "Verve •• 7735 expired in September. The pickup went ahead, this charge is still owed.",
     },
     ...base,
   ];
@@ -135,7 +135,7 @@ export function receiptForTxn(t: Txn): ReceiptDoc {
       ? [{ label: t.service, sub: "Mon & Thu collection, 07:00–09:00 · 1 × 240 L bin", amount: t.amount }]
       : t.kind === "bulk"
         ? [
-            { label: "Bulk Waste Pickup — deposit", sub: "Old wardrobe and two mattresses · Sat 10 Oct", amount: t.amount },
+            { label: "Bulk Waste Pickup, deposit", sub: "Old wardrobe and two mattresses · Sat 10 Oct", amount: t.amount },
             { label: "Balance due after collection", sub: "Quoted total ₦18,000", amount: undefined },
           ]
         : isCommunity
@@ -202,7 +202,7 @@ export function downloadReceipt(doc: Pick<ReceiptDoc, "reference">, toast: Retur
   toast.success("Receipt downloaded", `Slate-${doc.reference}.pdf`);
 }
 
-/** C24 — a receipt laid out like the printed slip. Used by Payments and Receipts. */
+/** C24, a receipt laid out like the printed slip. Used by Payments and Receipts. */
 export function ReceiptModal({ doc, onClose }: { doc: ReceiptDoc | null; onClose: () => void }) {
   const toast = useToast();
   return (
@@ -261,7 +261,7 @@ export function ReceiptModal({ doc, onClose }: { doc: ReceiptDoc | null; onClose
                     {l.sub && <p className="t-micro text-ink-3">{l.sub}</p>}
                   </td>
                   <td className={cn("py-2 text-right t-mono", l.amount !== undefined && l.amount < 0 ? "text-success" : "text-ink")}>
-                    {l.amount === undefined ? "—" : l.amount < 0 ? `−${formatNaira(-l.amount)}` : formatNaira(l.amount)}
+                    {l.amount === undefined ? "Not set" : l.amount < 0 ? `−${formatNaira(-l.amount)}` : formatNaira(l.amount)}
                   </td>
                 </tr>
               ))}
@@ -345,7 +345,7 @@ export function ReportIssueModal({ txn, onClose }: { txn: Pick<Txn, "reference" 
               setBusy(true);
               await new Promise((r) => setTimeout(r, 800));
               setBusy(false);
-              toast.success("Report sent — CMP-1214", "Slate's billing team replies within one working day.");
+              toast.success("Report sent, CMP-1214", "Slate's billing team replies within one working day.");
               close();
             }}
           >
@@ -407,7 +407,7 @@ export const INITIAL_CARDS: SavedCard[] = [
   { id: "card-verve", brand: "Verve", last4: "7735", exp: "09/26", bank: "First Bank", holder: "IMAOBONG AKPAN", isDefault: false, expired: true },
 ];
 
-/** Card brand as set type — a wordmark-like label, not a logo. */
+/** Card brand as set type, a wordmark-like label, not a logo. */
 export function BrandMark({ brand, className }: { brand: SavedCard["brand"]; className?: string }) {
   return (
     <span className={cn("font-display text-[15px] font-bold tracking-[-0.01em]", brand === "Visa" && "italic", className)}>
@@ -465,7 +465,7 @@ export interface SweepAttempt {
   note?: string;
 }
 
-/** Charge history for smartSweeps[0] — sums to ₦8,500 collected. */
+/** Charge history for smartSweeps[0], sums to ₦8,500 collected. */
 export const SWEEP_HISTORY: SweepAttempt[] = [
   { id: "a7", date: "2026-10-01T09:00:00+01:00", amount: 1500, status: "Successful", reference: "SWP-8K2Q-05" },
   { id: "a6", date: "2026-09-24T09:00:00+01:00", amount: 1500, status: "Successful", reference: "SWP-8K2Q-04" },

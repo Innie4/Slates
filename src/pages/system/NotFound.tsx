@@ -5,7 +5,7 @@ import { Strata } from "@/components/brand/Strata";
 import { ButtonLink } from "@/components/ui";
 
 const SUGGESTIONS = [
-  ["Report a missed pickup", "/login"],
+  ["Report a missed pickup", "/app/report-missed"],
   ["See services and prices", "/pricing"],
   ["How Slate works", "/how-it-works"],
   ["Contact support", "/contact"],
@@ -13,7 +13,7 @@ const SUGGESTIONS = [
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-dvh flex-col bg-canvas">
+    <main className="flex min-h-dvh flex-col bg-canvas">
       <div className="container-page flex h-16 items-center">
         <Logo />
       </div>
@@ -39,6 +39,6 @@ export default function NotFound() {
           <Strata tone="on-slate" bands={5} seed={404} className="absolute inset-0 h-full w-full" />
         </div>
       </div>
-    </div>
+    </main>
   );
 }

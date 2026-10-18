@@ -1,5 +1,5 @@
 /**
- * Ikpa Hills University — local demo data for the institution portal.
+ * Ikpa Hills University, local demo data for the institution portal.
  * Demo clock: Monday 5 October 2026, 08:12 WAT (DEMO_NOW).
  * Deterministic: no randomness, so every render and screenshot is the same.
  */
@@ -41,7 +41,7 @@ export const OPERATORS: Record<OperatorKey, { name: string; short: string; rc: s
 };
 
 /* ------------------------------------------------------------------ */
-/* Facilities — with campus-plan geometry (viewBox 0 0 400 256)        */
+/* Facilities, with campus-plan geometry (viewBox 0 0 400 256)        */
 /* ------------------------------------------------------------------ */
 
 export type FacilityId = "academic" | "senate" | "medical" | "halls" | "staff" | "sports" | "kitchen";
@@ -144,7 +144,7 @@ export const facilities: Facility[] = [
 
 export const facilityById = (id: string) => facilities.find((f) => f.id === id)!;
 
-/** Campus buildings not on a Slate schedule — drawn faintly for orientation. */
+/** Campus buildings not on a Slate schedule, drawn faintly for orientation. */
 export const otherBuildings = [
   { name: "Library", shape: "262,29 324,26 326,85 264,88", x: 294, y: 58 },
   { name: "Works yard", shape: "140,186 244,182 246,238 142,242", x: 193, y: 213 },
@@ -152,7 +152,7 @@ export const otherBuildings = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* Waste locations — bin points                                        */
+/* Waste locations, bin points                                        */
 /* ------------------------------------------------------------------ */
 
 export interface WasteLocation {
@@ -552,7 +552,7 @@ export const contracts: InstContract[] = [
     pricing: [{ label: "Billing", value: "Billed to the teaching clinic directly, not through Slate" }],
     sla: [{ label: "Consignment notes", target: "Quarterly upload to Slate", actual: "Q3 notes not yet uploaded", ok: false }],
     paymentTerms: "Not billed through Slate",
-    version: "—",
+    version: "Not set",
     docs: [
       { name: "Specialist service agreement (copy)", version: "2026", date: "2026-01-06", size: "740 KB", status: "Signed" },
       { name: "NESREA licence, hazardous medical waste", version: "2025–26", date: "2025-11-20", size: "380 KB", status: "Current" },
@@ -767,7 +767,7 @@ export const complianceDocs: ComplianceDoc[] = [
   { id: "CD-10", name: "Vehicle roadworthiness, 3 vehicles", category: "Safety & insurance", holder: "Ibom Hauliers", issuer: "Vehicle Inspection Office, Uyo", issued: "2025-11-12", expires: "2026-11-12", status: "Expiring", version: 1, size: "2.1 MB", history: [{ version: 1, date: "2026-04-03", by: "Slate compliance", note: "Uploaded and verified" }] },
   { id: "CD-04", name: "Hazardous medical waste licence", category: "Specialist", holder: "Akwa MedWaste Disposal Ltd", issuer: "NESREA", issued: "2025-11-20", expires: "2026-11-19", status: "Expiring", version: 1, size: "380 KB", note: "Required for the teaching clinic's hazardous stream. Not collected by Slate.", history: [{ version: 1, date: "2026-01-06", by: "Dr. Mfon Udoh", note: "Copy filed by the teaching clinic" }] },
   { id: "CD-08", name: "Annual environmental audit report, 2025", category: "Audits", holder: "Ikpa Hills University", issuer: "AKSEPA", issued: "2025-10-01", expires: "2026-09-30", status: "Expired", version: 1, size: "4.8 MB", note: "The 2026 audit is booked with Eko Environmental Consult for 21 Oct.", history: [{ version: 1, date: "2025-10-06", by: "Engr. Ubong Akpan", note: "Uploaded" }] },
-  { id: "CD-07", name: "Hazardous waste consignment notes, Q3 2026", category: "Specialist", holder: "Akwa MedWaste Disposal Ltd", issuer: "Akwa MedWaste Disposal Ltd", issued: "2026-09-30", status: "Pending", version: 0, size: "—", note: "Due by 15 Oct. The teaching clinic holds the originals.", history: [] },
+  { id: "CD-07", name: "Hazardous waste consignment notes, Q3 2026", category: "Specialist", holder: "Akwa MedWaste Disposal Ltd", issuer: "Akwa MedWaste Disposal Ltd", issued: "2026-09-30", status: "Pending", version: 0, size: "Not set", note: "Due by 15 Oct. The teaching clinic holds the originals.", history: [] },
   { id: "CD-05", name: "Disposal certificate, September 2026", category: "Disposal certificates", holder: "Ibom Hauliers", issuer: "Use Offot transfer station", issued: "2026-10-03", status: "Verified", version: 1, size: "290 KB", note: "62.4 t received from Ikpa Hills University across 104 loads.", history: [{ version: 1, date: "2026-10-03", by: "Slate compliance", note: "Matched to weighbridge tickets and verified" }] },
   { id: "CD-06", name: "Disposal certificate, August 2026", category: "Disposal certificates", holder: "Ibom Hauliers", issuer: "Use Offot transfer station", issued: "2026-09-04", status: "Verified", version: 1, size: "276 KB", history: [{ version: 1, date: "2026-09-04", by: "Slate compliance", note: "Matched to weighbridge tickets and verified" }] },
   { id: "CD-01", name: "Waste generator registration", category: "Permits", holder: "Ikpa Hills University", issuer: "AKSEPA", issued: "2026-03-31", expires: "2027-03-31", status: "Verified", version: 2, size: "520 KB", history: [{ version: 2, date: "2026-04-02", by: "Engr. Ubong Akpan", note: "Renewed for 2026/27" }, { version: 1, date: "2025-04-01", by: "Engr. Ubong Akpan", note: "First registration" }] },

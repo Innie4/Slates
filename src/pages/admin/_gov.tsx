@@ -1,5 +1,5 @@
 /**
- * Admin — quality, insight and governance helpers (Complaints, Support, Reviews,
+ * Admin, quality, insight and governance helpers (Complaints, Support, Reviews,
  * Community, Recycling, Analytics, Reports, Notifications, Marketing, Compliance,
  * Documents, Users, Roles, Audit log, Settings). Page-local; not a shared kit.
  */
@@ -174,7 +174,7 @@ export function useExport() {
           a.click();
           setTimeout(() => URL.revokeObjectURL(url), 1500);
         } catch {
-          /* download blocked — toast still confirms */
+          /* download blocked, toast still confirms */
         }
         toast.success(`${name} exported`, `${rows.length} rows · slate-${slug}-2026-10-05.csv`);
       } else if (format === "PDF") {
@@ -222,7 +222,7 @@ export const STAFF: StaffUser[] = [
   { id: "usr-07", name: "Itoro Effiong", email: "itoro.effiong@slate.ng", role: "Partnership Manager", status: "Active", mfa: true, lastActive: hoursAgo(20), device: "Chrome · macOS" },
   { id: "usr-08", name: "Mbuotidem Udoh", email: "mbuotidem.udoh@slate.ng", role: "Compliance Admin", status: "Active", mfa: true, lastActive: hoursAgo(26), device: "Firefox · Ubuntu" },
   { id: "usr-09", name: "Unwana Bassey", email: "unwana.bassey@slate.ng", role: "Analyst", status: "Active", mfa: false, lastActive: hoursAgo(50), device: "Chrome · Windows" },
-  { id: "usr-10", name: "Nkoyo Edet", email: "nkoyo.edet@slate.ng", role: "Operations Admin", status: "Invited", mfa: false, lastActive: hoursAgo(30), device: "—" },
+  { id: "usr-10", name: "Nkoyo Edet", email: "nkoyo.edet@slate.ng", role: "Operations Admin", status: "Invited", mfa: false, lastActive: hoursAgo(30), device: "Not set" },
   { id: "usr-11", name: "Kufre Okon", email: "kufre.okon@slate.ng", role: "Finance Admin", status: "Deactivated", mfa: true, lastActive: hoursAgo(24 * 41), device: "Chrome · Windows" },
 ];
 
@@ -316,7 +316,7 @@ export const customerIdByName = (name: string) => customers.find((c) => c.name =
 export const operatorIdByName = (name: string) => operators.find((o) => o.short === name || o.name === name)?.id;
 
 /* ------------------------------------------------------------------ */
-/* Complaints — admin queue with believable SLA clocks                 */
+/* Complaints, admin queue with believable SLA clocks                 */
 /* ------------------------------------------------------------------ */
 
 export const SLA_HOURS: Record<Complaint["severity"], number> = { Critical: 4, High: 12, Medium: 24, Low: 48 };
@@ -417,7 +417,7 @@ export function RatingStars({ value, size = "sm", className }: { value: number; 
 
 /**
  * The one hero per screen: a big figure and the sentence that explains it.
- * Sits on the canvas, closed by a hairline — never a tinted tile.
+ * Sits on the canvas, closed by a hairline, never a tinted tile.
  */
 export function Headline({
   kicker,
@@ -518,7 +518,7 @@ export const SAMPLE_VARS: Record<string, string> = {
   support_phone: "0700 752 8300",
 };
 
-/** Dense key/value grid — two columns even on phones (drawers, detail panes). */
+/** Dense key/value grid, two columns even on phones (drawers, detail panes). */
 export function Facts({ items, className, cols = 3 }: { items: Array<{ label: ReactNode; value: ReactNode; full?: boolean }>; className?: string; cols?: 2 | 3 }) {
   return (
     <dl className={cn("grid grid-cols-2 gap-x-6 gap-y-4", cols === 3 && "sm:grid-cols-3", className)}>

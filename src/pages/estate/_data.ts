@@ -1,5 +1,5 @@
 /**
- * Shelter Afrique Estate — local mock data for the estate manager portal.
+ * Shelter Afrique Estate, local mock data for the estate manager portal.
  * Deterministic. The demo clock is Mon 5 Oct 2026, 08:12 (collection day).
  *
  * Billing model (estate agreement EA-UYO-004):
@@ -73,16 +73,16 @@ export interface Property {
   resident?: string;
   phone?: string;
   email?: string;
-  association: "Member" | "Pending" | "Not joined" | "—";
+  association: "Member" | "Pending" | "Not joined" | "Not set";
   collection: "Active" | "Paused" | "Not enrolled";
-  payment: PayState | "—";
+  payment: PayState | "Not set";
   paid: number;
   point: string;
   since?: string;
-  account: "Active" | "Inactive" | "Suspended" | "—";
+  account: "Active" | "Inactive" | "Suspended" | "Not set";
 }
 
-/* Exact October picture: 285 paid, 6 partial (₦3,000 each), 21 unpaid — 27 households owe ₦157,500. */
+/* Exact October picture: 285 paid, 6 partial (₦3,000 each), 21 unpaid, 27 households owe ₦157,500. */
 const NOT_OCCUPIED: Record<string, Property["status"]> = { "A-17": "Vacant", "C-31": "Under renovation", "D-08": "Vacant", "D-40": "Vacant", "F-22": "Under renovation", "H-05": "Vacant" };
 const UNPAID = new Set(["A-06", "B-19", "B-33", "C-04", "D-12", "D-27", "D-41", "E-09", "E-30", "F-03", "F-12", "F-16", "F-29", "F-35", "G-02", "G-11", "G-24", "G-38", "H-14", "H-21", "H-33"]);
 const PARTIAL = new Set(["A-28", "C-15", "E-22", "F-07", "G-17", "H-30"]);
@@ -107,7 +107,7 @@ export const properties: Property[] = BLOCKS.flatMap((b) =>
     const unit = `${b}-${String(i + 1).padStart(2, "0")}`;
     const notOcc = NOT_OCCUPIED[unit];
     const resident = notOcc ? undefined : unit === "C-07" ? "Uduak Essien" : uniqueName();
-    const payment: Property["payment"] = notOcc ? "—" : UNPAID.has(unit) ? "Unpaid" : PARTIAL.has(unit) ? "Partial" : "Paid";
+    const payment: Property["payment"] = notOcc ? "Not set" : UNPAID.has(unit) ? "Unpaid" : PARTIAL.has(unit) ? "Partial" : "Paid";
     const phone = `+234 ${pick(["803", "806", "813", "816", "703", "706", "810", "905", "908"])} ${Math.floor(100 + rnd() * 899)} ${Math.floor(1000 + rnd() * 8999)}`;
     const month = pick(["05", "05", "05", "06", "06", "07", "08", "09"]);
     return {
@@ -119,13 +119,13 @@ export const properties: Property[] = BLOCKS.flatMap((b) =>
       resident,
       phone: resident ? phone : undefined,
       email: resident ? `${resident.split(" ")[0]!.toLowerCase()}.${resident.split(" ")[1]!.toLowerCase()}@${pick(["gmail.com", "gmail.com", "yahoo.com", "outlook.com"])}` : undefined,
-      association: notOcc ? "—" : PENDING.has(unit) ? "Pending" : NOT_JOINED.has(unit) ? "Not joined" : "Member",
+      association: notOcc ? "Not set" : PENDING.has(unit) ? "Pending" : NOT_JOINED.has(unit) ? "Not joined" : "Member",
       collection: notOcc ? (notOcc === "Under renovation" ? "Paused" : "Not enrolled") : "Active",
       payment,
       paid: payment === "Paid" ? PER_HOUSEHOLD : payment === "Partial" ? 3000 : 0,
       point: pointFor(b).id,
       since: resident ? `2026-${month}-${String(2 + Math.floor(rnd() * 26)).padStart(2, "0")}` : undefined,
-      account: notOcc ? "—" : SUSPENDED.has(unit) ? "Suspended" : INACTIVE.has(unit) ? "Inactive" : "Active",
+      account: notOcc ? "Not set" : SUSPENDED.has(unit) ? "Suspended" : INACTIVE.has(unit) ? "Inactive" : "Active",
     };
   }),
 );
@@ -225,10 +225,10 @@ export const collections: Collection[] = [
       return { id, date, kind: "Estate collection", block: b, window: win, status: "Completed", done: hhmm(...addMin(start, 24 + Math.floor(rnd() * 16))), bins };
     }),
   ),
-  { id: "PU-26-09311", date: "2026-09-19", kind: "Recycling", window: "09:00–12:00", status: "Completed", done: "11:36", note: "1,240 kg sorted — PET, cans, cardboard. CP-1 and CP-3." },
+  { id: "PU-26-09311", date: "2026-09-19", kind: "Recycling", window: "09:00–12:00", status: "Completed", done: "11:36", note: "1,240 kg sorted, PET, cans, cardboard. CP-1 and CP-3." },
   { id: "PU-26-09466", date: "2026-10-17", kind: "Recycling", window: "09:00–12:00", status: "Upcoming", note: "Monthly recyclables. Residents bring sorted bags to CP-1 and CP-3." },
   { id: "PU-26-09402", date: "2026-09-29", kind: "Bulk pickup", unit: "G-03", window: "10:00–12:00", status: "Completed", done: "10:52", note: "Old sofa set and a broken water heater." },
-  { id: "PU-26-09488", date: "2026-10-07", kind: "Bulk pickup", unit: "D-14", window: "10:00–12:00", status: "Upcoming", note: "Moving out — wardrobe, two mattresses, cartons." },
+  { id: "PU-26-09488", date: "2026-10-07", kind: "Bulk pickup", unit: "D-14", window: "10:00–12:00", status: "Upcoming", note: "Moving out, wardrobe, two mattresses, cartons." },
   { id: "PU-26-09491", date: "2026-10-10", kind: "Bulk pickup", unit: "B-21", window: "14:00–16:00", status: "Upcoming", note: "Renovation debris, 9 bags. Quote ₦18,500 accepted." },
 ];
 
@@ -255,7 +255,7 @@ export function paymentHistory(p: Property): ResidentPayment[] {
     const method = ["Card •• " + (1000 + Math.floor(r() * 8999)).toString().slice(0, 4), "Bank transfer", "USSD", "Card"][Math.floor(r() * 4)]!;
     const id = `TXN-${"ABCDEFGHJKMNPQRSTUVWXYZ23456789"[Math.floor(r() * 31)]}${Math.floor(r() * 9)}${"KQMXPRTW"[Math.floor(r() * 8)]}${Math.floor(r() * 9)}${"ABDEFHJLN"[Math.floor(r() * 9)]}${Math.floor(r() * 9)}`;
     if (i === 0) {
-      if (p.payment === "Unpaid") return { id: "—", month: label, amount: 0, date: "", method: "—", status: "Unpaid" };
+      if (p.payment === "Unpaid") return { id: "Not set", month: label, amount: 0, date: "", method: "Not set", status: "Unpaid" };
       if (p.payment === "Partial") return { id, month: label, amount: 3000, date: `${k}-03`, method, status: "Partial" };
       return { id, month: label, amount: PER_HOUSEHOLD, date: `${k}-0${1 + Math.floor(r() * 5)}`, method, status: "Successful" };
     }

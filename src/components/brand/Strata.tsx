@@ -1,7 +1,7 @@
 import { cn } from "@/lib/cn";
 
 /**
- * STRATA — Slate's richness source (DIRECTION.md §5).
+ * STRATA, Slate's richness source (DIRECTION.md §5).
  * Layered slabs of slate with gently cleft edges, one chalk line,
  * and an optional signal band when something is live.
  *

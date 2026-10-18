@@ -82,7 +82,7 @@ export function Eyebrow({ children, className }: { children: ReactNode; classNam
 }
 
 /* ------------------------------------------------------------------ */
-/* Campus plan — Ikpa Hills main campus in the Strata style            */
+/* Campus plan, Ikpa Hills main campus in the Strata style            */
 /* ------------------------------------------------------------------ */
 
 export type FacilityState = "collected" | "live" | "scheduled" | "missed" | "none";

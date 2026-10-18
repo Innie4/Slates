@@ -6,7 +6,7 @@ import { AuthHeading, AuthOutcome, DEMO_OTP, DemoHint, formatPhone, isEmail, mas
 
 type Via = "email" | "phone";
 
-/** A5 — Forgot password: send a reset link (email) or code (SMS). */
+/** A5, Forgot password: send a reset link (email) or code (SMS). */
 export default function ForgotPassword() {
   const navigate = useNavigate();
   const toast = useToast();

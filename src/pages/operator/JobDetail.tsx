@@ -19,7 +19,7 @@ function useDemoClock() {
 }
 
 /**
- * G9 — a single job, built for a phone in a truck: the state machine's next step is
+ * G9, a single job, built for a phone in a truck: the state machine's next step is
  * one big button in the thumb zone, evidence is a camera tap, and the customer is
  * reached through Slate's masked number.
  */
@@ -126,7 +126,7 @@ function JobView({ job, jobs }: { job: Job; jobs: Job[] }) {
                 <div>
                   <p className="t-display text-ink">Clean slate.</p>
                   <p className="mt-3 t-body text-ink-2">
-                    Collected at <span className="font-semibold text-ink tnum">{job.completedAt ? formatTime(job.completedAt) : "—"}</span>
+                    Collected at <span className="font-semibold text-ink tnum">{job.completedAt ? formatTime(job.completedAt) : "Not set"}</span>
                     {job.completedAt && !isTodayIso(job.completedAt) ? ` on ${formatDay(job.completedAt)}` : ""} by {job.driver.split(" ")[0]}. Slate has told the customer.
                   </p>
                 </div>
@@ -184,7 +184,7 @@ function JobView({ job, jobs }: { job: Job; jobs: Job[] }) {
 
           {job.status === "Failed" && (
             <Alert tone="warning" title={`Failed: ${job.failReason?.toLowerCase()}`}>
-              Slate has told the customer. Recover by {job.failedAt ? formatTime(new Date(new Date(job.failedAt).getTime() + 24 * 3600_000)) : "—"} tomorrow, or a ₦2,500 deduction applies under CT-UYO-011.
+              Slate has told the customer. Recover by {job.failedAt ? formatTime(new Date(new Date(job.failedAt).getTime() + 24 * 3600_000)) : "Not set"} tomorrow, or a ₦2,500 deduction applies under CT-UYO-011.
             </Alert>
           )}
           {job.status === "Cancelled" && (
@@ -203,7 +203,7 @@ function JobView({ job, jobs }: { job: Job; jobs: Job[] }) {
                 { label: job.households ? "Households" : "Bins", value: job.households ? `${job.households} homes · ${job.bins} skips` : `${job.bins} × 240-litre` },
                 { label: "Customer type", value: job.customerType },
                 { label: "Driver", value: job.driver || <Badge tone="warning" dot>Unassigned</Badge> },
-                { label: "Vehicle", value: job.vehicle || "—", mono: !!job.vehicle },
+                { label: "Vehicle", value: job.vehicle || "Not set", mono: !!job.vehicle },
               ]}
             />
             {job.access && (
@@ -272,7 +272,7 @@ function JobView({ job, jobs }: { job: Job; jobs: Job[] }) {
               rows={3}
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="For Slate and the next crew — e.g. bin moved behind the generator house"
+              placeholder="For Slate and the next crew, e.g. bin moved behind the generator house"
             />
             <div className="flex justify-end">
               <Button
@@ -412,7 +412,7 @@ function Actions({ job, onStart, onArrive, onComplete, onFail, onRetry }: { job:
         </p>
       );
     default:
-      return <p className="flex h-13 items-center justify-center rounded-md bg-sunken px-4 text-[15px] font-medium text-ink-2">Cancelled — nothing to do</p>;
+      return <p className="flex h-13 items-center justify-center rounded-md bg-sunken px-4 text-[15px] font-medium text-ink-2">Cancelled, nothing to do</p>;
   }
 }
 

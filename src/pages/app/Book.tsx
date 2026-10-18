@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router";
 import { ArrowLeft, ArrowRight, Check, CreditCard, Home, MapPin, Minus, Package, Plus, Coins, Lock, CircleAlert } from "lucide-react";
 import { Strata } from "@/components/brand/Strata";
 import {
-  Alert, AddressInput, Badge, Button, ButtonLink, Checkbox, ChoiceCard, Input, Modal, Page, PageHeader, Ref, Stepper, Timeline, useToast,
+  Alert, AddressInput, Badge, Button, ButtonLink, Checkbox, ChoiceCard, DatePicker, Input, Modal, Page, PageHeader, Ref, Stepper, Timeline, useToast,
 } from "@/components/ui";
 import { cn } from "@/lib/cn";
 import { DEMO_NOW, formatNaira } from "@/lib/format";
@@ -63,7 +63,7 @@ function conflictFor(s: Service | undefined, p: Property | undefined): Conflict 
   if (same?.status === "Active")
     return { level: "block", title: `${s.name} is already active here`, body: <>To change days or frequency, <Link className="font-medium text-ink underline underline-offset-4" to={`/app/subscriptions/${same.id}`}>modify that subscription</Link>.</> };
   if (same?.status === "Pending") return { level: "block", title: `${s.name} already starts here on Tue 13 Oct`, body: <>You can change it from <Link className="font-medium text-ink underline underline-offset-4" to={`/app/subscriptions/${same.id}`}>the subscription</Link> before it starts.</> };
-  if (same?.status === "Paused") return { level: "block", title: `Your ${s.name} here is paused`, body: <>Resume it instead — you keep your route slot. <Link className="font-medium text-ink underline underline-offset-4" to="/app/subscriptions?tab=paused">Go to paused</Link></> };
+  if (same?.status === "Paused") return { level: "block", title: `Your ${s.name} here is paused`, body: <>Resume it instead, you keep your route slot. <Link className="font-medium text-ink underline underline-offset-4" to="/app/subscriptions?tab=paused">Go to paused</Link></> };
   const paused = subs.find((x) => x.status === "Paused");
   if (paused) return { level: "note", title: `Your paused ${paused.service} here will close`, body: `When ${s.name} starts, Slate closes the paused subscription so you're never billed twice for one address.` };
   const active = subs.find((x) => x.status === "Active" && x.serviceId.startsWith("svc-home") && s.id.startsWith("svc-home"));
@@ -71,7 +71,7 @@ function conflictFor(s: Service | undefined, p: Property | undefined): Conflict 
   return null;
 }
 
-/** C5 — book a service in nine short steps. State persists across steps. */
+/** C5, book a service in nine short steps. State persists across steps. */
 export default function Book() {
   const [params] = useSearchParams();
   const toast = useToast();
@@ -192,7 +192,7 @@ export default function Book() {
           <Timeline
             items={[
               { title: "Booking confirmed", time: "Now", description: `${formatNaira(dueNow)} charged to ${d.payment === "visa" ? "Visa •• 4021" : d.payment === "new" ? `card •• ${cardDigits.slice(-4)}` : "your first Smart Sweep charge"}. Receipt sent by SMS and email.`, state: "done" },
-              { title: "Slate assigns a verified operator in your area", time: "Within 24 h", description: "You'll see who is collecting — Slate stays your one contact for everything.", state: "current" },
+              { title: "Slate assigns a verified operator in your area", time: "Within 24 h", description: "You'll see who is collecting, Slate stays your one contact for everything.", state: "current" },
               ...(isRecycling
                 ? [{ title: "Sorting sacks delivered", time: "Day before", description: "Three labelled sacks: PET, cans, paper.", state: "upcoming" as const }]
                 : [{ title: "Slate bin delivered", time: "Day before", description: `${1 + d.extraBins} × 240-litre bin${d.extraBins ? "s" : ""}, dropped at the gate.`, state: "upcoming" as const }]),
@@ -215,7 +215,7 @@ export default function Book() {
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12">
         <div className="flex min-w-0 max-w-2xl flex-col gap-6">
-          {/* STEP 1 — service */}
+          {/* STEP 1, service */}
           {step === 0 && (
             <StepBody title="What should Slate collect?" sub="Regular services for your home. You can add more later.">
               {pre && !preBookable && (
@@ -251,7 +251,7 @@ export default function Book() {
             </StepBody>
           )}
 
-          {/* STEP 2 — property */}
+          {/* STEP 2, property */}
           {step === 1 && service && (
             <StepBody title="Where should Slate collect?" sub="Choose a saved property, or add a new address.">
               <div className="flex flex-col gap-2.5" role="radiogroup" aria-label="Property">
@@ -286,18 +286,18 @@ export default function Book() {
             </StepBody>
           )}
 
-          {/* STEP 3 — frequency */}
+          {/* STEP 3, frequency */}
           {step === 2 && service && (
-            <StepBody title="How often?" sub={service.frequencies.length === 1 ? `${service.name} runs ${service.frequency.toLowerCase()}. For more collections, choose Slate Home.` : "You can change this any time — it applies from your next collection."}>
+            <StepBody title="How often?" sub={service.frequencies.length === 1 ? `${service.name} runs ${service.frequency.toLowerCase()}. For more collections, choose Slate Home.` : "You can change this any time, it applies from your next collection."}>
               <FrequencyCards service={service} value={d.frequency} onChange={(f) => set({ frequency: f, days: d.days.slice(0, FREQ_META[f]?.days ?? 1), start: "" })} />
             </StepBody>
           )}
 
-          {/* STEP 4 — schedule */}
+          {/* STEP 4, schedule */}
           {step === 3 && service && property && (
             <StepBody
               title="Which days, and when?"
-              sub={`Choose ${needDays === 1 ? "one day" : `${needDays} days`}${isRecycling ? " — collected on that weekday " + (d.frequency === "Monthly" ? "once a month" : "every other week") : ""}. “Route” days are when Slate's truck already serves ${property.area}.`}
+              sub={`Choose ${needDays === 1 ? "one day" : `${needDays} days`}${isRecycling ? ", collected on that weekday " + (d.frequency === "Monthly" ? "once a month" : "every other week") : ""}. “Route” days are when Slate's truck already serves ${property.area}.`}
             >
               <WeekStrip
                 days={d.days}
@@ -336,7 +336,7 @@ export default function Book() {
             </StepBody>
           )}
 
-          {/* STEP 5 — start date */}
+          {/* STEP 5, start date */}
           {step === 4 && (
             <StepBody title="When should it start?" sub={`Your first pickup must fall on ${joinDays(d.days)}. Slate needs two days to assign an operator${isRecycling ? "" : " and deliver your bin"}.`}>
               <MiniCalendar days={d.days} value={d.start} onChange={(v) => set({ start: v })} />
@@ -348,7 +348,7 @@ export default function Book() {
             </StepBody>
           )}
 
-          {/* STEP 6 — price */}
+          {/* STEP 6, price */}
           {step === 5 && service && (
             <StepBody title="Review the price" sub="All-in. No call-out fees, no tips, no surprise charges.">
               <div className="flex flex-col gap-1 border-b border-line pb-5">
@@ -389,7 +389,7 @@ export default function Book() {
             </StepBody>
           )}
 
-          {/* STEP 7 — payment */}
+          {/* STEP 7, payment */}
           {step === 6 && (
             <StepBody title="How would you like to pay?" sub="Slate takes the payment and pays the operator. You'll never be asked for cash at the gate.">
               <div className="flex flex-col gap-2.5" role="radiogroup" aria-label="Payment method">
@@ -441,13 +441,13 @@ export default function Book() {
                   onSelect={() => set({ payment: "sweep" })}
                   icon={<Coins />}
                   title="Smart Sweep"
-                  description={`Pay in small automatic charges instead of one — about ${formatNaira(Math.ceil(monthly / 4 / 50) * 50)} a week from Visa •• 4021. No interest, stop any time.`}
+                  description={`Pay in small automatic charges instead of one, about ${formatNaira(Math.ceil(monthly / 4 / 50) * 50)} a week from Visa •• 4021. No interest, stop any time.`}
                 />
               </div>
             </StepBody>
           )}
 
-          {/* STEP 8 — confirm */}
+          {/* STEP 8, confirm */}
           {step === 7 && service && property && startDate && (
             <StepBody title="Confirm your booking" sub="Check everything once. You can change any of it later too.">
               <dl className="flex flex-col divide-y divide-line border-y border-line">
@@ -519,13 +519,13 @@ export default function Book() {
               ].map(([k, v]) => (
                 <div key={k} className="flex flex-col">
                   <dt className="t-micro text-ink-3">{k}</dt>
-                  <dd className={cn(v ? "text-ink" : "text-ink-3")}>{v ?? "—"}</dd>
+                  <dd className={cn(v ? "text-ink" : "text-ink-3")}>{v ?? "Not set"}</dd>
                 </div>
               ))}
             </dl>
             <div className="border-t border-line pt-4">
               <p className="t-micro text-ink-3">Monthly</p>
-              <p className="font-display text-[28px] font-bold leading-tight text-ink tnum">{monthly ? formatNaira(monthly) : "—"}</p>
+              <p className="font-display text-[28px] font-bold leading-tight text-ink tnum">{monthly ? formatNaira(monthly) : "Not set"}</p>
               {monthly > 0 && startDate && <p className="t-small text-ink-2 tnum">{formatNaira(dueNow)} today</p>}
             </div>
             <p className="t-micro text-ink-3">Slate assigns a verified operator after you book. You never have to choose one.</p>
@@ -600,7 +600,7 @@ export default function Book() {
           </div>
           {startDate && !isRecycling && (
             <div className="mt-3 rounded-md bg-sunken px-4 py-3 t-small text-ink-2 tnum">
-              First charge today: <span className="font-semibold text-ink">{formatNaira(dueNow)}</span> — {remaining} of {dim} days in {startDate.toLocaleDateString("en-GB", { month: "long" })}. From 1 {new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1).toLocaleDateString("en-GB", { month: "long" })}, {formatNaira(monthly)} on the 1st.
+              First charge today: <span className="font-semibold text-ink">{formatNaira(dueNow)}</span>, {remaining} of {dim} days in {startDate.toLocaleDateString("en-GB", { month: "long" })}. From 1 {new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1).toLocaleDateString("en-GB", { month: "long" })}, {formatNaira(monthly)} on the 1st.
             </div>
           )}
         </div>
@@ -700,63 +700,25 @@ function FrequencyCards({ service, value, onChange }: { service: Service; value:
   );
 }
 
-/** Three-week calendar: only the chosen weekdays, from two days out, can start. */
+/** Collection dates follow the selected route weekdays and two-day lead time. */
 function MiniCalendar({ days, value, onChange }: { days: Weekday[]; value: string; onChange: (v: string) => void }) {
-  const monday = new Date(DEMO_NOW);
-  monday.setHours(7, 0, 0, 0);
-  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
-  const cells = Array.from({ length: 21 }, (_, i) => {
-    const c = new Date(monday);
-    c.setDate(monday.getDate() + i);
-    return c;
-  });
   const earliest = new Date(DEMO_NOW);
   earliest.setDate(earliest.getDate() + 2);
-  earliest.setHours(0, 0, 0, 0);
-  const firstOk = cells.find((c) => c >= earliest && days.includes(weekdayOf(c)!));
   return (
-    <div className="rounded-lg border border-line bg-surface p-3 sm:p-4">
-      <div className="mb-2 flex items-center justify-between px-1">
-        <p className="t-small font-semibold text-ink">October 2026</p>
-        <p className="t-micro text-ink-3">{days.length ? `${joinDays(days)} only` : "Choose days first"}</p>
-      </div>
-      <div className="grid grid-cols-7 gap-1 text-center">
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((w) => (
-          <span key={w} className="py-1 t-micro text-ink-3">{w.slice(0, 2)}</span>
-        ))}
-        {cells.map((c) => {
-          const key = isoDay(c);
-          const wd = weekdayOf(c);
-          const ok = c >= earliest && !!wd && days.includes(wd);
-          const sel = value === key;
-          const today = key === isoDay(DEMO_NOW);
-          return (
-            <button
-              key={key}
-              type="button"
-              disabled={!ok}
-              aria-pressed={sel}
-              aria-label={c.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}
-              onClick={() => onChange(key)}
-              className={cn(
-                "relative flex h-12 flex-col items-center justify-center rounded-md text-[15px] font-medium tnum transition",
-                sel ? "bg-ink text-surface" : ok ? "bg-stone text-ink hover:bg-stone-hover" : "text-ink-3/70",
-                !ok && "cursor-default",
-              )}
-            >
-              {c.getDate() === 1 ? <span className="text-[12px] leading-none">1 Nov</span> : c.getDate()}
-              {today && <span className={cn("absolute bottom-1.5 h-0.5 w-4 rounded-full", sel ? "bg-surface" : "bg-ink-3")} aria-hidden />}
-              {firstOk && key === isoDay(firstOk) && !sel && <span className="absolute right-1 top-1 size-1.5 rounded-full bg-ink" aria-hidden />}
-            </button>
-          );
-        })}
-      </div>
-      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 px-1 t-micro text-ink-3">
-        <span className="flex items-center gap-1.5"><span className="h-0.5 w-3 rounded-full bg-ink-3" /> Today</span>
-        <span className="flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-ink" /> Earliest start</span>
-        <span className="flex items-center gap-1.5"><span className="size-3 rounded-[3px] bg-stone" /> Available</span>
-      </div>
-    </div>
+    <DatePicker
+      inline
+      aria-label="First collection date"
+      value={value}
+      onChange={onChange}
+      min={isoDay(earliest)}
+      required
+      disabled={!days.length}
+      isDateDisabled={(date) => {
+        const weekday = weekdayOf(fromIsoDay(date));
+        return !weekday || !days.includes(weekday);
+      }}
+      hint={days.length ? `Collections on ${joinDays(days)}. Book at least two days ahead.` : "Choose your collection days first."}
+    />
   );
 }
 

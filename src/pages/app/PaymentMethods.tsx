@@ -7,7 +7,7 @@ import {
 import { cn } from "@/lib/cn";
 import { BrandMark, INITIAL_CARDS, type SavedCard } from "./_money";
 
-/** C14 — Saved cards, add card (tokenised by Paystack), and other ways to pay. */
+/** C14, Saved cards, add card (tokenised by Paystack), and other ways to pay. */
 export default function PaymentMethods() {
   const toast = useToast();
   const [cards, setCards] = useState<SavedCard[]>(INITIAL_CARDS);
@@ -48,7 +48,7 @@ export default function PaymentMethods() {
           tone="warning"
           title={`Your ${c.brand} card ending ${c.last4} has expired`}
         >
-          <p>It expired at the end of {c.exp.replace("/", "/20")}. Slate won't try it again — one extra-pickup charge of ₦3,500 failed on it and needs a retry.</p>
+          <p>It expired at the end of {c.exp.replace("/", "/20")}. Slate won't try it again, one extra-pickup charge of ₦3,500 failed on it and needs a retry.</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Button size="sm" variant="outline" leading={<Plus className="size-3.5" />} onClick={() => setAdding(true)}>Add new card</Button>
             <Button size="sm" variant="ghost" onClick={() => setRemoving(c)}>Remove expired card</Button>
@@ -56,7 +56,7 @@ export default function PaymentMethods() {
         </Alert>
       ))}
 
-      <Section title="Saved cards" description={def ? `Default: ${def.brand} •• ${def.last4}` : "No default card — add one to keep collection running."}>
+      <Section title="Saved cards" description={def ? `Default: ${def.brand} •• ${def.last4}` : "No default card, add one to keep collection running."}>
         {cards.length === 0 ? (
           <div className="rounded-lg border border-dashed border-line-strong px-6 py-10 text-center">
             <p className="t-h3 text-ink">No saved cards</p>
@@ -383,7 +383,7 @@ function AddCardModal({ open, onClose, onAdded }: { open: boolean; onClose: () =
             </div>
             <p className="flex items-start gap-2 border-t border-line px-4 py-3 t-small text-ink-2">
               <ShieldCheck className="mt-0.5 size-4 shrink-0 text-ink-3" />
-              Slate never stores your full card number, expiry or CVV — Paystack returns a token.
+              Slate never stores your full card number, expiry or CVV, Paystack returns a token.
             </p>
           </div>
           <Checkbox checked={makeDefault} onChange={setMakeDefault} label="Make this my default card" description="Used for your plan, extra pickups and Smart Sweep." />
@@ -398,7 +398,7 @@ function AddCardModal({ open, onClose, onAdded }: { open: boolean; onClose: () =
 
       {stage === "processing" && (
         <StageBody icon={<Loader2 className="animate-spin" />} title="Contacting your bank" tone="neutral">
-          Paystack is checking {brand ?? "your card"} •• {digits.slice(-4)}. Keep this window open — it takes a few seconds.
+          Paystack is checking {brand ?? "your card"} •• {digits.slice(-4)}. Keep this window open, it takes a few seconds.
         </StageBody>
       )}
 
@@ -425,7 +425,7 @@ function AddCardModal({ open, onClose, onAdded }: { open: boolean; onClose: () =
 
       {stage === "declined" && (
         <StageBody icon={<XCircle />} title="Your bank declined this card" tone="danger">
-          No money was taken. Debit cards with online payments switched off are often declined — turn them on in your bank app, or use another card.
+          No money was taken. Debit cards with online payments switched off are often declined, turn them on in your bank app, or use another card.
         </StageBody>
       )}
 

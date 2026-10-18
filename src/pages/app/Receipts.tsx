@@ -69,7 +69,7 @@ function buildRows(): Row[] {
 
 const TAB_LABEL: Record<TabKey, string> = { payment: "Payment receipts", service: "Service receipts", community: "Community contributions" };
 
-/** C24 — Receipts for payments, collections and community contributions. */
+/** C24, Receipts for payments, collections and community contributions. */
 export default function Receipts() {
   const toast = useToast();
   const tab = useTab<TabKey>("tab", "payment");

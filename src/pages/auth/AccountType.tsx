@@ -12,13 +12,13 @@ type Kind = Extract<Role, "household" | "estate" | "business" | "institution">;
 const KINDS: Array<{ value: Kind; title: string; description: string; icon: ReactNode; meta: string }> = [
   { value: "household", title: "Household", description: "Scheduled collection from your gate, one monthly payment.", icon: <Home />, meta: `From ${formatNaira(4500)} a month` },
   { value: "estate", title: "Estate or property manager", description: "One contract and one report for every home you manage.", icon: <Building />, meta: `${formatNaira(6500)} per home a month` },
-  { value: "business", title: "Business", description: "Restaurants, shops, offices and hotels — up to daily pickups.", icon: <Store />, meta: `From ${formatNaira(30000)} a month` },
+  { value: "business", title: "Business", description: "Restaurants, shops, offices and hotels, up to daily pickups.", icon: <Store />, meta: `From ${formatNaira(30000)} a month` },
   { value: "institution", title: "Institution", description: "Schools, hospitals and agencies, with compliance documents.", icon: <Building2 />, meta: "Priced by quote after a site survey" },
 ];
 
 const FROM_SIGNUP: Record<string, Kind> = { Residential: "household", Business: "business", Institution: "institution" };
 
-/** A7 — Choose how you'll use Slate. */
+/** A7, Choose how you'll use Slate. */
 export default function AccountType() {
   const navigate = useNavigate();
   const { signIn } = useSession();

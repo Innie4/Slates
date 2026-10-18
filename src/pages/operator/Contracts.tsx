@@ -17,7 +17,7 @@ const TITLES: Record<string, string> = {
   "CT-UYO-019": "Osongama recycling",
 };
 
-/** G6 — Slate contracts: read them, download them, answer the one waiting on you. */
+/** G6, Slate contracts: read them, download them, answer the one waiting on you. */
 export default function Contracts() {
   const toast = useToast();
   const download = useDownload();

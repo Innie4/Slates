@@ -1,5 +1,5 @@
 /**
- * Operator portal (part 1) — page-local helpers: a tiny session store for jobs
+ * Operator portal (part 1), page-local helpers: a tiny session store for jobs
  * (so a stop completed on the job screen shows on Today, Jobs and Routes), and a
  * few operator-specific display pieces composed from the kit.
  */
@@ -102,7 +102,7 @@ export const stopState = (j: Job): "done" | "failed" | "current" | "upcoming" =>
 /** Days until a yyyy-mm-dd date from the demo clock. */
 export const daysUntil = (iso: string) => Math.ceil((new Date(`${iso}T00:00:00+01:00`).getTime() - DEMO_NOW.getTime()) / 86400000);
 
-/** Document expiry badge — word + date, never colour alone. */
+/** Document expiry badge, word + date, never colour alone. */
 export function ExpiryBadge({ date, soonDays = 30 }: { date: string; soonDays?: number }) {
   const d = daysUntil(date);
   if (d < 0) return <Badge tone="danger" dot>Expired {formatDate(date)}</Badge>;
@@ -114,7 +114,7 @@ export const expiryTone = (date: string, soonDays = 30) => {
   return d < 0 ? "expired" : d <= soonDays ? "expiring" : "valid";
 };
 
-/** Call the customer through Slate's masked relay — operators never see customer numbers. */
+/** Call the customer through Slate's masked relay, operators never see customer numbers. */
 export function CallViaSlate({ ext, name, block, size = "md", variant = "outline" }: { ext: string; name: string; block?: boolean; size?: "md" | "lg"; variant?: "outline" | "secondary" }) {
   const toast = useToast();
   return (

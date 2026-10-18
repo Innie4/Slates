@@ -5,7 +5,7 @@
  */
 import { useEffect, useState, type ReactNode } from "react";
 import { Eye, Star } from "lucide-react";
-import { Badge, Button, FileDrop, Input, Modal, Textarea, useToast, type Tone, type UploadedFile } from "@/components/ui";
+import { Badge, Button, FileDrop, DatePicker, Modal, Textarea, useToast, type Tone, type UploadedFile } from "@/components/ui";
 import { cn } from "@/lib/cn";
 import { DEMO_NOW, formatDate, formatNaira } from "@/lib/format";
 import type { CompanyDoc, DocStatus } from "./_bizData";
@@ -184,13 +184,13 @@ export function UploadModal({
           error={errors.file}
         />
         {needsExpiry && (
-          <Input
+          <DatePicker
             label="Expiry date"
-            type="date"
+
             min="2026-10-06"
             value={expires}
-            onChange={(e) => {
-              setExpires(e.target.value);
+            onChange={(date) => {
+              setExpires(date);
               setErrors((x) => ({ ...x, expires: undefined }));
             }}
             error={errors.expires}
@@ -214,7 +214,7 @@ export function useDownload() {
 /* ------------------------------------------------------------------ */
 
 /**
- * Company monogram in the SlabMark idiom — three cut slabs and the
+ * Company monogram in the SlabMark idiom, three cut slabs and the
  * initials on slate. Stands in for the operator's logo until one is uploaded.
  */
 export function CompanyMark({ src, initials = "UE", size = "md", className }: { src?: string; initials?: string; size?: "sm" | "md" | "lg" | "xl"; className?: string }) {

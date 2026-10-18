@@ -1,5 +1,5 @@
 /**
- * Customer subscriptions — page-local demo data for C6/C7 and the booking flow.
+ * Customer subscriptions, page-local demo data for C6/C7 and the booking flow.
  * The story: Imaobong lived at 6 Nwaniba Road on Slate Home Lite from April,
  * moved to Ewet Housing Estate on 13 Jul (Slate Home since), signed up for
  * monthly recycling after the 22 Sep one-off, and cancelled the family house
@@ -89,7 +89,7 @@ export const SUBSCRIPTIONS: Subscription[] = [
     history: [
       { ref: "TXN-7Q4K2M", label: "October", date: at("2026-10-01", "06:02"), amount: 7000, method: "Visa •• 4021", status: "Successful" },
       { ref: "TXN-4C9TBB", label: "September", date: at("2026-09-02", "12:30"), amount: 7000, method: "Visa •• 4021", status: "Successful", note: "Retried on Visa after Verve declined" },
-      { ref: "TXN-4C9TBA", label: "September", date: at("2026-09-01", "06:01"), amount: 7000, method: "Verve •• 7735", status: "Failed", note: "Declined 3 times — insufficient funds" },
+      { ref: "TXN-4C9TBA", label: "September", date: at("2026-09-01", "06:01"), amount: 7000, method: "Verve •• 7735", status: "Failed", note: "Declined 3 times, insufficient funds" },
       { ref: "TXN-3PQ7LE", label: "August", date: at("2026-08-01", "06:03"), amount: 7000, method: "Visa •• 4021", status: "Successful" },
       { ref: "TXN-2KV8NA", label: "July, from 13 Jul", date: at("2026-07-13", "09:41"), amount: 4290, method: "Visa •• 4021", status: "Successful", note: "Pro-rated for 19 days" },
     ],
@@ -125,7 +125,7 @@ export const SUBSCRIPTIONS: Subscription[] = [
     status: "Pending",
     started: at("2026-10-13", "14:00"),
     paymentMethod: "Visa •• 4021",
-    statusNote: "Starts Tue 13 Oct — second Tuesday of each month",
+    statusNote: "Starts Tue 13 Oct, second Tuesday of each month",
     history: [],
   },
   {
@@ -187,7 +187,7 @@ export const SUBSCRIPTIONS: Subscription[] = [
     status: "Cancelled",
     started: at("2026-05-20", "06:00"),
     paymentMethod: "Visa •• 4021",
-    statusNote: "Cancelled on 2 Sep — the house was sold",
+    statusNote: "Cancelled on 2 Sep, the house was sold",
     cancelledOn: at("2026-09-02", "16:05"),
     cancelReason: "Moving or property sold",
     history: [

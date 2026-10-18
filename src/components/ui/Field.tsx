@@ -428,7 +428,7 @@ export function Switch({
   );
 }
 
-/** A selectable card — used for plans, account types, frequencies, payment methods. */
+/** A selectable card, used for plans, account types, frequencies, payment methods. */
 export function ChoiceCard({
   selected,
   onSelect,

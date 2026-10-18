@@ -166,7 +166,7 @@ function LocationsTable({ locations, onOpen }: { locations: WasteLocation[]; onO
     { key: "frequency", header: "Frequency", cell: (l) => l.frequency },
     {
       key: "last", header: "Last collected", sortValue: (l) => l.lastCollected ?? "", align: "right",
-      cell: (l) => (l.issue ? <Badge tone="warning" dot>Issue</Badge> : <span className="tnum text-ink-2">{l.lastCollected ? formatRelative(l.lastCollected) : "—"}</span>),
+      cell: (l) => (l.issue ? <Badge tone="warning" dot>Issue</Badge> : <span className="tnum text-ink-2">{l.lastCollected ? formatRelative(l.lastCollected) : "Not set"}</span>),
     },
   ];
   return (

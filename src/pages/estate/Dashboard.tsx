@@ -10,7 +10,7 @@ import { BlockRunHero, ReminderModal, UpdateResidentsModal } from "./_shared";
 import type { Block } from "./_data";
 
 /**
- * D1 — Estate overview. A manager's first question on a Monday morning is
+ * D1, Estate overview. A manager's first question on a Monday morning is
  * "how far along is today's collection?", then "who still owes?", then
  * "is the operator keeping to the standard?". In that order.
  */

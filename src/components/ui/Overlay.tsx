@@ -67,7 +67,7 @@ export interface ModalProps {
 }
 
 /**
- * Modal — centered dialog on ≥640px, bottom sheet on phones.
+ * Modal, centered dialog on ≥640px, bottom sheet on phones.
  * Footer actions sit in the thumb zone on mobile.
  */
 export function Modal({ open, onClose, title, description, children, footer, size = "md", sheet = true, hideClose, className }: ModalProps) {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { BadgeCheck, Check, Plus, RefreshCw, Send, X } from "lucide-react";
 import {
-  Badge, Button, ConfirmDialog, CurrencyInput, Drawer, Input, Modal, Page, PageHeader, ProgressBar, Select, StateView,
+  Badge, Button, ConfirmDialog, CurrencyInput, DatePicker, Drawer, Input, Modal, Page, PageHeader, ProgressBar, Select, StateView,
   StatusBadge, Tabs, Textarea, Timeline, useToast, type TimelineItem,
 } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -210,7 +210,7 @@ function ProjectDrawer({ project: p, onClose, onUpdate }: { project: AdminProjec
   const rs = releaseState(p);
   const ledger = contributions(p);
   const opId = operatorIdByName(p.provider);
-  const blockReason = !funded ? `Target not reached — ${formatNaira(remaining)} to go` : !verified ? `${p.provider} hasn't passed verification` : "";
+  const blockReason = !funded ? `Target not reached, ${formatNaira(remaining)} to go` : !verified ? `${p.provider} hasn't passed verification` : "";
 
   return (
     <>
@@ -272,7 +272,7 @@ function ProjectDrawer({ project: p, onClose, onUpdate }: { project: AdminProjec
               <ul className="flex flex-col gap-2.5">
                 {[
                   { ok: funded, label: "Target reached", detail: funded ? `${formatNaira(p.raised)} collected` : `${formatNaira(remaining)} still to raise` },
-                  { ok: verified, label: "Provider verified by Slate", detail: verified ? `${p.provider} — documents and contract current` : `${p.provider} is still in verification` },
+                  { ok: verified, label: "Provider verified by Slate", detail: verified ? `${p.provider}, documents and contract current` : `${p.provider} is still in verification` },
                   { ok: true, label: "Work plan agreed with the community", detail: "Signed off by the residents' association" },
                 ].map((c) => (
                   <li key={c.label} className="flex items-start gap-3">
@@ -370,7 +370,7 @@ function walletTimeline(p: AdminProject): TimelineItem[] {
   const at = (d: number) => formatDate(new Date(c + d * 86_400_000)).replace(/ \d{4}$/, "");
   const items: TimelineItem[] = [
     { title: "Project created", description: `${p.community} · target ${formatNaira(p.target)}`, time: at(0), state: "done" },
-    { title: "Provider verified", description: verified ? `${p.provider} — verified operator` : `${p.provider} — verification incomplete`, time: verified ? at(1) : undefined, state: verified ? "done" : "failed" },
+    { title: "Provider verified", description: verified ? `${p.provider}, verified operator` : `${p.provider}, verification incomplete`, time: verified ? at(1) : undefined, state: verified ? "done" : "failed" },
     { title: "Published to residents", description: "Shared in-app and by SMS", time: at(1), state: "done" },
     { title: "Contributions collected in wallet", description: `${p.contributors} contributors · ${formatNaira(p.raised)}`, time: funded || released ? at(14) : "Ongoing", state: funded || released || closed ? "done" : "current" },
     { title: "Failed payments retried", description: p.failedPayments ? `${p.failedPayments} retried, contributors notified` : "No failures", state: funded || released || closed ? "done" : "current" },
@@ -448,14 +448,14 @@ function NewProjectModal({ open, onClose, onCreate }: { open: boolean; onClose: 
           placeholder="850,000"
           error={errors.target}
         />
-        <Input label="Deadline" type="date" min={minDate} max={maxDate} value={deadline} onChange={(e) => setDeadline(e.target.value)} error={errors.deadline} />
+        <DatePicker label="Deadline"  min={minDate} max={maxDate} value={deadline} onChange={(date) => setDeadline(date)} error={errors.deadline} />
         <Select
           label="Verified service provider"
           fieldClassName="sm:col-span-2"
           placeholder="Choose provider"
           value={provider}
           onChange={(e) => setProvider(e.target.value)}
-          options={verifiedProviders.map((o) => ({ value: o.short, label: `${o.short} — ${o.focus.toLowerCase()}` }))}
+          options={verifiedProviders.map((o) => ({ value: o.short, label: `${o.short}, ${o.focus.toLowerCase()}` }))}
           hint="Only operators that have passed Slate verification can receive community funds."
           error={errors.provider}
         />

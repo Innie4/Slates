@@ -11,7 +11,7 @@ import { RouteProgress, STATUS_ORDER, StopNumber, isLate, isTodayIso, routeStat,
 const MAP_STOPS = [0.1, 0.24, 0.38, 0.52, 0.66, 0.8, 0.92];
 
 /**
- * G3 — Today. The operator's first question is "what are today's jobs?", so the
+ * G3, Today. The operator's first question is "what are today's jobs?", so the
  * page leads with route progress across the fleet, then what needs attention,
  * then the next stops. Business numbers sit last as a compact strip.
  */

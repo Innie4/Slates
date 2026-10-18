@@ -11,7 +11,7 @@ import { BLOCKS, ESTATE, PER_HOUSEHOLD, pointFor, properties as seed, type Block
 const STATUS_OPTIONS: Property["status"][] = ["Occupied", "Vacant", "Under renovation"];
 const TYPE_OPTIONS = ["2-bed flat", "3-bed terrace", "3-bed bungalow", "4-bed semi-detached", "5-bed detached"];
 
-/** D2 — every unit in the estate, its occupancy, association and collection status. */
+/** D2, every unit in the estate, its occupancy, association and collection status. */
 export default function Properties() {
   const toast = useToast();
   const [rows, setRows] = useState<Property[]>(seed);
@@ -63,7 +63,7 @@ export default function Properties() {
       cell: (r) => (r.resident ? <span className="text-ink">{r.resident}</span> : <span className="text-ink-3">No resident</span>),
     },
     { key: "status", header: "Property", sortValue: (r) => r.status, cell: (r) => <StatusPill status={r.status} /> },
-    { key: "association", header: "Association", sortValue: (r) => r.association, cell: (r) => (r.association === "—" ? <span className="text-ink-3">—</span> : <AssocBadge a={r.association} />) },
+    { key: "association", header: "Association", sortValue: (r) => r.association, cell: (r) => (r.association === "Not set" ? <span className="text-ink-3">, </span> : <AssocBadge a={r.association} />) },
     { key: "collection", header: "Collection", sortValue: (r) => r.collection, cell: (r) => <StatusBadge status={r.collection === "Not enrolled" ? "Inactive" : r.collection} className="[&]:whitespace-nowrap" /> },
     { key: "point", header: "Point", cell: (r) => <span className="t-mono text-ink-2">{r.point}</span>, hideOnMobile: true },
   ];
@@ -87,7 +87,7 @@ export default function Properties() {
         }
       />
 
-      {/* Blocks as a map of the estate — also the quickest filter */}
+      {/* Blocks as a map of the estate, also the quickest filter */}
       <nav aria-label="Filter by block">
         <div className="grid grid-cols-4 gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-8">
           {byBlock.map((b) => {
@@ -156,7 +156,7 @@ export default function Properties() {
                   <span className="t-small truncate text-ink">{r.resident ?? <span className="text-ink-3">No resident</span>}</span>
                 </p>
                 <p className="mt-0.5 t-small text-ink-3">
-                  {r.type} · {r.association === "—" ? "Not in association" : r.association === "Member" ? "Association member" : `Association: ${r.association.toLowerCase()}`}
+                  {r.type} · {r.association === "Not set" ? "Not in association" : r.association === "Member" ? "Association member" : `Association: ${r.association.toLowerCase()}`}
                 </p>
               </div>
               <StatusPill status={r.status} />
@@ -179,7 +179,7 @@ export default function Properties() {
         existing={rows}
         onAdd={(p) => {
           setRows((xs) => [...xs, p].sort((a, b) => a.unit.localeCompare(b.unit)));
-          toast.success(`${p.unit} added`, p.status === "Occupied" ? `${p.resident} will get an invite to pay through Slate.` : "Marked vacant — it won't be billed.");
+          toast.success(`${p.unit} added`, p.status === "Occupied" ? `${p.resident} will get an invite to pay through Slate.` : "Marked vacant, it won't be billed.");
         }}
       />
       <BulkUploadModal
@@ -234,9 +234,9 @@ function PropertyDrawer({ property, onClose, onSave }: { property: Property | nu
               onSave({
                 ...property,
                 status,
-                association: status === "Occupied" ? (association === "—" ? "Pending" : association) : "—",
+                association: status === "Occupied" ? (association === "Not set" ? "Pending" : association) : "Not set",
                 collection: status === "Occupied" ? collection : status === "Vacant" ? "Not enrolled" : "Paused",
-                payment: status === "Occupied" ? property.payment : "—",
+                payment: status === "Occupied" ? property.payment : "Not set",
               });
               onClose();
             }}
@@ -251,10 +251,10 @@ function PropertyDrawer({ property, onClose, onSave }: { property: Property | nu
           dense
           items={[
             { label: "Resident", value: property.resident ?? "No resident" },
-            { label: "Phone", value: property.phone ?? "—" },
+            { label: "Phone", value: property.phone ?? "Not set" },
             { label: "Collection point", value: `${point.id} · ${point.name}` },
-            { label: "Resident since", value: property.since ? formatDate(property.since) : "—" },
-            { label: "October contribution", value: property.payment === "—" ? "Not billed" : `${property.payment} · ${formatNaira(property.paid)} of ${formatNaira(PER_HOUSEHOLD)}` },
+            { label: "Resident since", value: property.since ? formatDate(property.since) : "Not set" },
+            { label: "October contribution", value: property.payment === "Not set" ? "Not billed" : `${property.payment} · ${formatNaira(property.paid)} of ${formatNaira(PER_HOUSEHOLD)}` },
           ]}
         />
         <div className="flex flex-col gap-4 border-t border-line pt-6">
@@ -262,7 +262,7 @@ function PropertyDrawer({ property, onClose, onSave }: { property: Property | nu
           <Select label="Property" value={status} onChange={(e) => setStatus(e.target.value as Property["status"])} options={STATUS_OPTIONS} hint={status !== "Occupied" ? "Vacant and renovating units aren't billed and get no collection." : undefined} />
           {status === "Occupied" && (
             <>
-              <Select label="Residents association" value={association === "—" ? "Pending" : association} onChange={(e) => setAssociation(e.target.value as Property["association"])} options={["Member", "Pending", "Not joined"]} />
+              <Select label="Residents association" value={association === "Not set" ? "Pending" : association} onChange={(e) => setAssociation(e.target.value as Property["association"])} options={["Member", "Pending", "Not joined"]} />
               <Select label="Collection" value={collection} onChange={(e) => setCollection(e.target.value as Property["collection"])} options={["Active", "Paused"]} hint={collection === "Paused" ? "Paused units are skipped by the crew and not billed from next month." : undefined} />
             </>
           )}
@@ -319,8 +319,8 @@ function AddPropertyModal({ open, onClose, existing, onAdd }: { open: boolean; o
               if (!valid) return;
               onAdd({
                 id: `prop-${u}`, unit: u, block, type, status: occupied ? "Occupied" : "Vacant", resident: occupied ? resident.trim() : undefined,
-                phone: occupied ? `+234 ${phone.trim()}` : undefined, association: occupied ? "Pending" : "—", collection: occupied ? "Active" : "Not enrolled",
-                payment: occupied ? "Unpaid" : "—", paid: 0, point: pointFor(block).id, since: occupied ? "2026-10-05" : undefined, account: occupied ? "Inactive" : "—",
+                phone: occupied ? `+234 ${phone.trim()}` : undefined, association: occupied ? "Pending" : "Not set", collection: occupied ? "Active" : "Not enrolled",
+                payment: occupied ? "Unpaid" : "Not set", paid: 0, point: pointFor(block).id, since: occupied ? "2026-10-05" : undefined, account: occupied ? "Inactive" : "Not set",
               });
               onClose();
             }}
@@ -435,8 +435,8 @@ function BulkUploadModal({ open, onClose, existing, onImport }: { open: boolean;
                   const occ = r.status === "Occupied";
                   return {
                     id: `prop-${r.unit}`, unit: r.unit, block, type: r.type, status: occ ? "Occupied" : "Vacant", resident: occ ? r.resident : undefined,
-                    phone: occ ? `+234 ${r.phone.slice(0, 3)} ${r.phone.slice(3, 6)} ${r.phone.slice(6)}` : undefined, association: occ ? "Pending" : "—",
-                    collection: occ ? "Active" : "Not enrolled", payment: occ ? "Unpaid" : "—", paid: 0, point: pointFor(block).id, since: occ ? "2026-10-05" : undefined, account: occ ? "Inactive" : "—",
+                    phone: occ ? `+234 ${r.phone.slice(0, 3)} ${r.phone.slice(3, 6)} ${r.phone.slice(6)}` : undefined, association: occ ? "Pending" : "Not set",
+                    collection: occ ? "Active" : "Not enrolled", payment: occ ? "Unpaid" : "Not set", paid: 0, point: pointFor(block).id, since: occ ? "2026-10-05" : undefined, account: occ ? "Inactive" : "Not set",
                   } satisfies Property;
                 }),
               );
@@ -501,7 +501,7 @@ function BulkUploadModal({ open, onClose, existing, onImport }: { open: boolean;
                     <span className="t-mono font-semibold text-ink md:order-none">{r.unit}</span>
                     <span className="t-small text-ink max-md:col-start-2 max-md:row-start-2">{r.resident || <span className="text-ink-3">Vacant</span>}</span>
                     <span className="t-small text-ink-2 max-md:hidden">{r.type}</span>
-                    <span className="t-mono text-ink-2 max-md:hidden">{r.phone || "—"}</span>
+                    <span className="t-mono text-ink-2 max-md:hidden">{r.phone || "Not set"}</span>
                     <span className={cn("flex items-center gap-1.5 t-small max-md:col-start-3 max-md:row-start-1 max-md:justify-end", r.error ? "text-danger" : "text-success")}>
                       {r.error ? <AlertCircle className="size-4 shrink-0" /> : <Check className="size-4 shrink-0" strokeWidth={2.5} />}
                       <span className="max-md:sr-only">{r.error ?? "Ready"}</span>

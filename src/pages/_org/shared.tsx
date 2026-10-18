@@ -46,7 +46,7 @@ export function invoiceTotals(inv: OrgInvoice) {
 
 export const SLATE_BANK = { bank: "Providus Bank", account: "9902 418 336", name: "Slate Services Ltd" };
 
-/** An invoice drawn as the document it is — header slab, lines, totals, how to pay. */
+/** An invoice drawn as the document it is, header slab, lines, totals, how to pay. */
 export function InvoiceDocument({ invoice, className }: { invoice: OrgInvoice; className?: string }) {
   const t = invoiceTotals(invoice);
   return (
@@ -701,7 +701,7 @@ export function ReportFigure({
   );
 }
 
-/** Horizontal labelled bars — for per-block / per-location comparisons. */
+/** Horizontal labelled bars, for per-block / per-location comparisons. */
 export function HBars({
   rows,
   format = (v) => String(v),
@@ -738,7 +738,7 @@ export function HBars({
   );
 }
 
-/** SLA target vs actual — one row per target, the bar shows actual against target. */
+/** SLA target vs actual, one row per target, the bar shows actual against target. */
 export function SlaRows({ rows }: { rows: Array<{ label: string; target: string; actual: string; met: boolean; note?: string }> }) {
   return (
     <ul className="divide-y divide-line">
@@ -762,10 +762,10 @@ export function ExportActions({ name, period }: { name: string; period: string }
   const toast = useToast();
   return (
     <>
-      <Button variant="outline" size="md" leading={<Download className="size-4" />} onClick={() => toast.success("CSV exported", `${name} — ${period}.csv is downloading.`)}>
+      <Button variant="outline" size="md" leading={<Download className="size-4" />} onClick={() => toast.success("CSV exported", `${name}, ${period}.csv is downloading.`)}>
         CSV
       </Button>
-      <Button size="md" leading={<Download className="size-4" />} onClick={() => toast.success("PDF report ready", `${name} — ${period}.pdf is downloading.`)}>
+      <Button size="md" leading={<Download className="size-4" />} onClick={() => toast.success("PDF report ready", `${name}, ${period}.pdf is downloading.`)}>
         PDF report
       </Button>
     </>
@@ -854,7 +854,7 @@ export function NotificationMatrix({ prefs, initial }: { prefs: NotifyPref[]; in
   );
 }
 
-/** Save bar for settings forms — appears when a form is dirty. */
+/** Save bar for settings forms, appears when a form is dirty. */
 export function useDirty<T>(initial: T) {
   const [value, setValue] = useState(initial);
   const [saved, setSaved] = useState(initial);
@@ -917,7 +917,7 @@ export function ArrowLink({ to, children }: { to: string; children: ReactNode })
   );
 }
 
-/** "Slate is your one contract; the operator works for Slate" — the managed-service line. */
+/** "Slate is your one contract; the operator works for Slate", the managed-service line. */
 export function ManagedBy({ operator, className }: { operator: string; className?: string }) {
   return (
     <p className={cn("flex items-start gap-2 t-small text-ink-2", className)}>

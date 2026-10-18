@@ -57,10 +57,10 @@ type Volume = keyof typeof VOLUME;
 const CATEGORIES = ["General household", "Food scraps", "PET bottles & cans", "Paper & cardboard", "Garden waste", "Diapers & sanitary", "Old electronics"];
 const FREQUENCIES = [
   { value: "Weekly", description: "Best for one or two people.", price: 4500 },
-  { value: "Twice weekly", description: "Most homes choose this — food waste never sits for long.", price: 7000 },
+  { value: "Twice weekly", description: "Most homes choose this, food waste never sits for long.", price: 7000 },
   { value: "Three times weekly", description: "Large households and home businesses.", price: 9500 },
 ];
-const SPECIAL = ["Collect from inside the compound — caretaker or gate code", "Someone at home needs help carrying bins", "Dogs on the property"];
+const SPECIAL = ["Collect from inside the compound, caretaker or gate code", "Someone at home needs help carrying bins", "Dogs on the property"];
 
 const nationalPhone = (v: string) => {
   let d = v.replace(/\D/g, "");
@@ -72,7 +72,7 @@ const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
 
 type Errors = Record<string, string | undefined>;
 
-/** C1 — Customer onboarding, full-screen (no portal layout). */
+/** C1, Customer onboarding, full-screen (no portal layout). */
 export default function Onboarding() {
   const navigate = useNavigate();
   const toast = useToast();
@@ -163,7 +163,7 @@ export default function Onboarding() {
     setAddress("14 Ewet Housing Estate, Uyo");
     if (!landmark) setLandmark("Opposite the estate clinic, blue gate");
     setErrors({});
-    toast.success("Location found", "14 Ewet Housing Estate, Uyo — within 20 m.");
+    toast.success("Location found", "14 Ewet Housing Estate, Uyo, within 20 m.");
   };
 
   /* ---------------- validation per step ---------------- */
@@ -217,7 +217,7 @@ export default function Onboarding() {
           </p>
           <h1 className="t-display">Let's get your waste collected.</h1>
           <p className="max-w-lg t-body text-slate-ink/85">
-            Four short steps, about three minutes. Tell us where you are and what you throw away — Slate matches your address to a verified operator and the right plan.
+            Four short steps, about three minutes. Tell us where you are and what you throw away, Slate matches your address to a verified operator and the right plan.
           </p>
         </div>
       </section>
@@ -262,7 +262,7 @@ export default function Onboarding() {
         </Button>
         {geoDenied && (
           <Alert tone="neutral" onDismiss={() => setGeoDenied(false)}>
-            Location is off. Enter your address below — it works just as well.
+            Location is off. Enter your address below, it works just as well.
           </Alert>
         )}
         <div className="grid grid-cols-2 gap-3">
@@ -297,7 +297,7 @@ export default function Onboarding() {
               error={errors.area}
               onChange={(e) => pickArea(e.target.value)}
             />
-            <AddressInput value={address} onChange={onAddress} label="Address" error={errors.address} hint="House number, street or block — try “Ewet” or “Aka Road”." />
+            <AddressInput value={address} onChange={onAddress} label="Address" error={errors.address} hint="House number, street or block, try “Ewet” or “Aka Road”." />
             <Input
               label="Landmark"
               placeholder="e.g. Opposite the estate clinic, blue gate"
@@ -324,7 +324,7 @@ export default function Onboarding() {
               <StateView
                 state="success"
                 title={`You're on the list for ${city}`}
-                description={`We'll email ${notifyEmail} the week Slate starts collecting in ${city}. Nothing else — no newsletters.`}
+                description={`We'll email ${notifyEmail} the week Slate starts collecting in ${city}. Nothing else, no newsletters.`}
                 action={
                   <Button variant="outline" onClick={() => { setState("Akwa Ibom"); setCity("Uyo"); }}>
                     Use an address in Uyo instead
@@ -340,7 +340,7 @@ export default function Onboarding() {
                     ? `We're launching in ${city} in ${new Date(cityInfo.launch).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}, with operators already being verified.`
                     : cityInfo
                       ? `${city} is planned for ${cityInfo.launch.replace(/(\d{4})-Q(\d)/, "Q$2 $1")}. Today Slate collects across Uyo only.`
-                      : `Today Slate collects across Uyo only. Tell us you're waiting — demand decides where we go next.`
+                      : `Today Slate collects across Uyo only. Tell us you're waiting, demand decides where we go next.`
                 }
                 action={
                   <div className="flex w-full max-w-sm flex-col gap-2">
@@ -463,7 +463,7 @@ export default function Onboarding() {
           {SPECIAL.map((s) => (
             <Checkbox key={s} checked={special.includes(s)} onChange={(on) => setSpecial((xs) => (on ? [...xs, s] : xs.filter((x) => x !== s)))} label={s} />
           ))}
-          <Textarea rows={3} aria-label="Anything else the crew should know" placeholder="Anything else the crew should know — gate times, where the bin is kept" value={notes} onChange={(e) => setNotes(e.target.value)} />
+          <Textarea rows={3} aria-label="Anything else the crew should know" placeholder="Anything else the crew should know, gate times, where the bin is kept" value={notes} onChange={(e) => setNotes(e.target.value)} />
         </div>
       </Field>
     </div>
@@ -735,7 +735,7 @@ function CantFindModal({ open, onClose, phone }: { open: boolean; onClose: () =>
         />
         <Checkbox checked={callback} onChange={setCallback} label="Call me to confirm the location" description={`On +234 ${phone}, Mon–Sat 8:00–18:00.`} />
         <p className="flex items-start gap-2 t-small text-ink-3">
-          <Building2 className="mt-0.5 size-4 shrink-0" /> If you're in a gated estate, add the estate name — we may already serve it.
+          <Building2 className="mt-0.5 size-4 shrink-0" /> If you're in a gated estate, add the estate name, we may already serve it.
         </p>
       </div>
     </Modal>

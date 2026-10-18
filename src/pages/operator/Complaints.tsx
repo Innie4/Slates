@@ -21,7 +21,7 @@ const hm = (ms: number) => {
   return h ? `${h}h ${m}m` : `${m}m`;
 };
 
-/** G16 — complaints Slate has passed to Ufok, with live SLA deadlines. */
+/** G16, complaints Slate has passed to Ufok, with live SLA deadlines. */
 export default function Complaints() {
   const toast = useToast();
   const now = useDemoNow(1000);
@@ -90,7 +90,7 @@ export default function Complaints() {
         </div>
       ),
     },
-    { key: "pickup", header: "Pickup", cell: (c) => (c.pickupId ? <span className="t-mono text-ink-2">{c.pickupId}</span> : <span className="text-ink-3">—</span>) },
+    { key: "pickup", header: "Pickup", cell: (c) => (c.pickupId ? <span className="t-mono text-ink-2">{c.pickupId}</span> : <span className="text-ink-3">, </span>) },
     { key: "severity", header: "Severity", cell: (c) => <Badge tone={SEVERITY_TONE[c.severity]}>{c.severity}</Badge>, sortValue: (c) => ["Low", "Medium", "High", "Critical"].indexOf(c.severity) },
     { key: "sla", header: "SLA", cell: (c) => <SlaCell c={c} />, sortValue: (c) => c.slaDue },
     { key: "status", header: "Status", cell: (c) => <Badge tone={STATUS_TONE[c.status]} dot>{STATUS_LABEL[c.status]}</Badge> },

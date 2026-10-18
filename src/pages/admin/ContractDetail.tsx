@@ -60,14 +60,14 @@ function ContractView({ base, fresh }: { base: Contract; fresh: boolean }) {
     const dates = [-19, -15, -12, -9, -6].map((d) => shiftDays(iso(c.start), d));
     if (firstVersion && iso(firstVersion) < dates[0]!) dates[0] = iso(firstVersion);
     const items: TimelineItem[] = LIFECYCLE.slice(0, 6).map((label, i) => ({
-      title: label === "Active" && status === "Suspended" ? "Active — suspended" : label,
+      title: label === "Active" && status === "Suspended" ? "Active, suspended" : label,
       time: i < cur || (i === cur && i < 5) ? formatDate(i < 5 ? dates[i]! : iso(c.start)) : i === 5 ? `From ${formatDate(c.start)}` : undefined,
       state: i < cur ? "done" : i === cur ? (status === "Suspended" ? "failed" : "current") : "upcoming",
       description:
         i === 1 ? "Approved by Aniekan Etim, Super Admin" :
         i === 3 ? `Sent to ${op?.contact ?? "the operator"}${op ? ` (${op.email})` : ""}` :
         i === 4 ? (i < cur ? "Signed electronically by the operator" : undefined) :
-        i === 5 && status === "Suspended" ? "Collections paused — customers rerouted to standby operators" : undefined,
+        i === 5 && status === "Suspended" ? "Collections paused, customers rerouted to standby operators" : undefined,
     }));
     if (ended) {
       items.push({ title: status === "Terminated" ? "Terminated" : "Expired", time: formatDate(terminatedOn ?? c.end), state: "failed", description: status === "Terminated" ? "Customers moved to other contracted operators" : undefined });
@@ -76,7 +76,7 @@ function ContractView({ base, fresh }: { base: Contract; fresh: boolean }) {
         title: "Renewal approaching",
         time: formatDate(shiftDays(iso(c.end), -60)),
         state: cur === 6 ? "current" : "upcoming",
-        description: cur === 6 ? (renewal ? `Renewal to ${formatDate(renewal)} is in internal review` : `Ends in ${left} days — renew or let it lapse`) : "60 days before the end date",
+        description: cur === 6 ? (renewal ? `Renewal to ${formatDate(renewal)} is in internal review` : `Ends in ${left} days, renew or let it lapse`) : "60 days before the end date",
       });
       items.push({ title: "Renewed, or expired", time: formatDate(c.end), state: "upcoming" });
     }
@@ -391,7 +391,7 @@ function EditModal({ open, contract, live, onClose, onSave }: { open: boolean; c
   const errors = {
     price: p <= 0 ? "Enter a price" : undefined,
     payout: o <= 0 ? "Enter a payout" : o >= p ? "Payout must be less than the customer price" : undefined,
-    capacity: cap < contract.customers ? `At least ${formatNumber(contract.customers)} — customers already served` : undefined,
+    capacity: cap < contract.customers ? `At least ${formatNumber(contract.customers)}, customers already served` : undefined,
     sla: s < 80 || s > 100 ? "Between 80 and 100" : undefined,
     response: r < 1 || r > 72 ? "Between 1 and 72 hours" : undefined,
   };

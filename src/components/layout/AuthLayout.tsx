@@ -4,7 +4,7 @@ import { Logo } from "@/components/brand/Logo";
 import { Strata } from "@/components/brand/Strata";
 
 /**
- * Auth — slate field with strata on the left (desktop), form on the right.
+ * Auth, slate field with strata on the left (desktop), form on the right.
  * On phones the slate field becomes a short band above the form.
  */
 export function AuthLayout() {

@@ -7,7 +7,7 @@ import {
   useCountdown, wait,
 } from "./_shared";
 
-/** A4 — Verify mobile number by SMS (or voice call). */
+/** A4, Verify mobile number by SMS (or voice call). */
 export default function VerifyPhone() {
   const navigate = useNavigate();
   const toast = useToast();

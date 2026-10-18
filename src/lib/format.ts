@@ -5,7 +5,7 @@ const num = new Intl.NumberFormat("en-NG");
 /** ₦7,000 */
 export const formatNaira = (n: number, withKobo = false) => (withKobo ? nairaKobo : naira).format(n);
 
-/** ₦1.84m / ₦640k — for dense dashboards */
+/** ₦1.84m / ₦640k, for dense dashboards */
 export function formatNairaShort(n: number): string {
   const abs = Math.abs(n);
   if (abs >= 1_000_000_000) return `₦${(n / 1_000_000_000).toFixed(2).replace(/\.?0+$/, "")}bn`;

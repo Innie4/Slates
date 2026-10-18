@@ -1,6 +1,7 @@
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { api, messageFor } from "@/lib/api";
 import { Strata } from "@/components/brand/Strata";
 import { Button, Input, Select, Segmented } from "@/components/ui";
 import { cities, type City } from "@/data";
@@ -53,7 +54,7 @@ export function InfoHero({
   );
 }
 
-/** A slate slab with strata — the information pages' only illustration. */
+/** A slate slab with strata, the information pages' only illustration. */
 export function SlateSlab({
   children,
   className,
@@ -77,7 +78,7 @@ export function SlateSlab({
   );
 }
 
-/** Numbered section heading, like a timetable board: 01 — Title. */
+/** Numbered section heading, like a timetable board: 01, Title. */
 export function NumberedHead({ n, title, lede, className, id }: { n: string; title: ReactNode; lede?: ReactNode; className?: string; id?: string }) {
   return (
     <div id={id} className={cn("grid gap-4 border-t border-ink pt-5 md:grid-cols-[120px_minmax(0,1fr)] md:gap-8", className)}>
@@ -157,6 +158,9 @@ export function NotifyForm({ city, className, tone = "light" }: { city?: City; c
   const waiting = cities.filter((c) => c.status !== "Live");
   const [cityId, setCityId] = useState(city?.id ?? "");
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [requestError, setRequestError] = useState("");
+  const attempt = useRef<{ body: string; key: string } | null>(null);
   const [area, setArea] = useState("");
   const [who, setWho] = useState<(typeof WHO)[number]["value"]>("Household");
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -164,19 +168,28 @@ export function NotifyForm({ city, className, tone = "light" }: { city?: City; c
   const [done, setDone] = useState(false);
   const chosen = cities.find((c) => c.id === cityId);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (busy) return;
     const next: Record<string, string> = {};
+    if (name.trim().length < 2) next.name = "Enter your name.";
     if (!cityId) next.city = "Choose the city you want Slate in.";
     if (!email.trim()) next.email = "Enter an email address so we can tell you.";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) next.email = "That email address doesn't look complete.";
     setErrors(next);
     if (Object.keys(next).length) return;
+    const body = JSON.stringify({ name: name.trim(), email: email.trim(), category: "Waitlist", message: `Service interest in ${chosen?.name ?? cityId}, ${area.trim() || "area not specified"}, for ${who}.` });
+    if (attempt.current?.body !== body) attempt.current = { body, key: crypto.randomUUID() };
     setBusy(true);
-    setTimeout(() => {
-      setBusy(false);
+    setRequestError("");
+    try {
+      await api<{ reference: string }>("/enquiries", { method: "POST", body, headers: { "Idempotency-Key": attempt.current.key } });
       setDone(true);
-    }, 700);
+    } catch (cause) {
+      setRequestError(messageFor(cause));
+    } finally {
+      setBusy(false);
+    }
   };
 
   if (done && chosen)
@@ -188,8 +201,7 @@ export function NotifyForm({ city, className, tone = "light" }: { city?: City; c
         <div className="flex flex-col gap-1.5">
           <h3 className={cn("t-h2", tone === "slate" ? "text-slate-ink" : "text-ink")}>You're on the {chosen.name} list</h3>
           <p className={cn("t-body", tone === "slate" ? "text-slate-ink/75" : "text-ink-2")}>
-            We'll write to <span className={cn("font-medium", tone === "slate" ? "text-slate-ink" : "text-ink")}>{email.trim()}</span> once, when
-            collection opens{area.trim() ? ` in ${area.trim()}` : ""}. No newsletter.
+            Your interest{area.trim() ? ` in ${area.trim()}` : ""} is saved with <span className={cn("font-medium", tone === "slate" ? "text-slate-ink" : "text-ink")}>{email.trim()}</span>. Collection is subject to launch and address checks.
           </p>
         </div>
         <button
@@ -214,6 +226,7 @@ export function NotifyForm({ city, className, tone = "light" }: { city?: City; c
           error={errors.city}
         />
       )}
+      <Input label="Your name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} maxLength={120} required error={errors.name} />
       <Input
         label="Email"
         type="email"
@@ -235,8 +248,9 @@ export function NotifyForm({ city, className, tone = "light" }: { city?: City; c
         <span className="t-small font-medium text-ink">I'm asking for</span>
         <Segmented value={who} onChange={setWho} options={WHO.map((w) => ({ value: w.value, label: w.label }))} className="w-full" />
       </div>
+      {requestError && <p role="alert" className="rounded-md bg-danger-bg p-4 text-danger">{requestError}</p>}
       <Button type="submit" loading={busy} size="lg" className="mt-1">
-        Notify me when Slate arrives
+        Register interest
       </Button>
       <p className="t-micro text-ink-3">One email when we launch. We don't share your address.</p>
     </form>

@@ -1,5 +1,5 @@
 /**
- * Operator portal (part 1) — page-local data for Ufok Environmental Services Ltd.
+ * Operator portal (part 1), page-local data for Ufok Environmental Services Ltd.
  *
  * Built on top of the shared Uyo world in `@/data`: every Ufok pickup and customer
  * from the shared set is kept (same ids, names, addresses), then normalised onto
@@ -43,7 +43,7 @@ const between = (a: number, b: number) => Math.round(a + rnd() * (b - a));
 /* ---------- types ---------- */
 export type JobStatus = "Scheduled" | "En route" | "Arrived" | "Completed" | "Failed" | "Cancelled";
 export const FAILURE_REASONS = ["Gate locked", "Bin not out", "Access blocked", "Vehicle breakdown", "Other"] as const;
-export type FailureReason = (typeof FAILURE_REASONS)[number] | "Missed — recovered next day";
+export type FailureReason = (typeof FAILURE_REASONS)[number] | "Missed, recovered next day";
 
 export interface Job {
   id: string;
@@ -139,9 +139,9 @@ export interface OpsCustomer {
 
 const ACCESS = [
   "Bin at the gate by 06:30. Blue gate, opposite the estate clinic.",
-  "Security post at the entrance — give the Slate job number.",
+  "Security post at the entrance, give the Slate job number.",
   "Dog in the compound. Bin is left outside the gate.",
-  "Narrow street — reverse in from the junction.",
+  "Narrow street, reverse in from the junction.",
   "Two bins. Second bin behind the generator house.",
   "Gate opens at 07:00. Call via Slate if closed.",
   "Bin by the transformer at the corner plot.",
@@ -305,14 +305,14 @@ const otherDays: Job[] = sharedUfok
       arrivedAt: status === "Completed" || status === "Failed" ? done : undefined,
       completedAt: status === "Completed" ? (isMine && p.completedAt ? p.completedAt : done) : undefined,
       failedAt: status === "Failed" ? done : undefined,
-      failReason: p.status === "Missed" ? "Missed — recovered next day" : status === "Failed" ? "Access blocked" : undefined,
+      failReason: p.status === "Missed" ? "Missed, recovered next day" : status === "Failed" ? "Access blocked" : undefined,
       cancelReason: status === "Cancelled" ? (p.note ?? (c?.status === "Cancelled" ? "Customer cancelled their plan" : c?.status === "Paused" ? "Service paused by customer" : "Rescheduled by Slate")) : undefined,
       photos: status === "Completed" ? 1 : undefined,
       bins: p.bins ?? 1, households: c?.households, access: c?.access, note: status === "Cancelled" ? undefined : p.note,
     } satisfies Job;
   });
 
-/** 14 jobs transferred from Nwaniba Clean Crew for Tuesday (operatorNotifications on1) — not yet assigned. */
+/** 14 jobs transferred from Nwaniba Clean Crew for Tuesday (operatorNotifications on1), not yet assigned. */
 const blockD: Job[] = Array.from({ length: 14 }, (_, i) => {
   const id = `cus-sd${String(i + 1).padStart(2, "0")}`;
   const c: OpsCustomer = {
@@ -428,16 +428,16 @@ export interface ScheduleBlock {
   from?: string;
 }
 export const SCHEDULE: ScheduleBlock[] = [
-  { id: "s-hh-mon", label: "Households — Ewet & Udo Udoma", type: "Household", areas: ROUTES[0]!.areas, stops: 38, window: "06:00–10:00", vehicle: "AKS 214 XA", days: [1] },
-  { id: "s-hh-thu", label: "Households — Ewet & Udo Udoma", type: "Household", areas: ROUTES[0]!.areas, stops: 31, window: "06:00–10:00", vehicle: "AKS 214 XA", days: [4] },
-  { id: "s-sh-mon", label: "Households — Shelter Afrique & Nwaniba", type: "Household", areas: ROUTES[1]!.areas, stops: 34, window: "06:00–10:00", vehicle: "AKS 588 KJ", days: [1] },
-  { id: "s-sh-thu", label: "Households — Shelter Afrique & Nwaniba", type: "Household", areas: ROUTES[1]!.areas, stops: 27, window: "06:00–10:00", vehicle: "AKS 588 KJ", days: [4] },
-  { id: "s-os-mon", label: "Households — Osongama & Itam", type: "Household", areas: ROUTES[2]!.areas, stops: 29, window: "06:00–10:00", vehicle: "AKS 902 QE", days: [1] },
-  { id: "s-os-thu", label: "Households — Osongama & Itam", type: "Household", areas: ROUTES[2]!.areas, stops: 24, window: "06:00–10:00", vehicle: "AKS 902 QE", days: [4] },
+  { id: "s-hh-mon", label: "Households, Ewet & Udo Udoma", type: "Household", areas: ROUTES[0]!.areas, stops: 38, window: "06:00–10:00", vehicle: "AKS 214 XA", days: [1] },
+  { id: "s-hh-thu", label: "Households, Ewet & Udo Udoma", type: "Household", areas: ROUTES[0]!.areas, stops: 31, window: "06:00–10:00", vehicle: "AKS 214 XA", days: [4] },
+  { id: "s-sh-mon", label: "Households, Shelter Afrique & Nwaniba", type: "Household", areas: ROUTES[1]!.areas, stops: 34, window: "06:00–10:00", vehicle: "AKS 588 KJ", days: [1] },
+  { id: "s-sh-thu", label: "Households, Shelter Afrique & Nwaniba", type: "Household", areas: ROUTES[1]!.areas, stops: 27, window: "06:00–10:00", vehicle: "AKS 588 KJ", days: [4] },
+  { id: "s-os-mon", label: "Households, Osongama & Itam", type: "Household", areas: ROUTES[2]!.areas, stops: 29, window: "06:00–10:00", vehicle: "AKS 902 QE", days: [1] },
+  { id: "s-os-thu", label: "Households, Osongama & Itam", type: "Household", areas: ROUTES[2]!.areas, stops: 24, window: "06:00–10:00", vehicle: "AKS 902 QE", days: [4] },
   { id: "s-est", label: "Estate collection points", type: "Estate", areas: ["Osongama Estate", "Shelter Afrique Estate", "Ewet Housing Estate"], stops: 21, window: "06:00–10:00", vehicle: "UYO 903 BG", days: [1, 3, 5] },
   { id: "s-blockd", label: "Shelter Afrique Block D (transferred)", type: "Household", areas: ["Shelter Afrique Estate"], stops: 14, window: "07:00–09:00", vehicle: "Unassigned", days: [2, 5], from: "2026-10-06" },
   { id: "s-garden", label: "Garden waste and bulk requests", type: "Bulk", areas: ["Ewet Housing Estate", "Osongama Estate"], stops: 6, window: "09:00–13:00", vehicle: "AKS 330 FG", days: [6] },
-  { id: "s-recy", label: "Recyclables — Ewet & Osongama", type: "Recycling", areas: ["Ewet Housing Estate", "Osongama Estate"], stops: 64, window: "14:00–16:00", vehicle: "UYO 903 BG", dates: ["2026-09-08", "2026-10-13", "2026-11-10", "2026-12-08"] },
+  { id: "s-recy", label: "Recyclables, Ewet & Osongama", type: "Recycling", areas: ["Ewet Housing Estate", "Osongama Estate"], stops: 64, window: "14:00–16:00", vehicle: "UYO 903 BG", dates: ["2026-09-08", "2026-10-13", "2026-11-10", "2026-12-08"] },
 ];
 
 export const HOLIDAYS: Record<string, string> = {

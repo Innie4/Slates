@@ -1,12 +1,13 @@
 /**
  * Shared building blocks for Slate's public marketing pages
  * (Home, How it works, Services, service detail, For…, Pricing).
- * Page-local by design (DIRECTION.md §10.10) — not part of the kit.
+ * Page-local by design (DIRECTION.md §10.10), not part of the kit.
  */
 import { Fragment, useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "react-router";
 import { ArrowRight, BellRing, Check, ChevronRight, MapPin, MapPinOff, Plus, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { api, messageFor } from "@/lib/api";
 import { Strata } from "@/components/brand/Strata";
 import { RouteMap } from "@/components/brand/RouteMap";
 import { ServiceAreaMap } from "@/components/brand/ServiceAreaMap";
@@ -19,7 +20,7 @@ import { formatNaira, formatNumber } from "@/lib/format";
 /* Type + buttons                                                      */
 /* ------------------------------------------------------------------ */
 
-/** Marketing lede — a step above body copy. */
+/** Marketing lede, a step above body copy. */
 export const lede = "text-[17px] leading-[1.6] sm:text-[18px]";
 
 /** Buttons that sit on slate fields (the kit's variants are for canvas). */
@@ -204,7 +205,7 @@ export function PageHero({
  * Strata slices to cover its box; drawing it 4× taller and squashing it keeps the
  * whole stack (including the clear sky above the top slab) in a short, wide strip,
  * so no band is cut flat. Keep height ≥ width × squash ÷ 1.5. Tilt is doubled-up
- * because the squash flattens it — the visible tilt stays ≈ 3°.
+ * because the squash flattens it, the visible tilt stays ≈ 3°.
  */
 export function StrataBand({
   className,
@@ -262,7 +263,7 @@ export function HeroFacts({ items, tone = "light" }: { items: Array<{ label: str
 }
 
 /* ------------------------------------------------------------------ */
-/* Steps — numbered, joined by a chalk line                            */
+/* Steps, numbered, joined by a chalk line                            */
 /* ------------------------------------------------------------------ */
 
 export function Steps({ items, tone = "ink", className }: { items: Array<{ title: ReactNode; body: ReactNode }>; tone?: "ink" | "light"; className?: string }) {
@@ -433,6 +434,7 @@ const validPhone = (raw: string) => {
 
 export function LeadForm({
   id = "talk-to-us",
+  category = "Proposal",
   index,
   title,
   body,
@@ -444,6 +446,7 @@ export function LeadForm({
   next,
 }: {
   id?: string;
+  category?: "Proposal" | "Operator partnership";
   index?: string;
   title: ReactNode;
   body: ReactNode;
@@ -455,36 +458,44 @@ export function LeadForm({
   next: string[];
 }) {
   const toast = useToast();
-  const empty = { name: "", org: "", phone: "", size: "", message: "" };
+  const empty = { name: "", email: "", org: "", phone: "", size: "", message: "" };
   const [v, setV] = useState(empty);
   const [errors, setErrors] = useState<Partial<Record<keyof typeof empty, string>>>({});
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [ref, setRef] = useState("");
+  const [requestError, setRequestError] = useState("");
+  const attempt = useRef<{ body: string; key: string } | null>(null);
   const set = (k: keyof typeof empty) => (val: string) => {
     setV((s) => ({ ...s, [k]: val }));
     if (errors[k]) setErrors((e) => ({ ...e, [k]: undefined }));
   };
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     const err: typeof errors = {};
     if (v.name.trim().length < 2) err.name = "Enter your full name.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email.trim())) err.email = "Enter a complete email address.";
     if (!v.org.trim()) err.org = `Enter the ${orgLabel.toLowerCase()}.`;
     if (!validPhone(v.phone)) err.phone = "Enter a 10-digit number after +234, e.g. 803 412 7765.";
     if (!v.size) err.size = `Choose ${sizeLabel.toLowerCase()}.`;
     setErrors(err);
-    if (Object.keys(err).length) {
-      toast.error("Check the highlighted fields", "A few details are missing or incorrect.");
-      return;
-    }
+    if (Object.keys(err).length) return;
+    const body = JSON.stringify({ name: v.name.trim(), email: v.email.trim(), phone: `+234${v.phone.replace(/\D/g, "").replace(/^0/, "")}`, category, message: `${orgLabel}: ${v.org.trim()}\n${sizeLabel}: ${v.size}\n${v.message.trim()}` });
+    if (attempt.current?.body !== body) attempt.current = { body, key: crypto.randomUUID() };
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setRef(`LD-26-${String(4100 + ((v.name.length * 37 + v.org.length * 11) % 900)).padStart(4, "0")}`);
+    setRequestError("");
+    try {
+      const result = await api<{ reference: string }>("/enquiries", { method: "POST", body, headers: { "Idempotency-Key": attempt.current.key } });
+      setRef(result.reference);
       setDone(true);
-      toast.success("Request received", "A Slate account lead will call you within one working day.");
-    }, 900);
+      toast.success("Request saved", `Your reference is ${result.reference}.`);
+    } catch (cause) {
+      setRequestError(messageFor(cause));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -521,8 +532,7 @@ export function LeadForm({
               <div className="flex flex-col gap-4">
                 <p className="t-display text-ink">Thank you, {v.name.trim().split(/\s+/)[0]}.</p>
                 <p className="t-body max-w-md text-ink-2">
-                  We'll call <span className="font-medium text-ink tnum">+234 {v.phone.replace(/^0/, "")}</span> within one working day to talk about{" "}
-                  <span className="font-medium text-ink">{v.org.trim()}</span>. Quote <span className="t-mono text-ink">{ref}</span> if you call us first.
+                  Your request for <span className="font-medium text-ink">{v.org.trim()}</span> has been saved. Keep reference <span className="font-semibold text-ink">{ref}</span> so the team can find it when you contact us.
                 </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
@@ -545,12 +555,14 @@ export function LeadForm({
         >
           <form noValidate onSubmit={submit} className="flex flex-col gap-5 rounded-[24px] border border-line bg-surface p-6 sm:p-10" aria-label="Request a proposal">
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              <Input label="Your name" autoComplete="name" placeholder="Uduak Essien" value={v.name} onChange={(e) => set("name")(e.target.value)} error={errors.name} />
-              <Input label={orgLabel} autoComplete="organization" placeholder={orgPlaceholder} value={v.org} onChange={(e) => set("org")(e.target.value)} error={errors.org} />
-              <PhoneInput label="Phone" value={v.phone} onChange={(e) => set("phone")(e.target.value)} error={errors.phone} />
-              <Select label={sizeLabel} placeholder="Choose one" options={sizeOptions} value={v.size} onChange={(e) => set("size")(e.target.value)} error={errors.size} />
+              <Input label="Your name" autoComplete="name" required maxLength={120} placeholder="Uduak Essien" value={v.name} onChange={(e) => set("name")(e.target.value)} error={errors.name} />
+              <Input label={orgLabel} autoComplete="organization" required maxLength={180} placeholder={orgPlaceholder} value={v.org} onChange={(e) => set("org")(e.target.value)} error={errors.org} />
+              <Input label="Email address" type="email" autoComplete="email" required maxLength={254} value={v.email} onChange={(e) => set("email")(e.target.value)} error={errors.email} />
+              <PhoneInput label="Phone" required maxLength={16} value={v.phone} onChange={(e) => set("phone")(e.target.value)} error={errors.phone} />
+              <Select label={sizeLabel} required placeholder="Choose one" options={sizeOptions} value={v.size} onChange={(e) => set("size")(e.target.value)} error={errors.size} />
             </div>
-            <Textarea label="Anything we should know" optional rows={4} placeholder={messagePlaceholder} value={v.message} onChange={(e) => set("message")(e.target.value)} />
+            <Textarea label="Anything we should know" optional rows={4} maxLength={3000} placeholder={messagePlaceholder} value={v.message} onChange={(e) => set("message")(e.target.value)} />
+            {requestError && <p role="alert" className="rounded-md bg-danger-bg p-4 text-danger">{requestError}</p>}
             <div className="flex flex-col gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between">
               <p className="t-small max-w-xs text-ink-3">We use these details only to prepare your proposal. No mailing lists.</p>
               <Button type="submit" size="lg" loading={loading} trailing={<ArrowRight className="size-4" />}>
@@ -583,16 +595,14 @@ const COVERAGE: Array<{ match: string[]; area: string; zone: string; days: strin
   { match: ["use offot", "offot"], area: "Use Offot", zone: "uselga", days: "Wed & Sat", window: "08:00–10:00" },
 ];
 
-/** Coverage per zone — kept high so labels stay legible in both themes. */
-export const ZONE_COVERAGE: Record<string, number> = { ewet: 98, shelter: 96, osongama: 91, aka: 88, oron: 86, nwaniba: 79, abak: 74, itam: 77, uselga: 72 };
-
 type CheckResult =
   | { kind: "served"; area: string; zone: string; days: string; window: string; operator: string }
   | { kind: "unavailable"; place: string; city?: (typeof cities)[number] };
 
 function lookup(raw: string): CheckResult {
   const q = raw.toLowerCase();
-  const hit = COVERAGE.find((c) => c.match.some((m) => q.includes(m)));
+  const elsewhere = cities.find((c) => c.status !== "Live" && q.includes(c.name.toLowerCase()));
+  const hit = !elsewhere && COVERAGE.find((c) => c.match.some((m) => new RegExp(`(?:^|[\\s,])${m}(?:$|[\\s,])`).test(q)));
   if (hit) {
     const op = operators.find((o) => o.status === "Active" && o.areas.some((a) => a.toLowerCase().startsWith(hit.area.toLowerCase().split(" ")[0]!)));
     return { kind: "served", area: hit.area, zone: hit.zone, days: hit.days, window: hit.window, operator: op?.short ?? "a verified Slate operator" };
@@ -602,16 +612,13 @@ function lookup(raw: string): CheckResult {
   return { kind: "unavailable", place, city };
 }
 
-const launchLabel = (launch: string) => {
-  if (/Q\d/.test(launch)) return launch.replace(/(\d{4})-(Q\d)/, "$2 $1");
-  return new Date(launch).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
-};
-
 export function AddressChecker({ inputId, compact }: { inputId?: string; compact?: boolean }) {
   const toast = useToast();
   const [address, setAddress] = useState("");
   const [error, setError] = useState<string>();
-  const [checking, setChecking] = useState(false);
+  const [notifying, setNotifying] = useState(false);
+  const [notifyName, setNotifyName] = useState("");
+  const notifyAttempt = useRef<{ body: string; key: string } | null>(null);
   const [result, setResult] = useState<CheckResult | null>(null);
   const [contact, setContact] = useState("");
   const [contactError, setContactError] = useState<string>();
@@ -626,30 +633,36 @@ export function AddressChecker({ inputId, compact }: { inputId?: string; compact
   const check = (e?: FormEvent, value = address) => {
     e?.preventDefault();
     if (value.trim().length < 3) {
-      setError("Enter a street, estate or area — for example “Ewet Housing Estate”.");
+      setError("Enter a street, estate or area, for example “Ewet Housing Estate”.");
       return;
     }
     setError(undefined);
-    setChecking(true);
     setNotified(false);
     setContact("");
-    setTimeout(() => {
-      setChecking(false);
-      setResult(lookup(value));
-    }, 650);
+    setResult(lookup(value));
   };
 
-  const notify = (e: FormEvent) => {
+  const notify = async (e: FormEvent) => {
     e.preventDefault();
-    const c = contact.trim();
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c);
-    if (!isEmail && !validPhone(c)) {
-      setContactError("Enter a phone number (0803 412 7765) or an email address.");
+    if (notifying) return;
+    const email = contact.trim();
+    if (notifyName.trim().length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      setContactError("Enter your name and a complete email address.");
       return;
     }
+    const body = JSON.stringify({ name: notifyName.trim(), email, category: "Waitlist", message: `Please register my interest in waste collection at ${address.trim()}.` });
+    if (notifyAttempt.current?.body !== body) notifyAttempt.current = { body, key: crypto.randomUUID() };
     setContactError(undefined);
-    setNotified(true);
-    toast.success("You're on the list", `We'll tell you the week Slate arrives in ${result?.kind === "unavailable" ? result.place : "your area"}.`);
+    setNotifying(true);
+    try {
+      await api<{ reference: string }>("/enquiries", { method: "POST", body, headers: { "Idempotency-Key": notifyAttempt.current.key } });
+      setNotified(true);
+      toast.success("Interest saved", "Your service enquiry has been saved for the Slate team.");
+    } catch (cause) {
+      setContactError(messageFor(cause));
+    } finally {
+      setNotifying(false);
+    }
   };
 
   const zone = result?.kind === "served" ? result.zone : undefined;
@@ -667,10 +680,10 @@ export function AddressChecker({ inputId, compact }: { inputId?: string; compact
                 if (error) setError(undefined);
               }}
               error={error}
-              hint="Street, estate or area — we'll match it to a Slate zone."
+              hint="Street, estate or area. Exact address coverage is confirmed before service starts."
             />
           </div>
-          <Button type="submit" size="lg" loading={checking} className="sm:mt-[26px]">
+          <Button type="submit" size="lg"  className="sm:mt-[26px]">
             Check address
           </Button>
         </form>
@@ -694,28 +707,28 @@ export function AddressChecker({ inputId, compact }: { inputId?: string; compact
         </div>
 
         <div aria-live="polite" className="min-h-0">
-          {!result && !checking && (
+          {!result && (
             <p className="t-small flex items-center gap-2 text-ink-3">
-              <MapPin className="size-4" /> Live across 9 zones in Uyo. Port Harcourt from February 2027.
+              <MapPin className="size-4" /> Uyo area guide. Exact street coverage is reviewed before service starts.
             </p>
           )}
           {result?.kind === "served" && (
             <div key={result.area} className="animate-pop-in flex flex-col gap-5 rounded-lg border border-line bg-surface p-5 sm:p-6">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge tone="success" dot>
-                  Available
+                  Area match
                 </Badge>
                 <span className="t-small text-ink-3">Uyo · {result.area}</span>
               </div>
-              <p className="t-h1 text-ink">Slate serves {result.area}.</p>
+              <p className="t-h1 text-ink">Request collection in {result.area}.</p>
               <dl className="grid grid-cols-2 gap-x-6 gap-y-4 border-t border-line pt-5 sm:grid-cols-3">
                 <div>
-                  <dt className="t-micro text-ink-3">Collection days</dt>
-                  <dd className="t-body font-medium text-ink">{result.days}</dd>
+                  <dt className="t-micro text-ink-3">Location</dt>
+                  <dd className="t-body font-medium text-ink">Uyo</dd>
                 </div>
                 <div>
-                  <dt className="t-micro text-ink-3">Pickup window</dt>
-                  <dd className="t-body font-medium text-ink tnum">{result.window}</dd>
+                  <dt className="t-micro text-ink-3">Availability</dt>
+                  <dd className="t-body font-medium text-ink">Confirmed after review</dd>
                 </div>
                 <div className="col-span-2 sm:col-span-1">
                   <dt className="t-micro text-ink-3">Home plan from</dt>
@@ -723,7 +736,7 @@ export function AddressChecker({ inputId, compact }: { inputId?: string; compact
                 </div>
               </dl>
               <p className="t-small text-ink-2">
-                Collected by {result.operator}, under contract to Slate. If they miss a pickup, Slate sends another crew within 24 hours.
+                This is an area match. Your exact address, collection days and operator are confirmed when Slate reviews your service request.
               </p>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <ButtonLink to="/signup" variant="signal" size="lg" trailing={<ArrowRight className="size-4" />}>
@@ -744,24 +757,26 @@ export function AddressChecker({ inputId, compact }: { inputId?: string; compact
                 <div className="flex min-w-0 flex-col gap-1">
                   <p className="t-h2 text-ink">Slate isn't in {result.place} yet.</p>
                   <p className="t-body text-ink-2">
-                    {result.city
-                      ? `${result.city.name} is ${result.city.status === "Launching" ? "launching" : "planned"} for ${launchLabel(result.city.launch)}. We're recruiting operators there now.`
-                      : "We're live in nine Uyo zones and adding streets every month. Leave a number and we'll tell you the week we arrive."}
+                    Leave your name and email to register interest. The team can review your area, but a launch date is not confirmed.
                   </p>
                 </div>
               </div>
               {notified ? (
                 <div className="flex items-center gap-3 rounded-md bg-success-bg px-4 py-3.5 text-success">
                   <Check className="size-[18px] shrink-0" strokeWidth={2.5} />
-                  <p className="t-small font-medium">You're on the list. We'll message {contact.trim()} when Slate arrives.</p>
+                  <p className="t-small font-medium">Your interest is saved for {contact.trim()}. Service is subject to availability.</p>
                 </div>
               ) : (
-                <form onSubmit={notify} noValidate className="flex flex-col gap-3 sm:flex-row sm:items-start">
+                <form onSubmit={notify} noValidate className="flex flex-col gap-3">
+                  <Input label="Your name" autoComplete="name" value={notifyName} onChange={(e) => setNotifyName(e.target.value)} maxLength={120} required />
                   <Input
                     fieldClassName="flex-1"
                     className="flex-1"
-                    aria-label="Phone or email"
-                    placeholder="Phone or email"
+                    label="Email address"
+                    type="email"
+                    autoComplete="email"
+                    maxLength={254}
+                    required
                     value={contact}
                     onChange={(e) => {
                       setContact(e.target.value);
@@ -769,8 +784,8 @@ export function AddressChecker({ inputId, compact }: { inputId?: string; compact
                     }}
                     error={contactError}
                   />
-                  <Button type="submit" size="lg" variant="secondary" leading={<BellRing className="size-4" />}>
-                    Notify me when Slate arrives
+                  <Button type="submit" size="lg" variant="secondary" loading={notifying} leading={<BellRing className="size-4" />}>
+                    Register interest
                   </Button>
                 </form>
               )}
@@ -780,7 +795,7 @@ export function AddressChecker({ inputId, compact }: { inputId?: string; compact
       </div>
       {!compact && (
         <div className="relative">
-          <ServiceAreaMap values={ZONE_COVERAGE} highlight={zone ? [zone] : undefined} legend="Coverage" className="aspect-[4/3] w-full rounded-[16px]" />
+          <ServiceAreaMap highlight={zone ? [zone] : undefined} legend="" className="aspect-[4/3] w-full rounded-[16px]" />
         </div>
       )}
     </div>
@@ -788,7 +803,7 @@ export function AddressChecker({ inputId, compact }: { inputId?: string; compact
 }
 
 /* ------------------------------------------------------------------ */
-/* Redundancy demo — Operator A fails, Slate moves you to Operator B   */
+/* Redundancy demo, Operator A fails, Slate moves you to Operator B   */
 /* ------------------------------------------------------------------ */
 
 const RECOVERY = [
@@ -896,7 +911,7 @@ export function RedundancyDemo() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Live board — the railway timetable reference (DIRECTION.md §1)      */
+/* Live board, the railway timetable reference (DIRECTION.md §1)      */
 /* ------------------------------------------------------------------ */
 
 export interface BoardRow {
@@ -997,7 +1012,7 @@ export function EstateMatrix({ total = 312, tone = "light", className }: { total
           <span className={cn("size-2.5 rounded-[2px]", L ? "bg-slate-ink/35" : "bg-slate-400 dark:bg-slate-600")} /> Smart Sweep · {counts.sweep ?? 0}
         </li>
         <li className="flex items-center gap-2">
-          <span className={cn("size-2.5 rounded-[2px] ring-1 ring-inset", L ? "ring-slate-ink/50" : "ring-ink-3")} /> Overdue · {counts.overdue ?? 0} — Slate follows up
+          <span className={cn("size-2.5 rounded-[2px] ring-1 ring-inset", L ? "ring-slate-ink/50" : "ring-ink-3")} /> Overdue · {counts.overdue ?? 0}, Slate follows up
         </li>
       </ul>
     </div>
@@ -1023,11 +1038,11 @@ export function EstateStage() {
 }
 
 const BRANCHES = [
-  ["Grand Atlantic — Ikot Ekpene Rd", 31, 96_000],
-  ["Grand Atlantic — Oron Rd", 31, 88_500],
-  ["Grand Atlantic — Aka Rd", 26, 64_000],
-  ["Grand Atlantic — Wellington Bassey", 26, 64_000],
-  ["Grand Atlantic — Eket", 13, 46_500],
+  ["Grand Atlantic, Ikot Ekpene Rd", 31, 96_000],
+  ["Grand Atlantic, Oron Rd", 31, 88_500],
+  ["Grand Atlantic, Aka Rd", 26, 64_000],
+  ["Grand Atlantic, Wellington Bassey", 26, 64_000],
+  ["Grand Atlantic, Eket", 13, 46_500],
 ] as const;
 
 /** One invoice for many branches. */
@@ -1149,7 +1164,7 @@ const MATERIALS = [
 ];
 export const RECOVERED_KG = MATERIALS.reduce((a, m) => a + m.kg, 0);
 
-/** Recovered kilograms by material — real numbers, not recycling arrows. */
+/** Recovered kilograms by material, real numbers, not recycling arrows. */
 export function MaterialBars({ tone = "ink", className }: { tone?: "ink" | "light"; className?: string }) {
   const max = Math.max(...MATERIALS.map((m) => m.kg));
   const L = tone === "light";
@@ -1412,7 +1427,7 @@ export function scrollToId(id: string, focusId?: string) {
   if (focusId) window.setTimeout(() => (document.getElementById(focusId) as HTMLInputElement | null)?.focus({ preventScroll: true }), 450);
 }
 
-/** A row of words separated by chalk dots — "One company · One payment …". */
+/** A row of words separated by chalk dots, "One company · One payment …". */
 export function DotRow({ items, tone = "light", className }: { items: string[]; tone?: "ink" | "light"; className?: string }) {
   return (
     <p className={cn("flex flex-wrap items-center gap-x-3 gap-y-1 t-small font-medium", tone === "light" ? "text-slate-ink/80" : "text-ink-2", className)}>

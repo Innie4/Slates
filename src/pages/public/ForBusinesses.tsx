@@ -1,3 +1,5 @@
-import RoutePage from "@/pages/_shared/RoutePage";
+import { AudiencePage } from "./_service";
 
-export default RoutePage;
+export default function ForBusinesses() {
+  return <AudiencePage kind="businesses" />;
+}

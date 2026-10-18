@@ -4,3 +4,12 @@ dist
 *.log
 shots/
 .vite
+data/
+.env
+.env.*
+!.env.example
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+.taste-skill/
+.neon

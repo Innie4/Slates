@@ -10,7 +10,7 @@ import { myComplaints, myPickups, operatorById } from "@/data";
 import { DateTile, dayLabel, joinDays, NotFound, OperatorLine, SubscriptionDialogs, WeekStrip, type SubDialog } from "./_core";
 import { subById, type Subscription } from "./_subs";
 
-/** C7 — one subscription: service, schedule, billing, and how well it's been delivered. */
+/** C7, one subscription: service, schedule, billing, and how well it's been delivered. */
 export default function SubscriptionDetail() {
   const { id = "" } = useParams();
   const initial = subById(id);
@@ -118,7 +118,7 @@ function Detail({ initial }: { initial: Subscription }) {
             <section className="flex flex-col gap-5">
               <div>
                 <h2 className="t-h2 text-ink">Performance</h2>
-                <p className="t-small mt-1 text-ink-2">Since {perf.since}. Slate holds the operator to this — not you.</p>
+                <p className="t-small mt-1 text-ink-2">Since {perf.since}. Slate holds the operator to this, not you.</p>
               </div>
               <div className="grid grid-cols-3 divide-x divide-line border-y border-line">
                 {[
@@ -177,7 +177,7 @@ function Detail({ initial }: { initial: Subscription }) {
                     key={p.id}
                     to={`/app/pickups/${p.id}`}
                     leading={<DateTile date={p.date} live={p.status === "En route"} muted={p.status === "Cancelled"} />}
-                    title={p.status === "Completed" && p.completedAt ? `Collected ${new Date(p.completedAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}` : p.status === "En route" ? "On the way" : p.status === "Cancelled" ? "No collection" : p.status === "Missed" ? "Missed — recovered" : p.window}
+                    title={p.status === "Completed" && p.completedAt ? `Collected ${new Date(p.completedAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}` : p.status === "En route" ? "On the way" : p.status === "Cancelled" ? "No collection" : p.status === "Missed" ? "Missed, recovered" : p.window}
                     subtitle={`${p.id} · ${p.note ?? `${p.operatorName}${p.operatorId !== "op-ufok" ? " (recovery crew)" : ""}`}`}
                     trailing={<StatusBadge status={p.status} />}
                   />

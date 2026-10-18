@@ -10,7 +10,7 @@ type Method = "sms" | "app" | "backup";
 const BACKUP_CODES = ["7KQ4-M2XD", "R9TB-3HVA", "PZ6E-WL8N", "C4JU-Y7GF", "N2MS-K5QR", "H8DW-T3PC", "X6VA-B9LJ", "E3RN-Q7ZK", "U5FY-G2MT", "L9PH-D4WS"];
 const SETUP_KEY = "JBSW Y3DP EHPK 3PXP 6Q2M";
 
-/** A8 — Two-step verification at sign-in, plus authenticator and backup-code setup. */
+/** A8, Two-step verification at sign-in, plus authenticator and backup-code setup. */
 export default function TwoFactor() {
   const [mode, setMode] = useState<"verify" | "setup">("verify");
   return mode === "verify" ? <Verify onSetup={() => setMode("setup")} /> : <Setup onBack={() => setMode("verify")} />;
@@ -54,7 +54,7 @@ function Verify({ onSetup }: { onSetup: () => void }) {
       setChecking(false);
       if (code !== DEMO_OTP) {
         setCode("");
-        return setError(method === "app" ? "That code isn't right. Codes change every 30 seconds — use the current one." : "That code isn't right. Check the latest SMS from SLATE.");
+        return setError(method === "app" ? "That code isn't right. Codes change every 30 seconds, use the current one." : "That code isn't right. Check the latest SMS from SLATE.");
       }
     }
     signIn("household");
@@ -134,7 +134,7 @@ function Verify({ onSetup }: { onSetup: () => void }) {
 
       <div className="flex flex-col gap-3 border-t border-line pt-6">
         <p className="t-small text-ink-2">
-          Lost your phone and your backup codes? Call Slate on <span className="font-medium text-ink tnum">0700 752 8300</span> — we'll confirm your identity before resetting two-step verification.
+          Lost your phone and your backup codes? Call Slate on <span className="font-medium text-ink tnum">0700 752 8300</span>, we'll confirm your identity before resetting two-step verification.
         </p>
         <button type="button" onClick={onSetup} className="w-fit t-small font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">
           Set up an authenticator app and backup codes

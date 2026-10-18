@@ -110,7 +110,7 @@ export function EmptyState({
 }
 
 /* ------------------------------------------------------------------ */
-/* StateView — every important system state (Part L)                  */
+/* StateView, every important system state (Part L)                  */
 /* ------------------------------------------------------------------ */
 
 export type SystemState =
@@ -248,7 +248,7 @@ export function ProgressBar({
   );
 }
 
-/** Segmented meter — e.g. SLA score, verification steps */
+/** Segmented meter, e.g. SLA score, verification steps */
 export function Meter({ value, segments = 10, className }: { value: number; segments?: number; className?: string }) {
   const filled = Math.round((value / 100) * segments);
   return (

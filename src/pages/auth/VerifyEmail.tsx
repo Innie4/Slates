@@ -8,7 +8,7 @@ import {
 
 const MAX_ATTEMPTS = 3;
 
-/** A3 — Verify email with a 6-digit code. */
+/** A3, Verify email with a 6-digit code. */
 export default function VerifyEmail() {
   const navigate = useNavigate();
   const toast = useToast();
@@ -140,7 +140,7 @@ export default function VerifyEmail() {
         }
       >
         <ModalBody icon={<CalendarX />} tone="warning" title="This code has expired">
-          Codes last 10 minutes. We'll send a fresh one to {maskEmail(email)} — the old code stops working.
+          Codes last 10 minutes. We'll send a fresh one to {maskEmail(email)}, the old code stops working.
         </ModalBody>
       </Modal>
 

@@ -3,7 +3,7 @@ import { cn } from "@/lib/cn";
 import { SlabMark } from "./Strata";
 
 /**
- * LOGO PLACEHOLDER — replace this single component when the real logo arrives.
+ * LOGO PLACEHOLDER, replace this single component when the real logo arrives.
  * Everything in the app renders the brand through <Logo />.
  */
 export function Logo({

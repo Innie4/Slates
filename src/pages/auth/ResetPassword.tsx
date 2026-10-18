@@ -4,7 +4,7 @@ import { CalendarX, CheckCircle2 } from "lucide-react";
 import { Button, PasswordInput } from "@/components/ui";
 import { AuthHeading, AuthOutcome, PASSWORD_RULES, PasswordChecklist, wait } from "./_shared";
 
-/** A6 — Choose a new password. `?token=expired` shows the expired-link state. */
+/** A6, Choose a new password. `?token=expired` shows the expired-link state. */
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [params] = useSearchParams();

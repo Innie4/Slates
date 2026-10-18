@@ -63,7 +63,7 @@ export function Breadcrumbs({ items, className }: { items: Crumb[]; className?: 
 }
 
 /**
- * PageHeader — page title, optional back link / breadcrumbs, description,
+ * PageHeader, page title, optional back link / breadcrumbs, description,
  * meta (badges) and actions. On mobile, actions wrap under the title.
  */
 export function PageHeader({

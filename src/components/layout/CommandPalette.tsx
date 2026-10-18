@@ -7,6 +7,7 @@ import { Kbd } from "@/components/ui";
 import type { PortalConfig } from "./nav";
 import { complaints, contracts, customers, invoices, myPayments, myPickups, operators, payments, pickups, tickets } from "@/data";
 import { formatNaira } from "@/lib/format";
+import { useSession } from "@/lib/session";
 
 interface Result {
   group: string;
@@ -21,6 +22,7 @@ interface Result {
  * complaints, invoices and tickets. Customers search their own pickups/payments.
  */
 export function CommandPalette({ open, onClose, config }: { open: boolean; onClose: () => void; config: PortalConfig }) {
+  const { mode } = useSession();
   const [q, setQ] = useState("");
   const [active, setActive] = useState(0);
   const navigate = useNavigate();
@@ -39,16 +41,16 @@ export function CommandPalette({ open, onClose, config }: { open: boolean; onClo
     const pages: Result[] = config.groups.flatMap((g) => g.items.map((i) => ({ group: "Go to", label: i.label, hint: g.label, to: i.to })));
     const match = (t: string) => !s || t.toLowerCase().includes(s);
     const out: Result[] = pages.filter((p) => match(p.label)).slice(0, s ? 6 : 8);
-    if (!s) return out;
+    if (!s || mode === "account") return out;
     if (config.key === "admin") {
       customers.filter((c) => match(c.name) || match(c.id)).slice(0, 4).forEach((c) => out.push({ group: "Customers", label: c.name, hint: `${c.type} · ${c.area}`, to: `/admin/customers/${c.id}` }));
       operators.filter((o) => match(o.name)).slice(0, 3).forEach((o) => out.push({ group: "Operators", label: o.name, hint: o.status, to: `/admin/operators/${o.id}` }));
       contracts.filter((c) => match(c.id) || match(c.operatorName)).slice(0, 3).forEach((c) => out.push({ group: "Contracts", label: c.id, hint: `${c.operatorName} · ${c.status}`, to: `/admin/contracts/${c.id}` }));
       pickups.filter((p) => match(p.id) || match(p.customerName)).slice(0, 4).forEach((p) => out.push({ group: "Pickups", label: p.id, hint: `${p.customerName} · ${p.status}`, to: `/admin/pickups/${p.id}` }));
       payments.filter((p) => match(p.reference) || match(p.customerName)).slice(0, 3).forEach((p) => out.push({ group: "Payments", label: p.reference, hint: `${p.customerName} · ${formatNaira(p.amount)}`, to: `/admin/payments/${p.id}` }));
-      complaints.filter((c) => match(c.id) || match(c.customerName) || match(c.issue)).slice(0, 3).forEach((c) => out.push({ group: "Complaints", label: `${c.id} — ${c.issue}`, hint: c.customerName, to: `/admin/complaints?id=${c.id}` }));
+      complaints.filter((c) => match(c.id) || match(c.customerName) || match(c.issue)).slice(0, 3).forEach((c) => out.push({ group: "Complaints", label: `${c.id}, ${c.issue}`, hint: c.customerName, to: `/admin/complaints?id=${c.id}` }));
       invoices.filter((i) => match(i.id) || match(i.customerName)).slice(0, 3).forEach((i) => out.push({ group: "Invoices", label: i.id, hint: i.customerName, to: `/admin/invoices?id=${i.id}` }));
-      tickets.filter((t) => match(t.id) || match(t.subject)).slice(0, 3).forEach((t) => out.push({ group: "Tickets", label: `${t.id} — ${t.subject}`, hint: t.from, to: `/admin/support?id=${t.id}` }));
+      tickets.filter((t) => match(t.id) || match(t.subject)).slice(0, 3).forEach((t) => out.push({ group: "Tickets", label: `${t.id}, ${t.subject}`, hint: t.from, to: `/admin/support?id=${t.id}` }));
     } else if (config.key === "app") {
       myPickups.filter((p) => match(p.id) || match(p.service)).slice(0, 4).forEach((p) => out.push({ group: "Pickups", label: p.id, hint: `${p.service} · ${p.status}`, to: `/app/pickups/${p.id}` }));
       myPayments.filter((p) => match(p.reference) || match(p.service)).slice(0, 4).forEach((p) => out.push({ group: "Payments", label: p.reference, hint: `${p.service} · ${formatNaira(p.amount)}`, to: `/app/payments` }));
@@ -56,7 +58,7 @@ export function CommandPalette({ open, onClose, config }: { open: boolean; onClo
       pickups.filter((p) => p.operatorId === "op-ufok" && (match(p.id) || match(p.customerName))).slice(0, 5).forEach((p) => out.push({ group: "Jobs", label: p.id, hint: `${p.customerName} · ${p.status}`, to: `/operator/jobs/${p.id}` }));
     }
     return out;
-  }, [q, config]);
+  }, [q, config, mode]);
 
   useEffect(() => {
     if (!open) return;

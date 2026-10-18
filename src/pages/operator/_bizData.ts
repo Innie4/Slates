@@ -1,5 +1,5 @@
 /**
- * Operator portal — business pages (company, compliance, money, quality).
+ * Operator portal, business pages (company, compliance, money, quality).
  * Page-local mock data for Ufok Environmental Services Ltd (op-ufok).
  *
  * The numbers tie together across pages:
@@ -840,7 +840,7 @@ export const COMPANY_DOCS: CompanyDoc[] = [
   },
 ];
 
-/** Verification checklist (G2) — the company pack Slate verifies. */
+/** Verification checklist (G2), the company pack Slate verifies. */
 export type VerifyGroup =
   | "Registration documents"
   | "Permits and licences"

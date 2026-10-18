@@ -1,14 +1,18 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router";
+import { Link, Navigate, NavLink, Outlet, useLocation, useNavigate } from "react-router";
 import { Bell, ChevronDown, LogOut, Menu as MenuIcon, Moon, MoreHorizontal, Plus, Search, Sun, Repeat2, User as UserIcon, X } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Logo } from "@/components/brand/Logo";
-import { Avatar, Button, ButtonLink, IconButton, Kbd, Modal, Popover } from "@/components/ui";
+import { Alert, Avatar, Button, ButtonLink, IconButton, Kbd, Modal, Popover, useToast } from "@/components/ui";
 import { HOME_FOR_ROLE, useSession } from "@/lib/session";
 import { formatRelative } from "@/lib/format";
 import { customerNotifications, operatorNotifications, type NotificationItem, type Role } from "@/data";
 import { CommandPalette } from "./CommandPalette";
 import type { NavItem, PortalConfig } from "./nav";
+import { AccountPage } from "@/pages/live/AccountPage";
+import { messageFor } from "@/lib/api";
+import { liveCustomerNav } from "./nav";
+import "@/pages/live/account.css";
 
 const ROLE_LABELS: Record<Role, string> = {
   household: "Household",
@@ -101,7 +105,9 @@ function NotificationsPanel({ items, viewAll }: { items: NotificationItem[]; vie
 }
 
 function AccountMenu({ compact }: { compact?: boolean }) {
-  const { user, role, signIn, signOut, theme, setTheme } = useSession();
+  const { user, role, mode, signIn, signOut, theme, setTheme } = useSession();
+  const toast = useToast();
+  const [signingOut, setSigningOut] = useState(false);
   const navigate = useNavigate();
   const [confirmOut, setConfirmOut] = useState(false);
   const roles: Role[] = ["household", "estate", "business", "institution", "operator", "admin"];
@@ -139,7 +145,7 @@ function AccountMenu({ compact }: { compact?: boolean }) {
                 {theme === "dark" ? "Light appearance" : "Dark appearance"}
               </button>
             </div>
-            <div className="border-t border-line py-1.5">
+            {mode === "demo" && <div className="border-t border-line py-1.5">
               <p className="px-4 pb-1 pt-1.5 t-micro text-ink-3">Demo: switch portal</p>
               {roles.map((r) => (
                 <button
@@ -156,7 +162,7 @@ function AccountMenu({ compact }: { compact?: boolean }) {
                   {ROLE_LABELS[r]}
                 </button>
               ))}
-            </div>
+            </div>}
             <div className="border-t border-line pt-1.5">
               <button type="button" onClick={() => { close(); setConfirmOut(true); }} className="flex w-full items-center gap-3 px-4 py-2.5 text-[14px] text-danger hover:bg-danger-bg">
                 <LogOut className="size-4" />
@@ -177,9 +183,12 @@ function AccountMenu({ compact }: { compact?: boolean }) {
             <Button variant="ghost" onClick={() => setConfirmOut(false)}>Stay signed in</Button>
             <Button
               variant="destructive"
-              onClick={() => {
-                signOut();
-                navigate("/login");
+              loading={signingOut}
+              onClick={async () => {
+                setSigningOut(true);
+                try { await signOut(); navigate("/login", { replace: true }); }
+                catch (cause) { toast.error("Couldn't sign out", messageFor(cause)); }
+                finally { setSigningOut(false); }
               }}
             >
               Sign out
@@ -191,18 +200,13 @@ function AccountMenu({ compact }: { compact?: boolean }) {
   );
 }
 
-export function PortalLayout({ config, banner }: { config: PortalConfig; banner?: ReactNode }) {
-  const { pathname } = useLocation();
-  const { role, signIn, user, theme, setTheme } = useSession();
+export function PortalLayout({ config: suppliedConfig, banner }: { config: PortalConfig; banner?: ReactNode }) {
+  const { pathname, search: query } = useLocation();
+  const { role, mode, account, ready, error, reload, user, theme, setTheme } = useSession();
+  const config = mode === "account" && suppliedConfig.key === "app" ? liveCustomerNav : suppliedConfig;
   const [search, setSearch] = useState(false);
   const [more, setMore] = useState(false);
   const [drawer, setDrawer] = useState(false);
-
-  // Visiting a portal URL directly signs the demo user into that role.
-  useEffect(() => {
-    const r = PORTAL_ROLE[config.key];
-    if (role !== r) signIn(r);
-  }, [config.key, role, signIn]);
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
@@ -220,7 +224,12 @@ export function PortalLayout({ config, banner }: { config: PortalConfig; banner?
     setDrawer(false);
   }, [pathname]);
 
-  const notifications = config.key === "app" ? customerNotifications : config.key === "operator" ? operatorNotifications : customerNotifications.slice(0, 0).concat(operatorNotifications.slice(1, 4));
+  if (!ready) return <div className="flex min-h-dvh items-center justify-center bg-canvas t-body text-ink" role="status">Loading your account</div>;
+  if (error && !role) return <div className="mx-auto max-w-lg p-6 pt-20"><Alert tone="danger" title="Couldn't connect to Slate" action={<Button onClick={() => void reload()}>Retry</Button>}>{error}</Alert><ButtonLink to="/" variant="ghost" className="mt-4">Back home</ButtonLink></div>;
+  if (!role) return <Navigate to={`/login?next=${encodeURIComponent(pathname + query)}`} replace />;
+  if (role !== PORTAL_ROLE[config.key]) return <Navigate to={HOME_FOR_ROLE[role]} replace />;
+
+  const notifications = mode === "account" ? [] : config.key === "app" ? customerNotifications : config.key === "operator" ? operatorNotifications : customerNotifications.slice(0, 0).concat(operatorNotifications.slice(1, 4));
   const unread = notifications.filter((n) => !n.read).length;
   const notifRoute = config.key === "app" ? "/app/notifications" : config.key === "admin" ? "/admin/notifications" : undefined;
   const moreActive = !config.tabs.some((t) => isActive(pathname, t.to));
@@ -265,7 +274,7 @@ export function PortalLayout({ config, banner }: { config: PortalConfig; banner?
   );
 
   return (
-    <div className="portal-shell min-h-dvh bg-canvas" data-portal={config.key}>
+    <div className="portal-shell min-h-dvh bg-canvas" data-portal={config.key} data-mode={mode}>
       {/* Desktop sidebar */}
       <aside className="chalk-grain fixed inset-y-0 left-0 z-30 hidden w-64 overflow-hidden border-r border-white/10 bg-slate lg:block">
         <span className="pointer-events-none absolute inset-x-0 bottom-0 h-40 opacity-20" aria-hidden />
@@ -314,12 +323,14 @@ export function PortalLayout({ config, banner }: { config: PortalConfig; banner?
           {banner}
         </header>
 
+        {mode === "demo" && <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-info-bg px-5 py-3 t-small text-ink lg:px-8"><p><strong>Sample portal.</strong> Records, payments and actions are demonstrations.</p><Link to="/signup" className="font-semibold underline underline-offset-4">Create a real account</Link></div>}
+
         <main className="portal-main relative px-5 pb-32 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pb-16">
-          <Outlet />
+          {mode === "account" ? <AccountPage key={account!.id} /> : <Outlet />}
         </main>
       </div>
 
-      {/* Mobile tab bar — the floating glass navigation layer */}
+      {/* Mobile tab bar, the floating glass navigation layer */}
       <nav
         aria-label="Primary"
         className="fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom))] z-40 flex h-16 items-stretch rounded-xl border border-line bg-glass px-1.5 shadow-float backdrop-blur-xl backdrop-saturate-150 sm:inset-x-auto sm:left-1/2 sm:w-[440px] sm:-translate-x-1/2 lg:hidden"

@@ -27,7 +27,7 @@ const SHORT_CAT: Record<Service["category"], string> = {
   "Event Cleanup": "Events",
 };
 
-/** C3 — the catalogue. Slate arranges the operator; the customer chooses what needs collecting. */
+/** C3, the catalogue. Slate arranges the operator; the customer chooses what needs collecting. */
 export default function Services() {
   const [category, setCategory] = useState<Service["category"] | "All">("All");
   const [search, setSearch] = useState("");
@@ -63,7 +63,7 @@ export default function Services() {
     <Page>
       <PageHeader
         title="Services"
-        description="Tell Slate what needs collecting. We arrange a verified operator, the schedule and the standard — and stay responsible for all of it."
+        description="Tell Slate what needs collecting. We arrange a verified operator, the schedule and the standard, and stay responsible for all of it."
       />
 
       {/* Your plan */}

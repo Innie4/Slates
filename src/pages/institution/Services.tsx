@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { CalendarPlus, MoreHorizontal, Package, PartyPopper, Plus, Recycle, Repeat, Shovel } from "lucide-react";
 import {
-  Alert, Badge, Button, ChoiceCard, ConfirmDialog, DescriptionList, IconButton, Input, Menu, Modal, Page, PageHeader, Select, Stepper,
+  Alert, Badge, Button, ChoiceCard, ConfirmDialog, DescriptionList, IconButton, DatePicker, Input, Menu, Modal, Page, PageHeader, Select, Stepper,
   StatusBadge, Textarea, useToast,
 } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -267,7 +267,7 @@ function RequestModal({
               <Select label="Bin point" optional placeholder="Anywhere at the facility" options={locs.map((l) => ({ value: l.id, label: l.name }))} value={form.location} onChange={(e) => set("location", e.target.value)} />
             )}
             <div className="grid gap-4 sm:grid-cols-2">
-              <Input label="Date" type="date" min="2026-10-06" value={form.date} onChange={(e) => set("date", e.target.value)} error={errors.date} />
+              <DatePicker label="Date"  min="2026-10-06" value={form.date} onChange={(date) => set("date", date)} error={errors.date} />
               <Select label="Time window" placeholder="Choose" options={WINDOWS} value={form.window} onChange={(e) => set("window", e.target.value)} error={errors.window} />
             </div>
             {form.type !== "Extra collection" && (

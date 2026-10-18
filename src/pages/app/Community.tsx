@@ -15,7 +15,7 @@ type Tab = "active" | "completed" | "mine";
 
 const givenTo = (id: string) => myContributions.filter((c) => c.projectId === id && c.status === "Successful").reduce((a, c) => a + c.amount, 0);
 
-/** C18 — community projects. */
+/** C18, community projects. */
 export default function Community() {
   const tab = useTab<Tab>("tab", "active");
   const [suggest, setSuggest] = useState(false);

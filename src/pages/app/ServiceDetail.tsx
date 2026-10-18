@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import { ArrowRight, Check, CircleAlert, FileText, MapPin } from "lucide-react";
 import { ServiceAreaMap } from "@/components/brand/ServiceAreaMap";
 import {
-  Alert, Badge, Button, Input, Modal, Page, PageHeader, Segmented, Textarea, useToast,
+  Alert, Badge, Button, DatePicker, Modal, Page, PageHeader, Segmented, Textarea, useToast,
 } from "@/components/ui";
 import { cn } from "@/lib/cn";
 import { formatNaira } from "@/lib/format";
@@ -14,7 +14,7 @@ import {
 } from "./_core";
 import { SUBSCRIPTIONS } from "./_subs";
 
-/** C4 — one service, explained plainly, with a way to start it. */
+/** C4, one service, explained plainly, with a way to start it. */
 export default function ServiceDetail() {
   const { id = "" } = useParams();
   const s = serviceById(id);
@@ -101,7 +101,7 @@ function Detail({ s }: { s: Service }) {
           )}
           {kind === "account" && (
             <Alert tone="info" title={`${s.name} is set up for ${s.eligible.join(" and ").toLowerCase()} accounts`}>
-              Slate opens these after a short call and a site check. Talk to us and we'll set it up — you won't need a new login.
+              Slate opens these after a short call and a site check. Talk to us and we'll set it up, you won't need a new login.
             </Alert>
           )}
 
@@ -332,7 +332,7 @@ function QuoteModal({ s, open, onClose, onSent }: { s: Service; open: boolean; o
     <Modal
       open={open}
       onClose={onClose}
-      title={`Request a quote — ${s.name}`}
+      title={`Request a quote, ${s.name}`}
       description="Slate prices the job, books a verified specialist crew and handles payment. You only deal with us."
       footer={
         <>
@@ -343,7 +343,7 @@ function QuoteModal({ s, open, onClose, onSent }: { s: Service; open: boolean; o
     >
       <div className="flex flex-col gap-4 pb-2">
         <Textarea label="What needs collecting?" rows={3} value={desc} onChange={(e) => setDesc(e.target.value)} error={err.desc} placeholder={s.id === "svc-event" ? "Wedding reception, about 300 guests, at Ibom Hall" : "Builders' rubble from a kitchen renovation, about 20 bags"} />
-        <Input label="When" type="date" value={when} min="2026-10-07" onChange={(e) => setWhen(e.target.value)} error={err.when} />
+        <DatePicker label="When"  value={when} min="2026-10-07" onChange={(date) => setWhen(date)} error={err.when} />
         <p className="t-small text-ink-3">Address: {me.household.address}</p>
       </div>
     </Modal>
