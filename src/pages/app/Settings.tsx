@@ -334,7 +334,7 @@ export default function Settings() {
         onClose={() => setLogout(false)}
         variant="destructive"
         title="Sign out of Slate?"
-        description="You'll need your email or phone number and password to sign back in."
+        description="You'll need your email address and password to sign back in."
         confirmLabel="Sign out"
         cancelLabel="Stay signed in"
         onConfirm={() => {

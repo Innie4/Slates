@@ -177,7 +177,7 @@ function AccountMenu({ compact }: { compact?: boolean }) {
         onClose={() => setConfirmOut(false)}
         size="sm"
         title="Sign out of Slate?"
-        description="You'll need your email or phone number and password to sign back in."
+        description="You'll need your email address and password to sign back in."
         footer={
           <>
             <Button variant="ghost" onClick={() => setConfirmOut(false)}>Stay signed in</Button>
