@@ -3,7 +3,9 @@ import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
 import { ArrowRight, CalendarDays, Check, MapPin, MessageSquare, Package, Plus, Truck } from "lucide-react";
 import { Alert, Badge, Button, ButtonLink, Checkbox, DatePicker, EmptyState, Input, List, ListRow, Modal, Page, PageHeader as BasePageHeader, Panel, Ref, Select, SkeletonRows, Textarea } from "@/components/ui";
 import { api, messageFor } from "@/lib/api";
+import { formatNaira } from "@/lib/format";
 import { useSession } from "@/lib/session";
+import { services } from "@/lib/service-catalog";
 import { BOOKING_SERVICES, BOOKING_AREAS, type Booking, type BookingInput, type SupportTicket, type TicketInput } from "../../../server/contracts";
 
 function PageHeader(props: ComponentProps<typeof BasePageHeader>) {
@@ -196,8 +198,39 @@ function Support({ tickets, bookings, onSaved }: { tickets: SupportTicket[]; boo
     </form><section><h2 className="t-h2 mb-4 text-ink">Your messages</h2>{tickets.length ? <List>{tickets.map(ticket => <ListRow key={ticket.id} to={`/app/complaints/${ticket.id}`} title={ticket.subject} subtitle={ticket.reference} trailing={<Badge tone="info">Open</Badge>} />)}</List> : <EmptyState title="No messages yet" description="Messages you send here will appear in this list." />}</section></div>
   </Page>;
 }
+const collectionSchedules: Record<string, string> = {
+  Weekly: "1 collection per week",
+  "Twice weekly": "2 collections per week",
+  Monthly: "1 collection per month",
+  "One-time": "One-time collection",
+};
 function Services() {
-  return <Page><PageHeader title="Services for your home" description="Request collection in Uyo. Availability and price are confirmed after review." /><div className="account-services grid gap-4 md:grid-cols-2">{BOOKING_SERVICES.map(service => <Panel key={service.id}><Package className="size-6 text-ink-2" /><h2 className="t-h2 mt-4 text-ink">{service.name}</h2><p className="t-body mt-2 text-ink-2">{serviceDescriptions[service.id]}</p><ButtonLink to={`/app/book?service=${service.id}`} variant="secondary" trailing={<ArrowRight className="size-4" />} className="mt-5">Request this service</ButtonLink></Panel>)}</div></Page>;
+  const householdServices = services.filter(service => BOOKING_SERVICES.some(bookingService => bookingService.id === service.id));
+  return <Page>
+    <PageHeader title="Services for your home" description="Compare starting prices and collection frequency in Uyo. Your final price, schedule and availability are confirmed after review." />
+    <div className="account-services grid gap-4 md:grid-cols-2">
+      {householdServices.map(service => <Panel key={service.id}>
+        <Package className="size-6 text-ink-2" aria-hidden="true" />
+        <h2 className="t-h2 text-ink">{service.name}</h2>
+        <p className="t-body text-ink-2">{serviceDescriptions[service.id]}</p>
+        <dl className="account-service-details">
+          <div>
+            <dt className="t-small text-ink-2">Starting price</dt>
+            <dd className="mt-2 flex flex-wrap items-baseline gap-x-1 gap-y-1 text-ink">
+              <span className="font-display text-[28px] font-bold leading-none tracking-tight tnum">{formatNaira(service.priceFrom)}</span>
+              <span className="t-small text-ink-2">{service.priceUnit}</span>
+            </dd>
+          </div>
+          <div>
+            <dt className="t-small text-ink-2">Collection frequency</dt>
+            <dd className="t-body mt-2 font-medium text-ink">{collectionSchedules[service.frequency] ?? service.frequency}</dd>
+          </div>
+        </dl>
+        {service.pricingModel === "Quote" && <p className="t-small text-ink-2">Final quote confirmed after review.</p>}
+        <ButtonLink to={`/app/book?service=${service.id}`} variant="secondary" trailing={<ArrowRight className="size-4" />} aria-label={`Request this service: ${service.name}`}>Request this service</ButtonLink>
+      </Panel>)}
+    </div>
+  </Page>;
 }
 function AccountDetails() {
   const { account, theme, setTheme } = useSession();
