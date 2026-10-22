@@ -10,7 +10,7 @@ For a deployment, run `npm run build` then `npm start`, which sets production mo
 
 ## Database setup
 
-Set `DATABASE_URL` to the managed PostgreSQL connection URL in `.env` locally and the hosting service's secret environment for deployment. The PostgreSQL store verifies TLS certificates, enables channel binding and limits each process to five pooled connections. Startup applies version 1 through `schema_migrations` inside a locked transaction and refuses a newer schema. The listener starts only after database initialization succeeds; connection or migration failures stop startup with a redacted error. A configured but unavailable PostgreSQL database never falls back to SQLite.
+Set `DATABASE_URL` to the managed PostgreSQL connection URL in `.env` locally and the hosting service's secret environment for deployment. The PostgreSQL store verifies TLS certificates, enables channel binding and limits each process to five pooled connections. Startup applies migrations through version 2 inside a locked transaction and refuses a newer schema. Version 2 adds external identities, one-use authentication flows, passkeys and a nullable session authentication timestamp. Existing users, passwords, bookings and sessions are retained; older sessions need reauthentication before security changes. The listener starts only after database initialization succeeds; connection or migration failures stop startup with a redacted error. A configured but unavailable PostgreSQL database never falls back to SQLite.
 
 When `DATABASE_URL` is empty or absent, `DATABASE_PATH` selects the SQLite file. SQLite needs one application host and a persistent local volume. Changing stores does not copy existing users or records: rehearse a separate data migration before switching an existing deployment. Back up and verify a restore before schema or store changes.
 
@@ -18,7 +18,7 @@ For a free staging environment, use a Render Free web service with Neon Free Pos
 
 ## Contract
 
-All API responses are JSON. The routes below are the supported initial contract. Mutations require an exact matching `Origin` header and `Content-Type: application/json`. Unknown fields are rejected. The maximum body size is 16 KB. Query parameters are currently unsupported. Authenticated requests use the `slate_session` cookie automatically; the browser must never copy it into local storage.
+Application API responses are JSON; OAuth callbacks use fixed redirects. The routes below describe the household contract. Mutations require an exact matching `Origin` header and `Content-Type: application/json`. Unknown fields are rejected. The maximum body size is 16 KB. Query parameters are unsupported except the exact Google OAuth callback. Apple's exact callback accepts a bounded form post and checks one-use browser-bound state; other mutations retain the origin and JSON requirements. Authenticated requests use the `slate_session` cookie automatically; the browser must never copy it into local storage.
 
 | Method and route | Request | Response |
 | --- | --- | --- |
@@ -55,3 +55,38 @@ PostgreSQL stores rate limits and idempotency results centrally for application 
 Use encrypted infrastructure storage and restricted database access for customer records. Define retention, deletion and access policies before collecting real customer data. For SQLite, use its online backup API or a verified database-aware backup tool; copying the main file while WAL writes are active is not a safe backup strategy. For PostgreSQL, configure provider backups or scheduled database-aware exports according to the recovery requirement. Restore a backup in staging and verify records before relying on it. Free-tier history alone does not establish a recovery plan. Add external availability monitoring, alerting, TLS renewal, restore drills and a reviewed operational runbook for a live deployment.
 
 The role boundary and authentication code require qualified human review before release. The tests establish specific implemented behavior; they do not establish overall application security.
+
+
+## Google, Apple and passkeys
+
+Google is enabled only when both `AUTH_GOOGLE_CLIENT_ID` and `AUTH_GOOGLE_CLIENT_SECRET` are set. Configure the exact authorized redirect URI as `<APP_ORIGIN>/api/auth/oauth/google/callback` in the Google web client. No browser API key or frontend secret is needed. Restrict OAuth testing to approved test users while the consent screen is in testing mode.
+
+Apple stays disabled on the free setup. A later operator can configure `AUTH_APPLE_CLIENT_ID`, `AUTH_APPLE_TEAM_ID`, `AUTH_APPLE_KEY_ID` and `AUTH_APPLE_PRIVATE_KEY` after obtaining the required Apple developer account, Services ID and key. Its exact HTTPS return URI is `<APP_ORIGIN>/api/auth/oauth/apple/callback`. The app signs a short-lived ES256 client secret, uses Apple's form-post response mode and does not pretend Apple supports Google's PKCE exchange. Do not commit provider credentials.
+
+Both providers use fixed metadata/endpoints, signed ID-token verification, expected issuer/audience/nonce, one-use state and a browser-bound HttpOnly cookie. Google also uses PKCE S256. Provider tokens are discarded after verification. A new external identity requires a separate phone/name/terms completion screen. An existing email never authorizes automatic account linking. Connecting a provider to an existing account requires an authenticated session verified within the last 10 minutes. External-only accounts have no usable password hash.
+
+| Endpoint | Request | Result |
+| --- | --- | --- |
+| `GET /api/auth/config` | None | `{methods:{google,apple,passkeys}}` |
+| `POST /api/auth/oauth/:provider/start` | `{intent:"login"|"signup"|"link",next?}` | `{url}` for a fixed provider origin |
+| `GET /api/auth/signup` | Pending signup cookie | `{provider,name,email}` |
+| `POST /api/auth/signup` | `{name,phone,termsVersion}` | `201 {user,next}` and session cookie |
+| `GET /api/auth/security` | Session cookie | `{hasPassword,recentAuth,identities,passkeys}` |
+| `POST /api/auth/reauthenticate` | `{password}` | `{user}` and rotated session cookie |
+| `POST /api/auth/passkeys/register/options` | `{name}` and recent session | `{options}` |
+| `POST /api/auth/passkeys/register/verify` | `{response}` and recent session | `201 {ok:true}` |
+| `POST /api/auth/passkeys/login/options` | `{}` | `{options}` for discoverable credentials |
+| `POST /api/auth/passkeys/login/verify` | `{response}` | `{user}` and session cookie |
+| `POST /api/auth/passkeys/reauthenticate/options` | `{}` and session | `{options}` restricted to the account |
+| `POST /api/auth/passkeys/reauthenticate/verify` | `{response}` and session | `{user}` and rotated session cookie |
+| `DELETE /api/auth/passkeys/:id` | Recent session | `{ok:true}`, unless this removes the last usable method |
+
+Passkeys use SimpleWebAuthn with exact configured origin and RP hostname, required user verification and discoverable credential registration. The device chooses Face ID, fingerprint, PIN or another supported unlock method; Slate receives a public key and signed proof, never biometric information. Registration and reauthentication flows bind to the initiating session. Database transactions consume challenges once and lock credential counters across application workers. Zero-counter synced passkeys are supported under WebAuthn's counter rules. Challenges expire after five minutes; pending signup expires after 10 minutes. Signup, OAuth starts/callbacks, passkey operations and reauthentication have durable database limits.
+
+Run `node --test tests/server/auth.test.ts` for SQLite and optional `SLATE_TEST_DATABASE_URL` PostgreSQL variants. These tests use real software-authenticator P-256 signatures and locally signed provider tokens over a fixture transport. They verify the protocol and database boundaries; they do not prove live Google/Apple provider setup or real-device biometric behavior. Run the browser/provider staging journeys separately.
+
+After migration v2, rollback must use a v2-compatible application build. The earlier v1 server intentionally refuses the newer schema. Do not drop the new tables or downgrade the schema marker to make an old binary start. Restore a verified pre-migration backup only through a reviewed recovery procedure if required. Qualified human review remains required before a public production authentication release.
+
+The preserved staging recovery branch is `codex/slate-auth-rollback-v2`, commit `8b39dbc`. It retains the previous application behavior with schema-2 compatibility and safely rejects external-only password hashes. Password accounts can sign in during rollback. Social-only accounts cannot start new sessions until the auth-capable application is restored; existing sessions remain valid until expiry. Keep the version-2 tables and migration marker intact. This recovery build was checked against isolated SQLite and Neon version-2 data.
+
+Browser checks: `node tests/browser/account-security.mjs`, `node tests/browser/auth-session-races.mjs` (local dev app), and `node tests/browser/auth-flow.mjs` (isolated built app at localhost:4173). The last test uses a disposable browser profile and a virtual resident authenticator, with real server verification. Do not point it at customer staging or production data.

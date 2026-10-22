@@ -51,6 +51,7 @@ export const router = createBrowserRouter([
     element: <AuthLayout />,
     errorElement: <ErrorPage />,
     children: [
+      { path: "auth/continue", lazy: () => import("./pages/auth/ContinueSignUp").then((m) => ({ Component: m.default })), handle: { title: "Finish signup" } },
       { path: "signup", lazy: () => import("./pages/auth/SignUp").then((m) => ({ Component: m.default })), handle: { title: "Create account" } },
       { path: "login", lazy: () => import("./pages/auth/Login").then((m) => ({ Component: m.default })), handle: { title: "Sign in" } },
       { path: "verify-email", lazy: () => import("./pages/auth/AccountHelp").then((m) => ({ Component: m.default })), handle: { title: "Verify email" } },
@@ -267,6 +268,7 @@ export const ALL_PATHS: string[] = [
   "/operator-terms",
   "/cookies",
   "/design-system",
+  "/auth/continue",
   "/signup",
   "/login",
   "/verify-email",

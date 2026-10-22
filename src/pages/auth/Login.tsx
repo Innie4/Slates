@@ -6,6 +6,8 @@ import { DEMO_ENABLED, HOME_FOR_ROLE, useSession } from "@/lib/session";
 import { messageFor } from "@/lib/api";
 import type { Role } from "@/data";
 import { AuthHeading } from "./_shared";
+import { AuthMethods } from "@/components/auth/AuthMethods";
+import { authErrorMessages, safeDestination } from "@/lib/auth";
 
 const PREVIEWS: Array<[Role, string]> = [["household", "Household"], ["estate", "Estate manager"], ["business", "Business"], ["institution", "Institution"], ["operator", "Waste operator"], ["admin", "Slate operations"]];
 export default function Login() {
@@ -17,8 +19,9 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const next = params.get("next");
-  const destination = next?.startsWith("/app/") && !next.startsWith("//") ? next : "/app/dashboard";
-  if (session.mode === "account") return <Navigate to={destination} replace />;
+  const destination = safeDestination(next);
+  const callbackError = authErrorMessages[params.get("authError") ?? ""];
+  if (session.mode === "account") return <Navigate to={callbackError ? `/app/settings?authError=${encodeURIComponent(params.get("authError")!)}` : destination} replace />;
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (loading) return;
@@ -29,11 +32,11 @@ export default function Login() {
   }
   return <div className="flex flex-col gap-7">
     <AuthHeading title="Sign in">Your collection requests and support, in one place.</AuthHeading>
-    {error && <Alert tone="danger" title="Couldn't sign in">{error}</Alert>}
+    {(error || callbackError) && <Alert tone="danger" title="Couldn't sign in">{error || callbackError}</Alert>}
+    <AuthMethods intent="login" next={destination} />
     <form onSubmit={submit} className="flex flex-col gap-5">
       <Input label="Email" type="email" autoComplete="username" required maxLength={254} value={email} onChange={event => setEmail(event.target.value)} placeholder="you@example.com" />
       <PasswordInput label="Password" autoComplete="current-password" required maxLength={128} value={password} onChange={event => setPassword(event.target.value)} />
-      <p className="t-small text-ink-2">Use a private device. Your session expires after 12 hours.</p>
       <Button type="submit" block size="lg" loading={loading} trailing={<ArrowRight className="size-4" />}>Sign in</Button>
     </form>
     <div className="flex flex-wrap justify-between gap-3 t-small">

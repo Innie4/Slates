@@ -12,7 +12,7 @@ PUBLIC = [("", "Home", "Home"), ("how-it-works", "HowItWorks", "How it works"), 
   ("faq", "Faq", "FAQ"), ("blog", "Blog", "Blog"), ("blog/:slug", "BlogPost", "Article"), ("pricing", "Pricing", "Pricing"),
   ("privacy", "Privacy", "Privacy policy"), ("terms", "Terms", "Terms of use"), ("waste-service-terms", "WasteServiceTerms", "Waste service terms"),
   ("operator-terms", "OperatorTerms", "Operator terms"), ("cookies", "Cookies", "Cookie policy"), ("design-system", "DesignSystem", "Design system")]
-AUTH = [("signup", "SignUp", "Create account"), ("login", "Login", "Sign in"), ("verify-email", "VerifyEmail", "Verify email"),
+AUTH = [("auth/continue", "ContinueSignUp", "Finish signup"), ("signup", "SignUp", "Create account"), ("login", "Login", "Sign in"), ("verify-email", "VerifyEmail", "Verify email"),
   ("verify-phone", "VerifyPhone", "Verify phone"), ("forgot-password", "ForgotPassword", "Forgot password"),
   ("reset-password", "ResetPassword", "Reset password"), ("account-type", "AccountType", "Account type"), ("two-factor", "TwoFactor", "Two-factor authentication")]
 APP = [("dashboard", "Dashboard", "Home"), ("services", "Services", "Services"), ("services/:id", "ServiceDetail", "Service"), ("book", "Book", "Book a service"),
@@ -76,7 +76,7 @@ def stub(area, name, title):
         open(p, "w").write(STUB.format(name=name, title=title))
 
 def lazy(area, name):
-    if area == "auth" and name not in ("Login", "SignUp"):
+    if area == "auth" and name not in ("Login", "SignUp", "ContinueSignUp"):
         name = "AccountHelp"
     return f'lazy: () => import("./pages/{area}/{name}").then((m) => ({{ Component: m.default }}))'
 

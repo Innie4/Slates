@@ -310,7 +310,7 @@ export default function Settings() {
         open={outOthers}
         onClose={() => setOutOthers(false)}
         title="Sign out of other devices?"
-        description={`${sessions.length - 1} other ${sessions.length - 1 === 1 ? "device" : "devices"} will need your password to sign back in.`}
+        description={`${sessions.length - 1} other ${sessions.length - 1 === 1 ? "device" : "devices"} will need a connected sign-in method to return.`}
         confirmLabel="Sign out others"
         onConfirm={() => {
           setSessions((xs) => xs.filter((x) => x.current));
@@ -334,7 +334,7 @@ export default function Settings() {
         onClose={() => setLogout(false)}
         variant="destructive"
         title="Sign out of Slate?"
-        description="You'll need your email address and password to sign back in."
+        description="You'll need a sign-in method connected to your account to return."
         confirmLabel="Sign out"
         cancelLabel="Stay signed in"
         onConfirm={() => {

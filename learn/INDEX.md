@@ -1,0 +1,5 @@
+- [2026-10-22] [Google sign-in and device passkeys](2026-10-22-add-google-and-passkeys.md): How verified provider identities and one-use passkey challenges connect to Slate accounts.
+- [2026-10-22] [Use the supplied Slate logo](2026-10-22-use-slate-logo-assets.md): How alpha masks preserve the supplied logo while displaying Slate grey and white theme variants.
+- [2026-10-20] [Show household service prices and frequency](2026-10-20-household-service-plan-details.md): How the household account reuses the service catalog to display guide prices, billing units and collection schedules.
+- [2026-10-18] [Connect Slate to Neon staging](2026-10-18-connect-neon-staging.md): How PostgreSQL transactions, verified connections and database locks prepare Slate for hosted testing.
+- [2026-10-18] [Connect Slate end to end](2026-10-18-connect-slate-end-to-end.md): How accounts, persistent requests, session guards and shared calendars turn the demo into a verifiable local application.

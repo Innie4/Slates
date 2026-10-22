@@ -1,6 +1,7 @@
 import { DatabaseSync } from "node:sqlite";
 import { chmodSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
+import { authSchema } from "./auth-schema.ts";
 
 export type Row = Record<string, string | number | null>;
 export type Value = string | number | null;
@@ -22,6 +23,8 @@ export function openStore(path: string): Store {
   if (path !== ":memory:") mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
   const db = new DatabaseSync(path);
   if (path !== ":memory:") chmodSync(path, 0o600);
+  const version = Number((db.prepare("PRAGMA user_version").get() as { user_version: number }).user_version);
+  if (version > 2) { db.close(); throw new Error("Database schema is newer than this application."); }
   db.exec(`
     PRAGMA foreign_keys = ON;
     PRAGMA journal_mode = WAL;
@@ -34,7 +37,8 @@ export function openStore(path: string): Store {
       terms_version TEXT NOT NULL, terms_accepted_at TEXT NOT NULL, created_at TEXT NOT NULL
     ) STRICT;
     CREATE TABLE IF NOT EXISTS sessions (
-      token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), expires_at INTEGER NOT NULL
+      token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), expires_at INTEGER NOT NULL,
+      authenticated_at INTEGER
     ) STRICT;
     CREATE INDEX IF NOT EXISTS sessions_expiry ON sessions(expires_at);
     CREATE TABLE IF NOT EXISTS bookings (
@@ -61,8 +65,12 @@ export function openStore(path: string): Store {
       bucket TEXT PRIMARY KEY, count INTEGER NOT NULL, resets_at INTEGER NOT NULL
     ) STRICT;
     CREATE INDEX IF NOT EXISTS rate_limits_expiry ON rate_limits(resets_at);
-    PRAGMA user_version = 1;
+    ${authSchema}
   `);
+  if (!(db.prepare("PRAGMA table_info(sessions)").all() as { name: string }[]).some(column => column.name === "authenticated_at")) {
+    db.exec("ALTER TABLE sessions ADD COLUMN authenticated_at INTEGER");
+  }
+  db.exec("PRAGMA user_version = 2");
   const connection: StoreConnection = {
     async get(sql, ...values) { return db.prepare(sql).get(...values) as Row | undefined; },
     async all(sql, ...values) { return db.prepare(sql).all(...values) as Row[]; },

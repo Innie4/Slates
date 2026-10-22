@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
 import { ArrowRight, CalendarDays, Check, MapPin, MessageSquare, Package, Plus, Truck } from "lucide-react";
 import { Alert, Badge, Button, ButtonLink, Checkbox, DatePicker, EmptyState, Input, List, ListRow, Modal, Page, PageHeader as BasePageHeader, Panel, Ref, Select, SkeletonRows, Textarea } from "@/components/ui";
 import { api, messageFor } from "@/lib/api";
+import { AccountSecurity } from "@/components/auth/AccountSecurity";
 import { formatNaira } from "@/lib/format";
 import { useSession } from "@/lib/session";
 import { services } from "@/lib/service-catalog";
@@ -234,7 +235,7 @@ function Services() {
 }
 function AccountDetails() {
   const { account, theme, setTheme } = useSession();
-  return <Page><PageHeader title="Your account" description="The details used for your collection requests." /><Panel><dl className="grid gap-6 sm:grid-cols-2">{[["Name", account!.name], ["Email", account!.email], ["Phone", account!.phone], ["Account", "Household"]].map(([label, value]) => <div key={label}><dt className="t-small text-ink-3">{label}</dt><dd className="t-body mt-1 break-words font-medium text-ink">{value}</dd></div>)}</dl></Panel><section className="flex flex-wrap items-center justify-between gap-5 rounded-lg bg-sunken p-6"><div><h2 className="t-h3 text-ink">Appearance</h2><p className="t-small mt-1 text-ink-2">Choose a comfortable theme for this device.</p></div><Button variant="secondary" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>Use {theme === "dark" ? "light" : "dark"} theme</Button></section><p className="t-body text-ink-2">Need to update your details? <Link to="/app/support" className="font-medium text-ink underline underline-offset-4">Contact support</Link>.</p></Page>;
+  return <Page><PageHeader title="Your account" description="The details used for your collection requests." /><Panel><dl className="grid gap-6 sm:grid-cols-2">{[["Name", account!.name], ["Email", account!.email], ["Phone", account!.phone], ["Account", "Household"]].map(([label, value]) => <div key={label}><dt className="t-small text-ink-3">{label}</dt><dd className="t-body mt-1 break-words font-medium text-ink">{value}</dd></div>)}</dl></Panel><AccountSecurity /><section className="flex flex-wrap items-center justify-between gap-5 rounded-lg bg-sunken p-6"><div><h2 className="t-h3 text-ink">Appearance</h2><p className="t-small mt-1 text-ink-2">Choose a comfortable theme for this device.</p></div><Button variant="secondary" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>Use {theme === "dark" ? "light" : "dark"} theme</Button></section><p className="t-body text-ink-2">Need to update your details? <Link to="/app/support" className="font-medium text-ink underline underline-offset-4">Contact support</Link>.</p></Page>;
 }
 function Unavailable({ title, children }: { title: string; children: ReactNode }) {
   return <Page><PageHeader title={title} /><Panel><div className="max-w-xl py-6"><h2 className="t-h2 text-ink">Available after service confirmation</h2><p className="t-body mt-3 text-ink-2">{children}</p><div className="mt-6 flex flex-wrap gap-3"><ButtonLink to="/app/book">Request a collection</ButtonLink><ButtonLink to="/app/support" variant="secondary">Ask the team</ButtonLink></div></div></Panel></Page>;

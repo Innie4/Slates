@@ -6,6 +6,7 @@ import { useSession } from "@/lib/session";
 import { messageFor } from "@/lib/api";
 import { AuthHeading } from "./_shared";
 import { TERMS_VERSION } from "../../../server/contracts";
+import { AuthMethods } from "@/components/auth/AuthMethods";
 
 export default function SignUp() {
   const session = useSession();
@@ -33,6 +34,7 @@ export default function SignUp() {
   }
   return <div className="flex flex-col gap-7">
     <AuthHeading title="Start with your home">Create an account to request collection in Uyo and keep track of support.</AuthHeading>
+    <AuthMethods intent="signup" next="/app/dashboard" />
     {error && <Alert tone="danger" title="Check your details">{error}</Alert>}
     <form onSubmit={submit} className="flex flex-col gap-4">
       <Input label="Full name" autoComplete="name" required minLength={2} maxLength={100} value={name} onChange={event => setName(event.target.value)} />

@@ -20,6 +20,16 @@ export interface SessionUser {
   role: "household";
 }
 
+export type AuthProvider = "google" | "apple";
+export interface AuthMethods { methods: { google: boolean; apple: boolean; passkeys: boolean } }
+export interface AuthSecurity {
+  hasPassword: boolean;
+  recentAuth: boolean;
+  identities: AuthProvider[];
+  passkeys: { id: string; name: string; createdAt: string }[];
+}
+export interface PendingSignup { provider: AuthProvider; name: string; email: string }
+
 export interface BookingInput {
   serviceId: string;
   address: string;

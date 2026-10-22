@@ -1,68 +1,33 @@
 import { Link, Outlet } from "react-router";
-import { ChevronLeft } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Moon, Sun } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { Strata } from "@/components/brand/Strata";
+import { useSession } from "@/lib/session";
 
-/**
- * Auth, slate field with strata on the left (desktop), form on the right.
- * On phones the slate field becomes a short band above the form.
- */
 export function AuthLayout() {
-  return (
-    <div className="grid min-h-dvh bg-canvas lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-      <aside className="relative hidden overflow-hidden bg-slate text-slate-ink chalk-grain lg:flex lg:flex-col">
-        <Strata tone="on-slate" bands={5} live seed={21} className="absolute inset-x-0 bottom-0 h-[40%] w-full" />
-        <div className="relative flex flex-1 flex-col p-10 xl:p-14">
-          <Logo tone="light" />
-          <div className="mt-auto max-w-md pb-[38vh]">
-            <p className="font-display text-[44px] font-bold leading-[1.02] tracking-[-0.03em]" style={{ fontVariationSettings: '"opsz" 72, "wdth" 90' }}>
-              Your waste gets collected. We handle the rest.
-            </p>
-            <p className="mt-5 t-body text-slate-ink/75">
-              One company, one payment, one support line. Slate contracts and monitors verified operators across Uyo so you never chase a collector again.
-            </p>
-            <dl className="mt-8 grid grid-cols-3 gap-6 border-t border-white/15 pt-6">
-              <div>
-                <dt className="t-micro text-slate-ink/60">On-time pickups</dt>
-                <dd className="mt-1 font-display text-[26px] font-bold tnum">96.8%</dd>
-              </div>
-              <div>
-                <dt className="t-micro text-slate-ink/60">Missed, recovered</dt>
-                <dd className="mt-1 font-display text-[26px] font-bold tnum">&lt; 24h</dd>
-              </div>
-              <div>
-                <dt className="t-micro text-slate-ink/60">Homes & sites</dt>
-                <dd className="mt-1 font-display text-[26px] font-bold tnum">2,477</dd>
-              </div>
-            </dl>
-          </div>
+  const { theme, setTheme } = useSession();
+  return <div className="auth-layout min-h-dvh bg-canvas lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+    <aside className="auth-brand relative hidden overflow-hidden bg-slate-800 text-slate-50 lg:flex lg:flex-col">
+      <div className="relative z-10 flex flex-1 flex-col p-10 xl:p-14">
+        <Logo tone="light" />
+        <div className="my-auto max-w-xl py-24">
+          <p className="t-label text-slate-200">At home in Uyo</p>
+          <h2 className="auth-brand-title mt-6">A place for<br />your collections.</h2>
+          <div className="mt-7 h-1 w-12 bg-signal" />
+          <p className="t-body mt-7 max-w-sm text-slate-200">Request a pickup. Keep track of your plans. Get help from the same place.</p>
         </div>
-      </aside>
-
-      <div className="flex min-h-dvh flex-col">
-        <div className="relative overflow-hidden bg-slate text-slate-ink chalk-grain lg:hidden">
-          <Strata tone="on-slate" bands={4} live seed={21} className="absolute inset-x-0 bottom-0 h-full w-full opacity-90" />
-          <div className="relative flex h-28 items-start justify-between px-5 pt-5">
-            <Logo tone="light" />
-            <Link to="/" className="flex items-center gap-1 t-small text-slate-ink/80">
-              <ChevronLeft className="size-4" /> Home
-            </Link>
-          </div>
-        </div>
-        <div className="hidden justify-end p-6 lg:flex">
-          <Link to="/" className="flex items-center gap-1 t-small font-medium text-ink-2 hover:text-ink">
-            <ChevronLeft className="size-4" /> Back to slate.ng
-          </Link>
-        </div>
-        <div className="flex flex-1 items-start justify-center px-5 pb-12 pt-8 sm:px-8 lg:items-center lg:pt-0">
-          <div className="w-full max-w-[440px]">
-            <Outlet />
-          </div>
-        </div>
-        <p className="px-5 pb-6 text-center t-micro text-ink-3">
-          Protected by Slate. <Link to="/privacy" className="underline underline-offset-2">Privacy</Link> · <Link to="/terms" className="underline underline-offset-2">Terms</Link>
-        </p>
+        <Link to="/services/households" className="t-small flex w-fit items-center gap-3 text-slate-100 underline underline-offset-4">See household services <ArrowUpRight className="size-4" aria-hidden="true" /></Link>
       </div>
+      <Strata tone="on-slate" bands={5} seed={21} className="pointer-events-none absolute inset-x-0 bottom-0 h-52 w-full opacity-30" />
+    </aside>
+    <div className="flex min-w-0 flex-col">
+      <header className="flex items-center justify-between gap-4 border-b border-line px-5 py-5 sm:px-8 lg:border-0 lg:px-10 lg:py-7">
+        <div className="lg:hidden"><Logo /></div>
+        <Link to="/" className="t-small hidden items-center gap-2 text-ink-2 hover:text-ink lg:flex"><ArrowLeft className="size-4" aria-hidden="true" />Back to home</Link>
+        <button type="button" className="ml-auto flex size-11 items-center justify-center rounded-full border border-line text-ink-2 transition-colors hover:bg-sunken" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label={`Use ${theme === "dark" ? "light" : "dark"} theme`}>{theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}</button>
+      </header>
+      <main id="main-content" className="auth-main flex flex-1 justify-center px-5 pb-10 pt-8 sm:px-8 lg:px-12 lg:py-10"><div className="w-full max-w-[440px]"><Outlet /></div></main>
+      <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-5 t-small text-ink-3 sm:px-8 lg:px-10"><span>Slate · Uyo, Nigeria</span><div className="flex gap-4"><Link to="/privacy" className="underline underline-offset-4">Privacy</Link><Link to="/terms" className="underline underline-offset-4">Terms</Link></div></footer>
     </div>
-  );
+  </div>;
 }

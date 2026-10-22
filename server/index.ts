@@ -11,6 +11,10 @@ const server = createServer({
   databaseUrl: process.env.DATABASE_URL || undefined,
   origin,
   trustedProxyIPs: (process.env.TRUSTED_PROXY_IPS || "").split(",").map(address => address.trim()).filter(Boolean),
+  oauth: {
+    ...(process.env.AUTH_GOOGLE_CLIENT_ID && process.env.AUTH_GOOGLE_CLIENT_SECRET ? { google: { clientId: process.env.AUTH_GOOGLE_CLIENT_ID, clientSecret: process.env.AUTH_GOOGLE_CLIENT_SECRET } } : {}),
+    ...(process.env.AUTH_APPLE_CLIENT_ID && process.env.AUTH_APPLE_TEAM_ID && process.env.AUTH_APPLE_KEY_ID && process.env.AUTH_APPLE_PRIVATE_KEY ? { apple: { clientId: process.env.AUTH_APPLE_CLIENT_ID, teamId: process.env.AUTH_APPLE_TEAM_ID, keyId: process.env.AUTH_APPLE_KEY_ID, privateKey: process.env.AUTH_APPLE_PRIVATE_KEY } } : {}),
+  },
   ...(production ? { staticDirectory: resolve(process.env.STATIC_DIRECTORY || "dist") } : {}),
 });
 try { await server.ready; }

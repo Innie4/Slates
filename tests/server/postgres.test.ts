@@ -177,7 +177,7 @@ test("PostgreSQL failed operations roll back and migration failures fail closed"
       throw new Error("Deliberate test rollback");
     }), /Deliberate test rollback/);
     assert.equal(Number((await f.store.get("SELECT count(*) AS count FROM enquiries"))!.count), 0);
-    await f.store.run("INSERT INTO schema_migrations(version,applied_at) VALUES(2,?)", new Date().toISOString());
+    await f.store.run("INSERT INTO schema_migrations(version,applied_at) VALUES(3,?)", new Date().toISOString());
     const unsupported = openPostgres(f.scopedUrl.href, () => {});
     await assert.rejects(unsupported.ready, /Database initialization failed/);
     await unsupported.close();

@@ -1,5 +1,6 @@
 import { Pool, type PoolClient } from "pg";
 import type { Store, StoreConnection, Value } from "./store.ts";
+import { authSchema } from "./auth-schema.ts";
 
 export class DatabaseBusyError extends Error {
   constructor() { super("The service is busy. Please try again shortly."); }
@@ -101,10 +102,16 @@ export function openPostgres(connectionString: string, logError: () => void): St
     await db.lock("slate:schema-migrations");
     await db.run("CREATE TABLE IF NOT EXISTS schema_migrations (version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL)");
     const current = await db.get("SELECT MAX(version) AS version FROM schema_migrations");
-    if (Number(current?.version ?? 0) > 1) throw new Error("Database schema is newer than this application.");
+    if (Number(current?.version ?? 0) > 2) throw new Error("Database schema is newer than this application.");
     if (!current?.version) {
       await db.run(migration);
       await db.run("INSERT INTO schema_migrations(version,applied_at) VALUES(1,?)", new Date().toISOString());
+    }
+    if (Number(current?.version ?? 0) < 2) {
+      await db.run(authSchema);
+      await db.run("ALTER TABLE sessions ADD COLUMN authenticated_at BIGINT");
+      // Existing sessions remain valid, but need reauthentication before adding a method.
+      await db.run("INSERT INTO schema_migrations(version,applied_at) VALUES(2,?)", new Date().toISOString());
     }
   }).catch(async () => {
     await close();

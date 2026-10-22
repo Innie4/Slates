@@ -7,6 +7,7 @@ import { openStore, type Row, type Store, type StoreConnection } from "./store.t
 import { DatabaseBusyError, openPostgres } from "./postgres.ts";
 import { BOOKING_AREAS, BOOKING_SERVICES, BOOKING_WINDOWS, ENQUIRY_CATEGORIES, TERMS_VERSION } from "./contracts.ts";
 import type { Booking, BookingInput, EnquiryInput, SessionUser, SupportTicket, TicketInput } from "./contracts.ts";
+import { AuthError, createAuthHandler, type OAuthSettings } from "./auth.ts";
 
 function scryptAsync(value: string, salt: string) {
   return new Promise<Buffer>((resolveHash, reject) => {
@@ -20,15 +21,7 @@ const scryptOptions = { N: 32768, r: 8, p: 3, maxmem: 64 * 1024 * 1024 };
 const dummySalt = randomBytes(16).toString("hex");
 const dummyHash = randomBytes(64).toString("hex");
 
-class ApiError extends Error {
-  status: number;
-  code: string;
-  fields?: Record<string, string>;
-  retryAfter?: number;
-  constructor(status: number, code: string, message: string, fields?: Record<string, string>, retryAfter?: number) {
-    super(message); this.status = status; this.code = code; this.fields = fields; this.retryAfter = retryAfter;
-  }
-}
+class ApiError extends AuthError {}
 
 export interface ServerOptions {
   databasePath?: string;
@@ -38,6 +31,9 @@ export interface ServerOptions {
   secureCookies?: boolean;
   trustedProxyIPs?: string[];
   logger?: (record: Record<string, string | number>) => void;
+  oauth?: OAuthSettings;
+  /** Transport injection for isolated, signed-provider integration tests. URLs stay fixed. */
+  authFetch?: typeof fetch;
 }
 
 function digest(value: string) { return createHash("sha256").update(value).digest("hex"); }
@@ -106,9 +102,10 @@ async function hashPassword(value: string) {
   return `scrypt$${salt}$${hash.toString("hex")}`;
 }
 async function verifyPassword(value: string, stored?: string) {
-  const [, salt, expected] = (stored || `scrypt$${dummySalt}$${dummyHash}`).split("$");
+  const valid = typeof stored === "string" && /^scrypt\$[a-f0-9]{32}\$[a-f0-9]{128}$/.test(stored);
+  const [, salt, expected] = (valid ? stored : `scrypt$${dummySalt}$${dummyHash}`).split("$");
   const actual = await scryptAsync(value, salt!);
-  return timingSafeEqual(actual, Buffer.from(expected!, "hex")) && Boolean(stored);
+  return timingSafeEqual(actual, Buffer.from(expected!, "hex")) && valid;
 }
 function readBody(request: IncomingMessage): Promise<Record<string, unknown>> {
   if (request.headers["content-type"]?.split(";")[0]?.trim().toLowerCase() !== "application/json") throw new ApiError(415, "CONTENT_TYPE", "Send this request as application/json.");
@@ -164,7 +161,8 @@ async function createSession(db: StoreConnection, userId: string, request: Incom
   const token = randomBytes(32).toString("hex");
   const old = cookieToken(request);
   if (old) await db.run("DELETE FROM sessions WHERE token_hash=?", digest(old));
-  await db.run("INSERT INTO sessions(token_hash,user_id,expires_at) VALUES(?,?,?)", digest(token), userId, Math.floor(Date.now() / 1000) + SESSION_SECONDS);
+  const now = Math.floor(Date.now() / 1000);
+  await db.run("INSERT INTO sessions(token_hash,user_id,expires_at,authenticated_at) VALUES(?,?,?,?)", digest(token), userId, now + SESSION_SECONDS, now);
   return token;
 }
 async function idempotent(db: Store, request: IncomingMessage, scope: string, input: unknown, operation: (transaction: StoreConnection) => Promise<unknown>) {
@@ -201,6 +199,7 @@ export function createServer(options: ServerOptions) {
   const inlineHashes = staticRoot ? [...readFileSync(resolve(staticRoot, "index.html"), "utf8").matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].filter(match => match[1]?.trim()).map(match => `'sha256-${createHash("sha256").update(match[1]!).digest("base64")}'`).join(" ") : "";
   const csp = `default-src 'self'; script-src 'self' ${inlineHashes}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'`;
   const db = options.databaseUrl ? openPostgres(options.databaseUrl, () => logger({ event: "database_connection_error" })) : openStore(options.databasePath || "data/slate.sqlite");
+  const auth = createAuthHandler(db, configuredOrigin, secure, options.oauth ?? {}, { readBody, currentUser, createSession, sessionCookie, verifyPassword, rateLimit, audit: logger }, options.authFetch);
   let requests = 0;
 
   const server = createHttpServer({ maxHeaderSize: 16_384 }, async (request, response) => {
@@ -216,22 +215,26 @@ export function createServer(options: ServerOptions) {
     let route = "unknown";
     try {
       const url = new URL(request.url || "/", configuredOrigin);
-      route = /^\/api\/(?:health|session|auth\/(?:register|login|logout)|enquiries|bookings|tickets)$/.test(url.pathname)
+      route = /^\/api\/(?:health|session|auth\/(?:register|login|logout|config|signup|security|reauthenticate|oauth\/(?:google|apple)\/(?:start|callback)|passkeys\/(?:register|login|reauthenticate)\/(?:options|verify))|enquiries|bookings|tickets)$/.test(url.pathname)
         ? url.pathname
         : /^\/api\/(?:bookings|tickets)\/[a-f0-9-]{36}$/.test(url.pathname)
           ? url.pathname.replace(/[a-f0-9-]{36}$/, ":id")
+          : /^\/api\/auth\/passkeys\/[A-Za-z0-9_-]{1,2048}$/.test(url.pathname) ? "/api/auth/passkeys/:id"
           : url.pathname.startsWith("/api/") ? "/api/unknown" : "static";
       const method = request.method || "GET";
       const pathname = url.pathname;
       if (pathname.startsWith("/api/")) {
         await db.ready;
         response.setHeader("Cache-Control", "no-store");
-        if (url.search) throw new ApiError(400, "QUERY_NOT_SUPPORTED", "Remove the unsupported query parameters.");
+        const googleCallback = pathname === "/api/auth/oauth/google/callback" && method === "GET";
+        const appleCallback = pathname === "/api/auth/oauth/apple/callback" && method === "POST";
+        if (url.search && !googleCallback) throw new ApiError(400, "QUERY_NOT_SUPPORTED", "Remove the unsupported query parameters.");
         if (++requests % 100 === 0) {
           const now = Math.floor(Date.now() / 1000);
           await db.run("DELETE FROM sessions WHERE expires_at<=?", now);
           await db.run("DELETE FROM rate_limits WHERE resets_at<=?", now);
           await db.run("DELETE FROM idempotency WHERE expires_at<=?", now);
+          await db.run("DELETE FROM auth_flows WHERE expires_at<=?", now);
         }
         if (method === "GET" && pathname === "/api/health") { await db.get("SELECT 1"); send(response, 200, { status: "ok" }); return; }
         if (method === "GET" && pathname === "/api/session") { send(response, 200, { user: await currentUser(db, request) }); return; }
@@ -244,10 +247,11 @@ export function createServer(options: ServerOptions) {
         }
         const ip = digest(client);
         const mutation = !["GET", "HEAD"].includes(method);
-        if (mutation) {
+        if (mutation && !appleCallback) {
           if (request.headers.origin !== configuredOrigin || request.headers["sec-fetch-site"] === "cross-site") throw new ApiError(403, "ORIGIN_REJECTED", "Open Slate in its own browser tab and try again.");
           await rateLimit(db, `mutation:${ip}`, 120, 60);
         }
+        if (await auth(request, response, url, ip)) return;
         if (method === "POST" && pathname === "/api/auth/register") {
           await rateLimit(db, `register:${ip}`, 5, 3600);
           const body = await readBody(request);
@@ -367,7 +371,7 @@ export function createServer(options: ServerOptions) {
       if (method === "HEAD") response.end(); else createReadStream(target).on("error", () => response.destroy()).pipe(response);
     } catch (caught) {
       const error = caught instanceof DatabaseBusyError ? new ApiError(503, "SERVICE_BUSY", caught.message, undefined, 1) : caught;
-      const known = error instanceof ApiError;
+      const known = error instanceof AuthError;
       const status = known ? error.status : 500;
       if (known && error.retryAfter) response.setHeader("Retry-After", String(error.retryAfter));
       if (!response.headersSent) send(response, status, { error: { code: known ? error.code : "INTERNAL_ERROR", message: known ? error.message : "Something went wrong. Please try again.", ...(known && error.fields ? { fields: error.fields } : {}) }, requestId });
