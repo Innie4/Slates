@@ -1,3 +1,4 @@
+- [2026-10-22] [Request service popup](2026-10-22-request-service-popup.md): How service prices and frequencies appear in a popup while one selected ID stays with the request draft.
 - [2026-10-22] [Google sign-in and device passkeys](2026-10-22-add-google-and-passkeys.md): How verified provider identities and one-use passkey challenges connect to Slate accounts.
 - [2026-10-22] [Use the supplied Slate logo](2026-10-22-use-slate-logo-assets.md): How alpha masks preserve the supplied logo while displaying Slate grey and white theme variants.
 - [2026-10-20] [Show household service prices and frequency](2026-10-20-household-service-plan-details.md): How the household account reuses the service catalog to display guide prices, billing units and collection schedules.

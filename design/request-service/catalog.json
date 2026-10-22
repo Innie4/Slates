@@ -1,0 +1,50 @@
+[
+  {
+    "id": "svc-home-weekly",
+    "name": "Slate Home",
+    "frequency": "Twice weekly",
+    "priceFrom": 7000,
+    "priceUnit": "/month",
+    "pricingModel": "Monthly subscription"
+  },
+  {
+    "id": "svc-home-lite",
+    "name": "Slate Home Lite",
+    "frequency": "Weekly",
+    "priceFrom": 4500,
+    "priceUnit": "/month",
+    "pricingModel": "Monthly subscription"
+  },
+  {
+    "id": "svc-bulk",
+    "name": "Bulk Waste Pickup",
+    "frequency": "One-time",
+    "priceFrom": 15000,
+    "priceUnit": "/pickup",
+    "pricingModel": "Quote"
+  },
+  {
+    "id": "svc-recycling",
+    "name": "Recycling Pickup",
+    "frequency": "Monthly",
+    "priceFrom": 1500,
+    "priceUnit": "/month",
+    "pricingModel": "Monthly subscription"
+  },
+  {
+    "id": "svc-special",
+    "name": "Special Collection",
+    "frequency": "One-time",
+    "priceFrom": 45000,
+    "priceUnit": "/job",
+    "pricingModel": "Quote"
+  },
+  {
+    "id": "svc-event",
+    "name": "Event Cleanup",
+    "frequency": "One-time",
+    "priceFrom": 60000,
+    "priceUnit": "/event",
+    "pricingModel": "Quote"
+  }
+]

@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState, type ComponentProps, type FormEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type ComponentProps, type FormEvent, type ReactNode } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
-import { ArrowRight, CalendarDays, Check, MapPin, MessageSquare, Package, Plus, Truck } from "lucide-react";
+import { ArrowRight, CalendarDays, Check, ChevronDown, MapPin, MessageSquare, Package, Plus, Truck } from "lucide-react";
 import { Alert, Badge, Button, ButtonLink, Checkbox, DatePicker, EmptyState, Input, List, ListRow, Modal, Page, PageHeader as BasePageHeader, Panel, Ref, Select, SkeletonRows, Textarea } from "@/components/ui";
 import { api, messageFor } from "@/lib/api";
 import { AccountSecurity } from "@/components/auth/AccountSecurity";
@@ -118,7 +118,7 @@ function RequestCollection({ onSaved }: { onSaved: (booking: Booking) => void })
     <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
       <form onSubmit={submit} className="flex max-w-2xl flex-col gap-5">
         {error && <Alert tone="danger" title="Couldn't save this request">{error}</Alert>}
-        <Select label="Service" value={draft.serviceId} onChange={event => change({ serviceId: event.target.value })} options={BOOKING_SERVICES.map(service => ({ value: service.id, label: service.name }))} required />
+        <ServicePicker value={draft.serviceId} onChange={serviceId => change({ serviceId })} />
         <Input label="Collection address" autoComplete="street-address" required minLength={8} maxLength={300} placeholder="House number, street and landmark" value={draft.address} onChange={event => change({ address: event.target.value })} />
         <Select label="Area in Uyo" placeholder="Choose your area" options={[...BOOKING_AREAS]} value={draft.area} onChange={event => change({ area: event.target.value })} required />
         <div className="grid gap-5 sm:grid-cols-2">
@@ -205,6 +205,49 @@ const collectionSchedules: Record<string, string> = {
   Monthly: "1 collection per month",
   "One-time": "One-time collection",
 };
+function ServicePicker({ value, onChange }: { value: string; onChange: (id: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  const available = services.filter(service => BOOKING_SERVICES.some(booking => booking.id === service.id));
+  const selected = available.find(service => service.id === value)!;
+  return <div className="request-service-field">
+    <label id={`${id}-label`} htmlFor={id} className="t-small font-medium text-ink">Service</label>
+    <button
+      id={id}
+      type="button"
+      className="request-service-trigger"
+      aria-labelledby={`${id}-label ${id}-value`}
+      aria-describedby={`${id}-summary`}
+      aria-haspopup="dialog"
+      aria-expanded={open}
+      onClick={() => setOpen(true)}
+    >
+      <span className="min-w-0">
+        <span id={`${id}-value`} className="request-service-value">{selected.name}</span>
+        <span id={`${id}-summary`} className="request-service-summary" aria-live="polite"><span>From {formatNaira(selected.priceFrom)}{selected.priceUnit}</span><span className="request-service-summary-separator"> · </span><span>{collectionSchedules[selected.frequency] ?? selected.frequency}</span></span>
+      </span>
+      <ChevronDown className="size-5 shrink-0 text-ink-2" aria-hidden="true" />
+    </button>
+    <Modal open={open} onClose={() => setOpen(false)} title="Choose a service" description="Compare starting prices and collection frequency." className="request-service-dialog" footer={<p className="request-service-note">The team confirms the final price before collection.</p>}>
+      <ul className="request-service-options">
+        {available.map(service => <li key={service.id}>
+          <button type="button" className="request-service-option" aria-pressed={service.id === value} onClick={() => { onChange(service.id); setOpen(false); }}>
+            <span className="request-service-check" aria-hidden="true">{service.id === value && <Check className="size-3.5" />}</span>
+            <span className="request-service-copy">
+              <span className="request-service-name">{service.name}</span>
+              <span className="request-service-frequency">{collectionSchedules[service.frequency] ?? service.frequency}</span>
+            </span>
+            <span className="request-service-price">
+              <span className="request-service-from">From</span>
+              <span>{formatNaira(service.priceFrom)}</span>
+              <span className="request-service-unit">{service.priceUnit}</span>
+            </span>
+          </button>
+        </li>)}
+      </ul>
+    </Modal>
+  </div>;
+}
 function Services() {
   const householdServices = services.filter(service => BOOKING_SERVICES.some(bookingService => bookingService.id === service.id));
   return <Page>
