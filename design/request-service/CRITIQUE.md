@@ -26,7 +26,7 @@ Round 2: 9 of 12 lines at 4 or above, none below 3. Done by the scoped stop rule
 Five requests and outcomes:
 
 1. Mobile bottom sheet plus grabber: landed. Actual app already had its shared Modal sheet pattern, so this corrected mockup fidelity.
-2. Make continued scrolling obvious and prove last services reachable: compact cue landed. Initial static scroll-check script ran before layout and was rejected as evidence by the critic. It was corrected to wait for load/fonts/layout; actual runtime `shots/service-picker/open-last-320.png` independently proves Event Cleanup and the price note remain visible.
+2. Make continued scrolling obvious and prove last services reachable: compact cue landed. Initial static scroll-check script ran before layout and was rejected as evidence by the critic. It was corrected to wait for load/fonts/layout; both corrected light/dark PNGs now visibly include Special Collection, Event Cleanup and the footer, with 0 scan failures/warnings. This capture-only fix is verified but not separately rescored. Actual runtime `shots/service-picker/open-last-320.png` independently proves Event Cleanup and the price note remain visible.
 3. Separate price/unit from frequency in narrow collapsed field: landed in study and real app.
 4. Show middle Recycling press before closure: landed in `06-signature-choice.png`, then `07-signature-recorded.png`.
 5. Reduce compact header cost by removing redundant eyebrow: landed.

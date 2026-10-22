@@ -19,6 +19,7 @@ Commands use `/home/inimfon-udoh/.codex/skills/app-designer/scripts/shoot.mjs` a
 | shots/r1-se | 375×667 | 6 | 0 | 6 |
 | shots/r2 | 402×874 | 7 | 0 | 3 |
 | shots/r2-se | 375×667 | 7 | 0 | 3 |
+| shots/r2-se-bottom | 375×667 | 2 | 0 | 0 |
 | shots/before-after-r2 | 402×874 | 2 | 0 | 2 |
 
 The supplied icon is a separate rendered asset, excluded from text scan frame counts. It is unchanged.
@@ -27,7 +28,7 @@ Warning answers: main request-form screens have partial hint or field text at th
 
 Header and footer of the popup are explicitly opaque fixed layers outside the scrollable choice list. The renderer's text-box collision logic does not account for clipping, so these layers use its documented `data-float` annotation. This describes the real composition; it does not hide a visible text overlap. The full-size light/dark captures were opened and inspected.
 
-The first scroll-end capture was rejected by the independent critic because the script ran before layout. The corrected source waits for load, fonts and a layout frame before scrolling. Actual runtime `shots/service-picker/open-last-320.png` is independent proof that Event Cleanup and the final-price note are reachable together. Do not infer end-of-list proof from an early screenshot showing Slate Home at the top.
+The first scroll-end capture was rejected by the independent critic because the script ran before layout. The corrected source waits for load, fonts and a layout frame before scrolling. Both corrected static light and dark images were visually opened and now show Event Cleanup, its unit and the final-price footer together. Their raw scan has zero failures and warnings. This capture-only correction was verified after critique and is not separately scored. Actual runtime `shots/service-picker/open-last-320.png` is independent proof that Event Cleanup and the final-price note are reachable together. Do not infer end-of-list proof from an early screenshot showing Slate Home at the top.
 
 ## Independent review
 
