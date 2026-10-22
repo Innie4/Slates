@@ -110,3 +110,15 @@ The compatibility rollback patch was inspected separately. It preserves schema v
 - Physical iPhone rendering, Apple system fonts, keyboard feel and motion timing were not verified on this Linux host. The existing bundled web fonts remain the production typography.
 - Authentication/authorization changes require qualified human review before a consequential production release under the supplied engineering policy. Staging verification and this independent agent review do not satisfy that human-review requirement.
 - The final deployment, live database migration and combined database-suite outcome must be reported from their own fresh evidence. This visual review does not certify them.
+
+## Follow-up review: callback diagnostics
+
+Reviewed the uncommitted diagnostic diff in `server/auth.ts` and `tests/server/auth.test.ts` against deployed auth commit `649e132` after the first live Google link failed. This is a bounded diagnostic review; it does not change the visual scores above.
+
+The change adds a fixed callback stage and a fixed failure category to the existing rejection audit event. Every value returned by `callbackFailureReason` is a literal string selected by a switch. Provider messages, descriptions, tokens, authorization codes, claims and URLs are not copied to the event. Nested causes are inspected at a maximum depth of four. Unknown codes remain `unclassified`. I checked the installed openid-client/oauth4webapi error wrapping: the nested claim metadata path used for issuer/audience categories matches that implementation.
+
+The grant call retains the same expected state, expected nonce, required ID token and Google PKCE verifier. Identity/email verification, explicit linking, flow consumption, session creation and browser error redirects are unchanged. No protocol check is weakened to diagnose the live failure. Moving configuration creation into a local variable only identifies which stage failed.
+
+The added regression supplies a sensitive marker in a client secret, authorization code, provider response description, nested cause and error message. It checks exact fixed event output for invalid-client, timeout and unknown failures, then checks that marker, nonce and state never occur in captured records. This is focused coverage of the changed logging boundary. Its fresh execution result must be reported by the implementation owner; this reviewer inspected the test and did not independently run it.
+
+No must-fix or should-fix issue was found in this diagnostic diff. It is suitable for the authorized staging diagnostic deployment after the focused test and existing checks pass. The provider configuration still needs live verification. A user reply saying sign-in completed is not proof of a linked identity, and no authentication-success claim is made here.

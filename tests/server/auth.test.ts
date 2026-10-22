@@ -231,3 +231,30 @@ for (const postgres of [false, true]) {
     } finally { await f.dispose(); }
   });
 }
+
+test("OAuth callback diagnostics use fixed categories and never log provider response details", async () => {
+  const records: Record<string, string | number>[] = [];
+  let mode: "invalid_client" | "timeout" | "unknown" = "invalid_client";
+  const privateMarker = "fixture-private-provider-detail";
+  const transport: typeof fetch = async () => {
+    if (mode === "timeout") throw new DOMException(privateMarker, "TimeoutError");
+    if (mode === "unknown") throw Object.assign(new Error(privateMarker), { code: privateMarker, cause: { email: privateMarker, token: privateMarker } });
+    return Response.json({ error: "invalid_client", error_description: privateMarker, private_token: privateMarker }, { status: 401 });
+  };
+  const f = await authFixture({ oauth: { google: { clientId: "fixture-client", clientSecret: privateMarker } }, authFetch: transport, logger: record => { records.push(record); } });
+  try {
+    for (const [failureMode, expectedReason] of [["invalid_client", "provider_invalid_client"], ["timeout", "network_timeout"], ["unknown", "unclassified"]] as const) {
+      mode = failureMode;
+      const start = await f.api("/api/auth/oauth/google/start", { body: { intent: "login" } });
+      const authorization = new URL(start.body.url);
+      const query = new URLSearchParams({ state: authorization.searchParams.get("state")!, code: privateMarker });
+      const result = await f.api(`/api/auth/oauth/google/callback?${query}`, { cookie: responseCookie(start.response, "slate_oauth") });
+      assert.equal(result.response.headers.get("location"), "/login?authError=failed");
+      const event = records.filter(record => record.event === "oauth_callback_rejected").at(-1);
+      assert.deepEqual(event, { event: "oauth_callback_rejected", provider: "google", code: "failed", stage: "grant", reason: expectedReason });
+      assert.equal(JSON.stringify(records).includes(privateMarker), false);
+      assert.equal(JSON.stringify(records).includes(authorization.searchParams.get("nonce")!), false);
+      assert.equal(JSON.stringify(records).includes(authorization.searchParams.get("state")!), false);
+    }
+  } finally { await f.dispose(); }
+});

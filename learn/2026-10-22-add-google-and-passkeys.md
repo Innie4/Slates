@@ -20,7 +20,7 @@ Slate now supports Google accounts and passkeys alongside existing passwords. Ap
 5. Linking or removing methods requires recent authentication. Transactions consume challenges once and serialize concurrent credential updates.
 
 ## Why it's built this way
-Protocol libraries perform token and WebAuthn validation. Database-backed state works across application workers and restarts. The browser never stores provider secrets or receives biometric information. Unmount guards prevent an old sign-in action from redirecting a newer page.
+Protocol libraries perform token and WebAuthn validation. Database-backed state works across application workers and restarts. The browser never stores provider secrets or receives biometric information. Unmount guards prevent an old sign-in action from redirecting a newer page. Fixed error categories help diagnose provider failures without logging tokens or personal data.
 
 ## The concept worth knowing: challenge and response
 A guard asks a different question every time, so yesterday's answer cannot open today's door. More precisely, a short-lived random challenge binds a signature to one ceremony. Slate consumes that challenge atomically, so two workers cannot both accept the same proof.

@@ -30,3 +30,9 @@ Apple stays unavailable under the user's free-only requirement. Protocol fixture
 The reviewed and tested recovery commit is `8b39dbc` on `codex/slate-auth-rollback-v2`. Keep schema version 2 during rollback. Password users retain access; social-only users cannot start new sessions on that older interface until the auth-capable build returns. Do not use Render's unpatched previous deployment as the recovery build.
 
 The requested target is staging. Qualified human review of the authentication boundary remains necessary before a public production release. Live deployment and provider-callback evidence must be reported separately after rollout.
+
+## Follow-up callback diagnosis
+
+The first live Google linking attempt returned the generic failure state. A private comparison found that Render still held the retired client secret. The exact Google secret row was corrected and its saved value verified against the working replacement, without printing either value. A Google token-endpoint control check returned `invalid_grant` for a disposable invalid code with the replacement and `invalid_client` for a deliberately wrong secret.
+
+A reviewed follow-up adds only fixed callback stages and allowlisted failure categories. Token, nonce, state, PKCE and identity validation are unchanged. Focused callback/redaction checks passed (3 passed, 0 failed; 2 PostgreSQL variants intentionally omitted from that focused local run). The earlier combined SQLite/Neon suite remains the evidence for database and concurrency behavior. The follow-up build and TypeScript checks passed.

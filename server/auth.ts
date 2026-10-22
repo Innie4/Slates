@@ -38,7 +38,7 @@ export interface AuthHooks {
   sessionCookie(token: string, secure: boolean): string;
   verifyPassword(value: string, stored?: string): Promise<boolean>;
   rateLimit(db: StoreConnection, bucket: string, limit: number, seconds: number): Promise<void>;
-  audit(record: { event: string; provider: AuthProvider; code: string }): void;
+  audit(record: { event: string; provider: AuthProvider; code: string; stage?: string; reason?: string }): void;
 }
 interface Flow { id: string; purpose: string; user_id: string | null; payload: string; browser_hash: string }
 interface OAuthFlow {
@@ -79,6 +79,45 @@ function redirect(response: ServerResponse, location: string) { response.writeHe
 function authFailure() { return new AuthError(401, "PASSKEY_FAILED", "The passkey could not be verified. Try again or use another sign-in method."); }
 function flowFailure() { return new AuthError(410, "AUTH_EXPIRED", "This sign-in attempt expired or was already used. Please start again."); }
 function collision() { return new AuthError(409, "ACCOUNT_EXISTS", "An account with this email already exists. Sign in to that account before connecting this provider."); }
+
+function callbackFailureReason(error: unknown): string {
+  if (error instanceof oidc.ResponseBodyError) {
+    switch (error.error) {
+      case "invalid_client": return "provider_invalid_client";
+      case "invalid_grant": return "provider_invalid_grant";
+      case "unauthorized_client": return "provider_unauthorized_client";
+      case "temporarily_unavailable": return "provider_unavailable";
+      default: return "provider_rejected";
+    }
+  }
+  // Only fixed categories leave this function. Error messages and attached data can contain credentials.
+  let current: unknown = error;
+  for (let depth = 0; depth < 4 && current && typeof current === "object"; depth++) {
+    const failure = current as { code?: unknown; cause?: unknown; claim?: unknown };
+    switch (failure.code) {
+      case "OAUTH_TIMEOUT": case "ETIMEDOUT": case "UND_ERR_CONNECT_TIMEOUT": return "network_timeout";
+      case "OAUTH_ABORT": return "request_aborted";
+      case "ECONNRESET": case "ECONNREFUSED": case "ENETUNREACH": case "ENOTFOUND": case "EAI_AGAIN": return "network_unavailable";
+      case "OAUTH_JWT_TIMESTAMP_CHECK_FAILED": return "token_time_rejected";
+      case "OAUTH_JWT_CLAIM_COMPARISON_FAILED": {
+        const cause = failure.cause && typeof failure.cause === "object" ? failure.cause as { cause?: unknown } : undefined;
+        const comparison = cause?.cause && typeof cause.cause === "object" ? cause.cause as { claim?: unknown } : undefined;
+        if (comparison?.claim === "iss") return "token_issuer_rejected";
+        if (comparison?.claim === "aud" || comparison?.claim === "azp") return "token_audience_rejected";
+        return "token_claim_rejected";
+      }
+      case "OAUTH_KEY_SELECTION_FAILED": return "signing_key_rejected";
+      case "OAUTH_INVALID_RESPONSE": return "provider_response_invalid";
+      case "OAUTH_RESPONSE_IS_NOT_JSON": case "OAUTH_PARSE_ERROR": return "provider_response_unreadable";
+      case "OAUTH_RESPONSE_IS_NOT_CONFORM": return "provider_http_rejected";
+      case "42P01": case "42703": return "storage_schema_unavailable";
+      case "23505": case "23503": return "storage_constraint_rejected";
+      case "AUTH_EXPIRED": return "flow_expired";
+    }
+    current = failure.cause;
+  }
+  return "unclassified";
+}
 
 async function readAppleForm(request: IncomingMessage) {
   if (request.headers["content-type"]?.split(";")[0]?.trim() !== "application/x-www-form-urlencoded" || (request.headers["content-encoding"] && request.headers["content-encoding"] !== "identity")) throw new AuthError(415, "CONTENT_TYPE", "The sign-in response is invalid.");
@@ -153,6 +192,7 @@ export function createAuthHandler(db: Store, origin: string, secure: boolean, se
   async function callback(provider: AuthProvider, request: IncomingMessage, response: ServerResponse, url: URL) {
     // Only this provider callback may carry provider query parameters or form data.
     response.setHeader("Referrer-Policy", "no-referrer");
+    let stage: "flow" | "configuration" | "grant" | "profile" | "identity" | "session" | "signup" = "flow";
     try {
       if (!configured(provider)) { redirect(response, "/login?authError=unavailable"); return; }
       const form = provider === "apple" ? await readAppleForm(request) : url.searchParams;
@@ -167,11 +207,16 @@ export function createAuthHandler(db: Store, origin: string, secure: boolean, se
       let providerResponse: URL | Request;
       if (provider === "apple") providerResponse = new Request(callbackUrl, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: form });
       else { callbackUrl.search = form.toString(); providerResponse = callbackUrl; }
-      const tokens = await oidc.authorizationCodeGrant(await configuration(provider), providerResponse, { expectedState: payload.state, expectedNonce: payload.nonce, idTokenExpected: true, ...(provider === "google" ? { pkceCodeVerifier: payload.verifier! } : {}) });
+      stage = "configuration";
+      const config = await configuration(provider);
+      stage = "grant";
+      const tokens = await oidc.authorizationCodeGrant(config, providerResponse, { expectedState: payload.state, expectedNonce: payload.nonce, idTokenExpected: true, ...(provider === "google" ? { pkceCodeVerifier: payload.verifier! } : {}) });
+      stage = "profile";
       const claims = tokens.claims();
       if (!claims || typeof claims.sub !== "string" || !claims.sub || claims.sub.length > 255 || typeof claims.email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(claims.email) || claims.email.length > 254 || ![true, "true"].includes(claims.email_verified as boolean)) throw new Error("Invalid provider identity");
       const address = claims.email.toLowerCase();
       const name = typeof claims.name === "string" && claims.name.trim().length >= 2 && claims.name.trim().length <= 120 && !/[\u0000-\u001f\u007f]/.test(claims.name) ? claims.name.trim() : "";
+      stage = "identity";
       const result = await db.transaction(async tx => {
         await tx.lock(`identity:${provider}:${claims.sub}`);
         const identity = await tx.get("SELECT * FROM external_identities WHERE provider=? AND subject=?", provider, claims.sub);
@@ -191,6 +236,7 @@ export function createAuthHandler(db: Store, origin: string, secure: boolean, se
       });
       if (result.error) { hooks.audit({ event: "oauth_callback_rejected", provider, code: result.error }); redirect(response, `/login?authError=${result.error}`); return; }
       if (result.userId) {
+        stage = "session";
         const token = await db.transaction(async tx => {
           // Apple's cross-site POST does not carry the existing SameSite=Lax session.
           if (payload.intent === "link" && payload.sessionHash) await tx.run("DELETE FROM sessions WHERE token_hash=?", payload.sessionHash);
@@ -198,12 +244,13 @@ export function createAuthHandler(db: Store, origin: string, secure: boolean, se
         });
         appendCookie(response, hooks.sessionCookie(token, secure)); redirect(response, result.next!); return;
       }
+      stage = "signup";
       await saveFlow(response, SIGNUP_COOKIE, "signup", result.pending, null, SIGNUP_SECONDS);
       redirect(response, "/auth/continue");
     } catch (error) {
       // Tokens, provider errors, authorization codes and identity claims never enter logs or redirect URLs.
       flowCookie(response, FLOW_COOKIE, "", secure, 0, provider === "apple");
-      hooks.audit({ event: "oauth_callback_rejected", provider, code: error instanceof AuthError && error.code === "AUTH_EXPIRED" ? "expired" : "failed" });
+      hooks.audit({ event: "oauth_callback_rejected", provider, code: error instanceof AuthError && error.code === "AUTH_EXPIRED" ? "expired" : "failed", stage, reason: callbackFailureReason(error) });
       redirect(response, error instanceof AuthError && error.code === "AUTH_EXPIRED" ? "/login?authError=expired" : "/login?authError=failed");
     }
   }
