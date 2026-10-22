@@ -3,7 +3,7 @@
 > Brief: **self-authored from the Slate business plan + product requirements (Nigeria, 2026).**
 > Deliverable: a mobile-first, responsive, frontend-only web platform covering the public
 > website, auth, customer, estate, business, institution, operator and admin experiences.
-> Logo: placeholder wordmark (`src/components/brand/Logo.tsx`) until the real mark arrives.
+> Logo: supplied S mark in Slate grey (#2B3643) and white, paired with the existing wordmark (`src/components/brand/Logo.tsx`). Artwork: `public/brand/slate-mark-grey.svg` and `public/brand/slate-mark-white.svg`; browser icon: `public/favicon.svg`.
 
 ---
 
@@ -26,12 +26,12 @@ rounded-card pattern that weakened the concept.
 - [x] Slate grey as primary, stone grey as secondary, and orange only as the live signal.
 - [x] The customer live-pickup map and the `CleanSlate` completion interaction.
 - [x] Dark mode, responsive portal navigation, actions, filters, forms and service states.
-- [x] The placeholder wordmark so the final logo can be introduced later without re-layout.
+- [x] Supplied S logo with grey and white variants, retaining the existing wordmark and layout.
 
 **Lose:** the white generic desktop rail, repeated `title + description + cards` composition,
 fallback labels that looked generated, stat-tile reflexes, and the panel-around-everything form.
 
-**Unknown:** the final logo, production photography, backend latency and real-device haptics.
+**Unknown:** production photography, backend latency and real-device haptics.
 The frontend therefore uses code-native route illustration and deterministic demo data.
 
 **Decisions:** keep the information architecture, routes, actions and core service facts;
@@ -229,7 +229,7 @@ References in mono: `PU-26-08813`, `TXN-7Q4K2M`, `CT-UYO-014`, `CMP-1182`.
    Modal, Drawer, ConfirmDialog, Menu, Popover, Tooltip, useToast, Alert, EmptyState, StateView, Skeleton, SkeletonRows,
    ProgressBar, Meter, DataTable, FilterBar, useFilteredRows, ExportMenu, Stat, StatStrip, Timeline, Stepper, Sparkline,
    AreaChart, BarChart, Donut, StackedBar, Avatar, AvatarStack, Breadcrumbs, Kbd, Ref`.
-   Brand: `Logo, Strata, SlabMark, RouteMap, CleanSlate, ServiceAreaMap` (`@/components/brand/*`).
+   Brand: `Logo, BrandMark, Strata, SlabMark, RouteMap, CleanSlate, ServiceAreaMap` (`@/components/brand/*`). `Logo` and `BrandMark` use the supplied S artwork; `Strata` and `SlabMark` remain decorative geometry.
 5. **Group with space and hairlines first**; `Panel` only when the thing is an object (an invoice, a contract, a job).
    No cards inside cards. No 2×2 stat-tile grids by reflex — say the fact as a sentence, or one hero number.
 6. **Mobile first.** Design at 390px, then `sm: md: lg: xl:`. No horizontal page scroll. Tables via `DataTable` (stacks on

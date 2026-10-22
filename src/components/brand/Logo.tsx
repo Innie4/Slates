@@ -1,11 +1,18 @@
 import { Link } from "react-router";
 import { cn } from "@/lib/cn";
-import { SlabMark } from "./Strata";
 
-/**
- * LOGO PLACEHOLDER, replace this single component when the real logo arrives.
- * Everything in the app renders the brand through <Logo />.
- */
+export function BrandMark({ className = "size-8", tone = "ink" }: { className?: string; tone?: "ink" | "light" }) {
+  return <span className={cn("inline-flex shrink-0 items-center justify-center", className)} aria-hidden="true">
+    {tone === "light" ? (
+      <img src="/brand/slate-mark-white.svg" alt="" width="63" height="83" className="size-full object-contain" />
+    ) : <>
+      <img src="/brand/slate-mark-grey.svg" alt="" width="63" height="83" className="size-full object-contain dark:hidden" />
+      <img src="/brand/slate-mark-white.svg" alt="" width="63" height="83" className="hidden size-full object-contain dark:block" />
+    </>}
+  </span>;
+}
+
+/** Shared Slate logo for public pages, account portals and documents. */
 export function Logo({
   to = "/",
   className,
@@ -22,7 +29,7 @@ export function Logo({
 }) {
   const content = (
     <span className={cn("inline-flex items-center gap-2", tone === "light" ? "text-slate-ink" : "text-ink", className)}>
-      <SlabMark className="size-7 shrink-0" />
+      <BrandMark tone={tone} />
       {!compact && (
         <span className="font-display text-[22px] font-bold leading-none tracking-[-0.04em]" style={{ fontVariationSettings: '"opsz" 32, "wdth" 90' }}>
           slate

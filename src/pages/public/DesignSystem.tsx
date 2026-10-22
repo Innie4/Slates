@@ -6,8 +6,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { useSession } from "@/lib/session";
-import { Logo } from "@/components/brand/Logo";
-import { SlabMark, Strata } from "@/components/brand/Strata";
+import { BrandMark, Logo } from "@/components/brand/Logo";
+import { Strata } from "@/components/brand/Strata";
 import { RouteMap } from "@/components/brand/RouteMap";
 import { ServiceAreaMap } from "@/components/brand/ServiceAreaMap";
 import { CleanSlate } from "@/components/brand/CleanSlate";
@@ -117,7 +117,7 @@ export default function DesignSystem() {
           <SlateSlab live seed={21} bands={5} className="aspect-[4/3] lg:aspect-[5/4.4]" strataClassName="h-[46%]">
             <div className="flex h-full flex-col p-6 sm:p-8">
               <div className="flex items-center justify-between">
-                <SlabMark className="size-8 text-slate-ink" />
+                <BrandMark tone="light" className="size-8" />
                 <span className="t-mono text-slate-ink/60">Oct 2026</span>
               </div>
               <p className="mt-6 font-display text-[clamp(30px,4.6vw,52px)] font-bold leading-[0.98] tracking-[-0.03em]" style={{ fontVariationSettings: '"opsz" 72, "wdth" 90' }}>
@@ -371,11 +371,11 @@ function LogoSection() {
       id="logo"
       n="02"
       title="Logo"
-      lede="A placeholder wordmark until the real mark arrives. Three cut slabs, the lowest one in signal, the only place the accent lives in the brand."
+      lede="The supplied S mark, in Slate grey on light surfaces and white on dark surfaces, paired with the Slate wordmark."
     >
-      <Alert tone="neutral" title="Placeholder, this logo will be replaced">
-        Every surface renders the brand through one component, <span className="t-mono text-ink">src/components/brand/Logo.tsx</span>. Swap that file and the
-        header, footer, auth screens, portals and favicon follow.
+      <Alert tone="neutral" title="Supplied logo artwork">
+        Headers, footers, auth screens and portals use <span className="t-mono text-ink">src/components/brand/Logo.tsx</span>.
+        The artwork lives in <span className="t-mono text-ink">public/brand</span>; the browser icon uses <span className="t-mono text-ink">public/favicon.svg</span>.
       </Alert>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -396,30 +396,24 @@ function LogoSection() {
             <Logo to={null} compact />
           </div>
         </Specimen>
-        <Specimen label="<SlabMark />  sizes, live and still">
+        <Specimen label="<BrandMark />  sizes">
           <div className="flex flex-wrap items-end gap-6 py-2 text-ink">
             {[16, 24, 32, 48, 64].map((s) => (
               <div key={s} className="flex flex-col items-center gap-2">
                 <span style={{ width: s, height: s }} className="inline-flex">
-                  <SlabMark className="size-full" />
+                  <BrandMark className="size-full" />
                 </span>
                 <span className="t-mono text-[12px] text-ink-3">{s}</span>
               </div>
             ))}
-            <div className="flex flex-col items-center gap-2">
-              <span className="inline-flex size-12">
-                <SlabMark className="size-full" live={false} />
-              </span>
-              <span className="t-mono text-[12px] text-ink-3">still</span>
-            </div>
           </div>
         </Specimen>
       </div>
 
       <div className="grid gap-x-10 gap-y-4 md:grid-cols-3">
         {[
-          ["Construction", "Three slabs, each rising 4.2 over a 22-unit run, the same 11° cleft as the strata. Wordmark in Bricolage Grotesque 700, tracking −0.04em."],
-          ["Clear space", "Keep one slab height clear on every side. Never place the mark on photography or on a signal field."],
+          ["Artwork", "Keep the supplied S silhouette and proportions. Slate grey is #2B3643; the light version is white. Wordmark in Bricolage Grotesque 700, tracking −0.04em."],
+          ["Clear space", "Leave clear space on every side. Use grey on light surfaces and white on dark surfaces. Keep the mark clear of photography and live signal fields."],
           ["Minimum size", "Mark: 16px on screen. Wordmark lockup: 72px wide. Below that, use the mark alone."],
         ].map(([t, d]) => (
           <div key={t} className="border-t border-line pt-4">
@@ -2181,7 +2175,7 @@ function LayoutSection() {
             <div className="grid h-full grid-cols-[22%_minmax(0,1fr)]">
               <div className="flex flex-col gap-2 border-r border-line bg-surface p-3">
                 <div className="flex items-center gap-1.5">
-                  <SlabMark className="size-4 text-ink" />
+                  <BrandMark className="size-4" />
                   <span className="h-2 w-10 rounded-full bg-ink/80" />
                 </div>
                 <div className="mt-2 flex flex-col gap-1.5">

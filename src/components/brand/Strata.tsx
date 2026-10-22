@@ -97,7 +97,7 @@ export function Strata({
   );
 }
 
-/** Small stacked-slab mark used inside empty states and the logo placeholder. */
+/** Decorative stacked slabs, separate from the supplied Slate logo. */
 export function SlabMark({ className, live = true }: { className?: string; live?: boolean }) {
   return (
     <svg viewBox="0 0 32 32" className={className} aria-hidden>

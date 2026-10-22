@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { AlertTriangle, Check, ChevronLeft, ChevronRight, Paperclip, RotateCcw, Send, Truck } from "lucide-react";
-import { SlabMark } from "@/components/brand/Strata";
+import { BrandMark } from "@/components/brand/Logo";
 import {
   Avatar, Badge, Button, ButtonLink, ConfirmDialog, FileDrop, Modal, Page, PageHeader, ProgressBar, Section, Select, StateView, Textarea, Timeline,
   statusTone, useToast, type TimelineItem, type UploadedFile,
@@ -400,8 +400,8 @@ function MessageRow({ m }: { m: ThreadMessage }) {
     m.author === "you" ? (
       <Avatar name={m.name} size="sm" />
     ) : m.author === "slate" ? (
-      <span className="flex size-8 items-center justify-center rounded-full bg-slate text-slate-ink dark:bg-stone">
-        <SlabMark className="size-4" live={false} />
+      <span className="flex size-8 items-center justify-center rounded-full bg-slate text-slate-ink">
+        <BrandMark className="size-4" tone="light" />
       </span>
     ) : m.author === "operator" ? (
       <span className="flex size-8 items-center justify-center rounded-full border border-line-strong text-ink-2">
