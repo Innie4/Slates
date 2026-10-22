@@ -8,7 +8,8 @@ Slate now uses the supplied S symbol throughout its shared logo component, stand
 ## What changed
 - `public/brand/slate-mark-grey.svg`: embeds the original green PNG and uses its transparency to define a grey silhouette.
 - `public/brand/slate-mark-white.svg`: embeds the original white PNG with its surrounding empty space excluded from the view.
-- `public/favicon.svg`: uses the white artwork on a Slate grey background.
+- `public/favicon.svg`: has a transparent background, with a Slate grey mark for light browser themes and a white mark for dark themes.
+- `index.html`: versions the favicon URL so browsers request the transparent replacement.
 - `src/components/brand/Logo.tsx`: adds `BrandMark` and replaces the placeholder symbol while preserving links, portal labels and compact mode.
 - `src/pages/public/DesignSystem.tsx`: shows the new artwork, theme variants and sizes.
 - `src/pages/app/ComplaintDetail.tsx`: uses the white mark for Slate support messages on a dark background.
@@ -19,6 +20,7 @@ Slate now uses the supplied S symbol throughout its shared logo component, stand
 2. A rectangle filled with #2B3643 shows through that mask. The original green color cannot appear in the rendered result.
 3. `BrandMark` selects the white asset when `tone="light"`. Otherwise, existing dark-mode classes switch between grey and white images.
 4. `Logo` keeps the existing Slate wordmark and navigation behavior, so its callers receive the new artwork without changing their routes.
+5. The favicon uses the same alpha mask without a surrounding rectangle. Its color follows the browser theme; its versioned URL replaces the cached icon.
 
 ## Why it's built this way
 The original PNG bytes remain intact inside the SVG files. This preserves the supplied silhouette rather than redrawing it. Cropped SVG view boxes remove transparent margins without stretching the symbol. Both assets are self-contained, so they have no external image dependency.
