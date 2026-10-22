@@ -106,9 +106,10 @@ async function hashPassword(value: string) {
   return `scrypt$${salt}$${hash.toString("hex")}`;
 }
 async function verifyPassword(value: string, stored?: string) {
-  const [, salt, expected] = (stored || `scrypt$${dummySalt}$${dummyHash}`).split("$");
+  const valid = typeof stored === "string" && /^scrypt\$[a-f0-9]{32}\$[a-f0-9]{128}$/.test(stored);
+  const [, salt, expected] = (valid ? stored : `scrypt$${dummySalt}$${dummyHash}`).split("$");
   const actual = await scryptAsync(value, salt!);
-  return timingSafeEqual(actual, Buffer.from(expected!, "hex")) && Boolean(stored);
+  return timingSafeEqual(actual, Buffer.from(expected!, "hex")) && valid;
 }
 function readBody(request: IncomingMessage): Promise<Record<string, unknown>> {
   if (request.headers["content-type"]?.split(";")[0]?.trim().toLowerCase() !== "application/json") throw new ApiError(415, "CONTENT_TYPE", "Send this request as application/json.");

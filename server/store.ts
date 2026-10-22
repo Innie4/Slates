@@ -21,6 +21,8 @@ export interface Store extends StoreConnection {
 export function openStore(path: string): Store {
   if (path !== ":memory:") mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
   const db = new DatabaseSync(path);
+  const version = Number((db.prepare("PRAGMA user_version").get() as { user_version: number }).user_version);
+  if (version > 2) { db.close(); throw new Error("Database schema is newer than this application."); }
   if (path !== ":memory:") chmodSync(path, 0o600);
   db.exec(`
     PRAGMA foreign_keys = ON;
@@ -61,7 +63,7 @@ export function openStore(path: string): Store {
       bucket TEXT PRIMARY KEY, count INTEGER NOT NULL, resets_at INTEGER NOT NULL
     ) STRICT;
     CREATE INDEX IF NOT EXISTS rate_limits_expiry ON rate_limits(resets_at);
-    PRAGMA user_version = 1;
+    PRAGMA user_version = ${Math.max(1, version)};
   `);
   const connection: StoreConnection = {
     async get(sql, ...values) { return db.prepare(sql).get(...values) as Row | undefined; },

@@ -101,7 +101,7 @@ export function openPostgres(connectionString: string, logError: () => void): St
     await db.lock("slate:schema-migrations");
     await db.run("CREATE TABLE IF NOT EXISTS schema_migrations (version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL)");
     const current = await db.get("SELECT MAX(version) AS version FROM schema_migrations");
-    if (Number(current?.version ?? 0) > 1) throw new Error("Database schema is newer than this application.");
+    if (Number(current?.version ?? 0) > 2) throw new Error("Database schema is newer than this application.");
     if (!current?.version) {
       await db.run(migration);
       await db.run("INSERT INTO schema_migrations(version,applied_at) VALUES(1,?)", new Date().toISOString());
